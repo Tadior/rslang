@@ -25,6 +25,6 @@ export class WordsService {
     if (!word) {
       throw new NotFoundException('Word not found');
     }
-    return word;
+    return word.toResponse();
   }
 }
