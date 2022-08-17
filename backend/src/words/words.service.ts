@@ -13,7 +13,7 @@ export class WordsService {
 
   async getWords(group = 0, page = 0): Promise<IWord[]> {
     const words = await this.wordsRepository.find({
-      where: [{ group: +group, page: +page }],
+      where: [{ group: group, page: page }],
     });
     return words.map((word) => word.toResponse());
   }
