@@ -1,0 +1,32 @@
+h1 {
+    font-size: 96px;
+    font-family: 'Jost-Medium',serif;
+    color: $dark-blue;
+}
+// Стиль параграфа
+.paragraph {
+    line-height: 25px;
+    font-size: 18px;
+    color: $dark-blue;
+}
+// Стиль заголовка H2
+.title {
+    font-family: 'Jost-Medium', serif;
+    font-size: 48px;
+    line-height: 57px;
+    color: $dark-blue;
+    &_developers {
+        text-align: center;
+    }
+}
+// Стиль заголовка H3
+.headline {
+    font-family: 'Jost-Medium', sans-serif;
+    font-size: 40px;
+    color: $dark-blue;
+    line-height: 48px;
+}
+// Стиль span
+.text-filled {
+    color: $light-blue;
+}

@@ -20,6 +20,7 @@
     "rules": {
         "linebreak-style": ["error", "windows"],
         "no-console": "off",
-        "class-methods-use-this": ["error", { "exceptMethods": ["generateCarName", "race"] }]
+        "class-methods-use-this": ["error", { "exceptMethods": ["createHeader", "createFooter", "createProjectSection", "createAdvantagesSection", "createAboutAppSection", "createDevelopersSection"] }],
+        "max-len": ["error", { "code": 100, "ignoreTemplateLiterals": true, "ignoreStrings": true, "ignoreComments": true }]
     }
 }

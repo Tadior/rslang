@@ -8,12 +8,14 @@
 }
 
 .logo {
-    display: flex;
-    align-items: center;
-    color: $dark-blue;
-    font-size: 48px;
     &__img {
         margin-right: 10px;
+    }
+    &__link {
+        color: $dark-blue;
+        display: flex;
+        align-items: center;
+        font-size: 48px;
     }
 }
 .navigation {

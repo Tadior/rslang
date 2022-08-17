@@ -1,10 +1,11 @@
 // Основной файл стилей, все стил подключаются сюда
 @import '~normalize.scss'; /* ~ - означает найти в node_modules */
-@import '../styles/abstracts/fonts.scss';
-@import '../styles/abstracts/animations.scss';
-@import '../styles/abstracts/base-styles.scss';
-@import '../styles/abstracts/variables.scss';
-@import '../styles/abstracts/buttons.scss';
-@import '../styles/layout/header.scss';
+@import '../styles/abstracts/fonts';
+@import '../styles/abstracts/animations';
+@import '../styles/abstracts/base-styles';
+@import '../styles/abstracts/variables';
+@import '../styles/abstracts/text';
+@import '../styles/abstracts/buttons';
+@import '../styles/layout/header';
 @import '../styles/pages/main-page';
-@import '../styles/layout/footer.scss';
+@import '../styles/layout/footer';

@@ -4,14 +4,18 @@
     color: #fff;
     background: $light-blue;
     padding: 18px 50px;
-    &_authorisation {
-        color: $dark-blue;
+    &_bordered {
+        color: $light-blue;
         background: transparent;
         border: 1px solid rgba(0, 16, 73, 0.2);
-        padding: 9px 36px;
+        padding: 18px 66px;
         &:hover {
             color: #fff;
         }
+    }
+    &_navigation {
+        padding: 9px 36px;
+        color: $dark-blue;
     }
     &:hover {
         background: $button-hover;
