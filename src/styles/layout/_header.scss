@@ -1,3 +1,39 @@
 .header {
-    background: red;
+    margin-top: 40px;
+    font-family: "Jost-Medium",serif;
+    &__wrapper {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    color: $dark-blue;
+    font-size: 48px;
+    &__img {
+        margin-right: 10px;
+    }
+}
+.navigation {
+    flex: 1 1 100%;
+    display: flex;
+    justify-content: center;
+		&__container {
+            display: flex;
+		}
+		&__item {
+            margin-right: 35px;
+            &:last-child {
+                margin-right: 0;
+            }
+		}
+		&__link {
+            color: $gray;
+            transition: all ease .5s;
+            &:hover {
+                color: $light-blue;
+            }
+		}
 }

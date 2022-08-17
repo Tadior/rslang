@@ -1,0 +1,243 @@
+h1 {
+    font-size: 96px;
+    font-family: 'Jost-Medium',serif;
+    color: $dark-blue;
+}
+.project {
+    color: $dark-blue;
+    margin: 69px 0 74px 0;
+    &__wrapper {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+    }
+}
+.project-info {
+    flex: 0 1 544px;
+    padding-right: 20px;
+}
+.paragraph {
+    line-height: 25px;
+    font-size: 18px;
+    color: $dark-blue;
+}
+.paragraph_project {
+    margin-top: 15px;
+}
+
+.project_btn {
+    margin-top: 50px;
+}
+.project-categories {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 630px;
+    width: 100%;
+    margin: -10px;
+}
+.category {
+    width: 100%;
+    max-width: 295px;
+    height: 295px;
+    margin: 10px;
+    border-radius: 40px;
+    position: relative;
+    &_exercise {
+        background: $pink;
+    }
+    &_sprint {
+        background: $yellow;
+    }
+    &_audio {
+        background: $purpule;
+    }
+    &_statistic {
+        background: $aquamarine;
+    }
+    &:hover {
+        .pad {
+            opacity: 1;
+        }
+    }
+}
+.pad {
+    font-family: 'Jost-Medium',serif;
+    font-size: 25px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    content: '';
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    opacity: 0;
+    transition: all ease .5s;
+    border-radius: 40px;
+    color: #FAFAFA;
+    &_exercise {
+        background-color: rgba(red, $alpha: 0.5);
+    }
+    &_sprint {
+        background-color: rgba(yellow, $alpha: 0.5);
+    }
+    &_audio {
+        background-color: rgba( #8b00ff, $alpha: 0.5);
+    }   
+    &_statistic {
+        background-color: rgba(aquamarine, $alpha: 0.5);
+    }
+}
+.cetegory__img {
+}
+
+.advantages {
+    margin: 26px 0 111px;
+}
+.title {
+    font-family: 'Jost-Medium', serif;
+    font-size: 48px;
+    line-height: 57px;
+    color: $dark-blue;
+    &_developers {
+        text-align: center;
+    }
+}
+.title_advantages {
+}
+.advantages__items {
+    max-width: 1120px;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin: 28px auto;
+}
+.advantages__item {
+    flex: 0 1 505px;
+    margin: 50px 20px;
+    display: flex;
+    box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
+    border-radius: 40px;
+    justify-content: space-between;
+    padding: 20px 30px 0 33px;
+    color: $dark-blue;
+    font-family: 'Jost-Medium',serif;
+    &:first-child {
+        padding-right: 0;
+    }
+    &:nth-child(3) {
+        padding-right: 17px;
+    }
+}
+.advantages__text {
+    font-family: 'Jost-Medium', serif;
+    font-size: 24px;
+    line-height: 28px;
+}
+.advantages__img {
+    &_book {
+        max-width: 161px;
+    }
+    &_alarm {
+        max-width: 105px;
+    }
+    &_game-education {
+        max-width: 179px;
+    }
+    &_money {
+        max-width: 142px;
+    }
+}
+
+.about-app {
+    padding: 110px 0 60px;
+    background: $background-light;
+}
+.title_about-app {
+    text-align: center;
+}
+.about-app__wrapper {
+    display: flex;
+    align-items: center;
+}
+.about-app__content {
+    // max-width: 493px;
+}
+.headline {
+    font-family: 'Jost-Medium', sans-serif;
+    font-size: 40px;
+    color: $dark-blue;
+    line-height: 48px;
+}
+.text-filled {
+    color: $light-blue;
+}
+.paragraph_about {
+    max-width: 420px;
+}
+.btn_about {
+    margin-top: 30px;
+}
+.about-app__video {
+}
+.about-app__img {
+    max-width: 627px;
+    width: 100%;
+}
+
+.developers {
+    margin: 100px 0 90px;
+}
+.container {
+}
+.developers__wrapper {
+    margin-top: 167px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.developer {
+    text-align: center;
+    flex: 0 1 340px;
+    padding: 40px 20px 48px;
+    background: #FAFAFA;
+    box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
+    border-radius: 40px;
+    transition: all ease .5s;
+    &:hover {
+        transform: translateY(-60px);
+    }
+    &__link-container {
+        margin-top: 60px;
+    }
+}
+.developer__name {
+    font-family: 'Jost-Bold';
+    font-size: 32px;
+    color: $dark-blue;
+}
+.developer__img {
+    margin-top: 60px;
+}
+.developer__status {
+    margin: 30px auto;
+    font-family: 'Jost-SemiBold';
+    font-size: 24px;
+    color: $light-blue;
+    max-width: 200px;
+}
+.paragraph {
+}
+.paragraph_developer {
+    margin: 30px auto 0;
+    max-width: 262px;
+    width: 100%;
+}
+.btn {
+}
+// .btn_developer {
+//     margin-top: 50px;
+// }
