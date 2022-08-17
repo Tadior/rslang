@@ -1,3 +1,5 @@
+import logoImage from '../../assets/img/header/logo.svg';
+
 export default class Header {
   createHeader() {
     const header = document.createElement('header');
@@ -9,7 +11,7 @@ export default class Header {
     const logo = `
     <div class="logo">
         <a href="" class="logo__link">
-            <img class="logo__img" src="./assets/img/main-page/logo.svg" alt="RSLang">
+            <img class="logo__img" src="${logoImage}" alt="RSLang">
             RSLang
         </a>
     </div>

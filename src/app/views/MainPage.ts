@@ -1,3 +1,16 @@
+import exerciseImage from '../../assets/img/main-page/wood.png';
+import sprintImage from '../../assets/img/main-page/gamepad.png';
+import audioImage from '../../assets/img/main-page/audio.png';
+import statisticImage from '../../assets/img/main-page/interface.png';
+import bookImage from '../../assets/img/main-page/book.png';
+import alarmImage from '../../assets/img/main-page/alarm.png';
+import gameEducationImage from '../../assets/img/main-page/game-education.png';
+import moneyImage from '../../assets/img/main-page/money.png';
+import aboutAppImage from '../../assets/img/main-page/about-app.png';
+import IlonaImage from '../../assets/img/main-page/ilona.png';
+import DmitryImage from '../../assets/img/main-page/dmitriy.png';
+import IvanImage from '../../assets/img/main-page/ivan.png';
+
 export default class MainPage {
   createMainPage() {
     document.querySelector('main').append(this.createProjectSection(), this.createAdvantagesSection(), this.createAboutAppSection(), this.createDevelopersSection());
@@ -19,11 +32,11 @@ export default class MainPage {
         <h1>RSLang</h1>
         <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>`;
     // Функция создания кнопок навигации
-    function createButton(class_identificator: string, img_file_name: string, img_alt: string) {
+    function createButton(class_identificator: string, path: string, img_alt: string) {
       const button = document.createElement('button');
       button.classList.add('category', class_identificator);
       button.innerHTML = `
-        <img class="cetegory__img" src="./assets/img/main-page/${img_file_name}" alt=${img_alt}">
+        <img class="cetegory__img" src="${path}" alt=${img_alt}">
         <div class="pad pad_exercise">Учебник</div>
       `;
       button.addEventListener('click', () => {
@@ -33,10 +46,10 @@ export default class MainPage {
     }
     //------------------------------------------
     const buttons = [
-      createButton('category_exercise', 'wood.png', 'Учебник'),
-      createButton('category_sprint', 'gamepad.png', 'Спринт'),
-      createButton('category_audio', 'audio.png', 'Аудиовызов'),
-      createButton('category_statistic', 'interface.png', 'Статистика'),
+      createButton('category_exercise', exerciseImage, 'Учебник'),
+      createButton('category_sprint', sprintImage, 'Спринт'),
+      createButton('category_audio', audioImage, 'Аудиовызов'),
+      createButton('category_statistic', statisticImage, 'Статистика'),
     ];
     buttons.forEach((button) => {
       projectButtons.append(button);
@@ -70,25 +83,25 @@ export default class MainPage {
                 <div class="advantages__text">
                     Только самый необходимый материал
                 </div>
-                <img src="assets/img/main-page/book.png" alt="Учебник" class="advantages__img advantages__img_book">
+                <img src="${bookImage}" alt="Учебник" class="advantages__img advantages__img_book">
             </div>
             <div class="advantages__item">
                 <div class="advantages__text">
                     Достаточно 15 минут в день
                 </div>
-                <img src="assets/img/main-page/alarm.png" alt="Время" class="advantages__img advantages__img_alarm">
+                <img src="${alarmImage}" alt="Время" class="advantages__img advantages__img_alarm">
             </div>
             <div class="advantages__item">
                 <div class="advantages__text">
                     Интерактивное обучение в игровой форме
                 </div>
-                <img src="assets/img/main-page/game-education.png" alt="Интерактивное обучение" class="advantages__img advantages__img_game-education">
+                <img src="${gameEducationImage}" alt="Интерактивное обучение" class="advantages__img advantages__img_game-education">
             </div>
             <div class="advantages__item">
                 <div class="advantages__text">
                     Бесплатный доступ
                 </div>
-                <img src="assets/img/main-page/money.png" alt="Бесплатный доступ" class="advantages__img advantages__img_money">
+                <img src="${moneyImage}" alt="Бесплатный доступ" class="advantages__img advantages__img_money">
             </div>
         </div>
     </div>
@@ -124,7 +137,7 @@ export default class MainPage {
                 </div>
             </div>
             <div class="about-app__video">
-                <img src="assets/img/main-page/about-app.png" alt="О приложении" class="about-app__img">
+                <img src="${aboutAppImage}" alt="О приложении" class="about-app__img">
             </div>
         </div>
     </div>
@@ -146,7 +159,7 @@ export default class MainPage {
                 <div class="developer__name">
                 Илона
                 </div>
-                <img class="developer__img" src="assets/img/main-page/ilona.png" alt="Илона">
+                <img class="developer__img" src="${IlonaImage}" alt="Илона">
                 <div class="developer__status">
                 Scrum-мастер, разработчик
                 </div>
@@ -163,7 +176,7 @@ export default class MainPage {
                 <div class="developer__name">
                 Дмитрий
                 </div>
-                <img class="developer__img" src="assets/img/main-page/dmitriy.png" alt="Дмитрий">
+                <img class="developer__img" src="${DmitryImage}" alt="Дмитрий">
                 <div class="developer__status">
                 Team-lead, разработчик
                 </div>
@@ -180,7 +193,7 @@ export default class MainPage {
                 <div class="developer__name">
                 Иван
                 </div>
-                <img class="developer__img" src="assets/img/main-page/ivan.png" alt="Иван">
+                <img class="developer__img" src="${IvanImage}" alt="Иван">
                 <div class="developer__status">
                 Разработчик
                 </div>
