@@ -162,6 +162,7 @@ h1 {
 .about-app__wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 .about-app__content {
     // max-width: 493px;
@@ -176,6 +177,7 @@ h1 {
     color: $light-blue;
 }
 .paragraph_about {
+    margin-top: 20px;
     max-width: 420px;
 }
 .btn_about {
