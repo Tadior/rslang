@@ -1,3 +1,29 @@
 .footer {
-    background: red;
+    padding: 45px 0 52px;
+    background: $background-light;
+    &__wrapper {
+        display: flex;
+        align-items: center;
+    }
+}
+.rs-logo {
+    flex: 1 1 auto;
+    text-align: center;
+}
+.rs-logo__link {
+}
+.github {
+}
+.github__link {
+    margin-top: 15px;
+    display: flex;
+    align-items: center;
+    color: #000;
+    transition: all ease .5s;
+    &:hover {
+        color: $button-hover;
+    }
+}
+.github__name {
+    margin-left: 10px;
 }
