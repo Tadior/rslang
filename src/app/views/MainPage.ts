@@ -12,12 +12,33 @@ import DmitryImage from '../../assets/img/main-page/dmitriy.png';
 import IvanImage from '../../assets/img/main-page/ivan.png';
 
 export default class MainPage {
-  createMainPage() {
-    document.querySelector('main').append(this.createProjectSection(), this.createAdvantagesSection(), this.createAboutAppSection(), this.createDevelopersSection());
+  renderMainPage() {
+    document.querySelector('main').append(
+      this.createProjectSection(),
+      this.createAdvantagesSection(),
+      this.createAboutAppSection(),
+      this.createDevelopersSection(),
+    );
   }
 
   private createProjectSection() {
     // Создание секции Project
+
+    // Функция создания кнопок навигации
+    function createButton(class_identificator: string, path: string, category_name: string) {
+      const button = document.createElement('button');
+      button.classList.add('category', class_identificator);
+      button.innerHTML = `
+          <img class="cetegory__img" src="${path}" alt=${category_name}">
+          <div class="pad pad_exercise">${category_name}</div>
+        `;
+      button.addEventListener('click', () => {
+        console.log('Тут должно быть переключение страницы');
+      });
+      return button;
+    }
+    //------------------------------------------
+
     const projectSection = document.createElement('div');
     const container = document.createElement('div');
     container.classList.add('container');
@@ -31,20 +52,6 @@ export default class MainPage {
     projectInfo.innerHTML = `
         <h1>RSLang</h1>
         <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>`;
-    // Функция создания кнопок навигации
-    function createButton(class_identificator: string, path: string, category_name: string) {
-      const button = document.createElement('button');
-      button.classList.add('category', class_identificator);
-      button.innerHTML = `
-        <img class="cetegory__img" src="${path}" alt=${category_name}">
-        <div class="pad pad_exercise">${category_name}</div>
-      `;
-      button.addEventListener('click', () => {
-        console.log('Тут должно быть переключение страницы');
-      });
-      return button;
-    }
-    //------------------------------------------
     const buttons = [
       createButton('category_exercise', exerciseImage, 'Учебник'),
       createButton('category_sprint', sprintImage, 'Спринт'),

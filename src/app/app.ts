@@ -3,8 +3,8 @@ import Footer from './views/Footer';
 import MainPage from './views/MainPage';
 
 const header = new Header();
-header.createHeader();
+header.renderHeader();
 const mainPage = new MainPage();
-mainPage.createMainPage();
+mainPage.renderMainPage();
 const footer = new Footer();
-footer.createFooter();
+footer.renderFooter();

@@ -3,9 +3,14 @@ import RSLogoImage from '../../assets/img/footer/rs-school-logo.svg';
 import githubImage from '../../assets/img/footer/github.svg';
 
 export default class Footer {
-  createFooter() {
+  renderFooter() {
     const footer = document.createElement('footer');
     footer.classList.add('footer');
+    const githubNames: string[] = [
+      'tadior',
+      'ivanpratasevich',
+      'ilonmakh',
+    ];
     footer.innerHTML = `
     <div class="container">
         <div class="footer__wrapper">
@@ -21,24 +26,13 @@ export default class Footer {
                 </a>
             </div>
             <div class="github">
-                <a href="https://github.com/tadior" class="github__link">
-                    <img src="${githubImage}" alt="github Дмитрий">
+            ${githubNames.map((name) => `
+                <a href="https://github.com/${name}" class="github__link">
+                    <img src="${githubImage}" alt="github ${name}">
                     <div class="github__name">
-                        @tadior
+                        @${name}
                     </div>
-                </a>
-                <a href="https://github.com/ivanpratasevich" class="github__link">
-                    <img src="${githubImage}" alt="github Ивана">
-                    <div class="github__name">
-                        @ivanpratasevich
-                    </div>
-                </a>
-                <a href="https://github.com/ilonmakh" class="github__link">
-                    <img src="${githubImage}" alt="github Илоны">
-                    <div class="github__name">
-                        @ilonmakh
-                    </div>
-                </a>
+                </a>`)}
             </div>
         </div>
     </div>

@@ -1,7 +1,7 @@
 import logoImage from '../../assets/img/header/logo.svg';
 
 export default class Header {
-  createHeader() {
+  renderHeader() {
     const header = document.createElement('header');
     header.classList.add('header');
     const container = document.createElement('div');
