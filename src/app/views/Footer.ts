@@ -32,11 +32,11 @@ export default class Footer {
                     <div class="github__name">
                         @${name}
                     </div>
-                </a>`)}
+                </a>`).join('')}
             </div>
         </div>
     </div>
     `;
-    document.querySelector('main').append(footer);
+    document.querySelector('.wrapper').append(footer);
   }
 }

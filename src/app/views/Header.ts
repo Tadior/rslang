@@ -52,6 +52,6 @@ export default class Header {
     headerWrapper.append(authorisationBtn);
     container.append(headerWrapper);
     header.append(container);
-    document.querySelector('main').prepend(header);
+    document.querySelector('.wrapper').prepend(header);
   }
 }

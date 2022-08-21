@@ -39,7 +39,7 @@ export default class MainPage {
     }
     //------------------------------------------
 
-    const projectSection = document.createElement('div');
+    const projectSection = document.createElement('section');
     const container = document.createElement('div');
     container.classList.add('container');
     const projectWrapper = document.createElement('div');

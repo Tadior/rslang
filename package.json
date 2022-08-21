@@ -7,7 +7,8 @@
         "dev": "cross-env NODE_ENV=development webpack --mode development",
         "build": "cross-env NODE_ENV=production webpack --mode production",
         "watch": "cross-env NODE_ENV=development webpack --mode development --watch",
-        "start": "cross-env NODE_ENV=development webpack serve --live-reload --mode development --open"
+        "start": "cross-env NODE_ENV=development webpack serve --live-reload --mode development --open",
+        "lint": "eslint -c .eslintrc.json --ext .ts ."
     },
     "browserslist": "> 0.25%, not dead",
     "keywords": [

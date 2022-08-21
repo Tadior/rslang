@@ -1,0 +1,81 @@
+.tutorial {
+    margin: 58px 0 36px;
+    &__wrapper {
+    }
+    &__navigation {
+        display: flex;
+        align-items: flex-end;
+        margin: 0 17px 0 10px;
+    }
+    &__dictionary {
+        display: flex;
+    }
+    &__links {
+        display: flex;
+    }
+    &__link {
+        padding: 10px 15px;
+        background-color: $light-blue;
+        font-size: 25px;
+        border-radius: 10px 10px 0px 0px;
+        color: $dark-blue;
+        margin-left: 10px;
+    }
+    &__dictionary {
+        flex: 1 1 auto;
+        display: flex;
+        justify-content: center;
+    }
+    &__games {
+        display: flex;
+    }   
+    &__body {
+    }
+    &_light-blue {
+        background-color: rgba($light-blue, .3);
+    }
+    &_pink {
+        background-color: rgba($pink, .3);
+    }
+    &_yellow {
+        background-color: rgba($yellow, .3);
+    }
+    &_light-purpule {
+        background-color: rgba($purpule, .3);
+    }
+    &_aquamarine {
+        background-color: rgba($aquamarine, .3);
+    }
+    &_purple {
+        background-color: rgba(#F156FF, .3);
+    }
+    &_green {
+        background-color: rgba(#09F53D, .3);
+    }
+}
+.tutorial-game {
+    padding: 4px 6px;
+    border: solid rgba($button-hover, .3);
+    border-radius: 10px 10px 0px 0px;
+    border-width: 3px 3px 0px 3px;
+    background: transparent;
+    margin: 0 5px;
+    &__image {
+        &_audio {
+            max-width: 67px;
+            max-height: 46px;
+        }
+        &_sprint {
+            max-width: 70px;
+            max-height: 46px;
+        }
+    }
+}
+.tabs__block {
+    padding: 40px 50px 50px;
+    display: none;
+    border-radius: 20px;
+    &:target{
+        display: block;
+    }
+}
