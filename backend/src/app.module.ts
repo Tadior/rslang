@@ -8,6 +8,8 @@ import { WordsModule } from './words/words.module';
 import { UsersController } from './users/users.controller';
 import { UsersModule } from './users/users.module';
 import { UsersService } from './users/users.service';
+import { UsersWordsController } from './users-words/users-words.controller';
+import { UsersWordsModule } from './users-words/users-words.module';
 
 @Module({
   imports: [
@@ -15,6 +17,7 @@ import { UsersService } from './users/users.service';
     TypeOrmModule.forRoot(config),
     WordsModule,
     UsersModule,
+    UsersWordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
