@@ -25,12 +25,17 @@ export default class MainPage {
     // Создание секции Project
 
     // Функция создания кнопок навигации
-    function createButton(class_identificator: string, path: string, category_name: string) {
+    function createButton(
+      class_identificator: string,
+      path: string,
+      category_name: string,
+      class_hoverIdentificator:string,
+    ) {
       const button = document.createElement('button');
       button.classList.add('category', class_identificator);
       button.innerHTML = `
           <img class="cetegory__img" src="${path}" alt=${category_name}">
-          <div class="pad pad_exercise">${category_name}</div>
+          <div class="pad ${class_hoverIdentificator}">${category_name}</div>
         `;
       button.addEventListener('click', () => {
         console.log('Тут должно быть переключение страницы');
@@ -50,18 +55,20 @@ export default class MainPage {
     const projectInfo = document.createElement('div');
     projectInfo.classList.add('project-info');
     projectInfo.innerHTML = `
-        <h1>RSLang</h1>
-        <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>`;
+      <h1>RSLang</h1>
+      <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>
+      `;
     const buttons = [
-      createButton('category_exercise', exerciseImage, 'Учебник'),
-      createButton('category_sprint', sprintImage, 'Спринт'),
-      createButton('category_audio', audioImage, 'Аудиовызов'),
-      createButton('category_statistic', statisticImage, 'Статистика'),
+      createButton('category_exercise', exerciseImage, 'Учебник', 'pad_exercise'),
+      createButton('category_sprint', sprintImage, 'Спринт', 'pad_sprint'),
+      createButton('category_audio', audioImage, 'Аудиовызов', 'pad_audio'),
+      createButton('category_statistic', statisticImage, 'Статистика', 'pad_statistic'),
     ];
     buttons.forEach((button) => {
       projectButtons.append(button);
     });
-    const projectCategories = document.createElement('div'); projectCategories.classList.add('project-categories');
+    const projectCategories = document.createElement('div');
+    projectCategories.classList.add('project-categories');
     const startLearnButton = document.createElement('button');
     startLearnButton.classList.add('btn', 'project__btn');
     startLearnButton.textContent = 'Начать обучение';

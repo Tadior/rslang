@@ -64,24 +64,24 @@ export default class Card {
     cardSentences.classList.add('card-sentences');
     cardSentences.innerHTML = `
     <div class="card-sentence">
-        <div class="sentence__original">
+        <div class="card-sentence__original">
             ${this.sentenceExplaining}
         </div>
-        <div class="sentence__translate">
+        <div class="card-sentence__translate">
             ${this.sentenceExplainingTranslation}
         </div>
     </div>
     <div class="card-sentence">
-        <div class="sentence__original">
+        <div class="card-sentence__original">
             ${this.sentenceExample}
         </div>
-        <div class="sentence__translate">
+        <div class="card-sentence__translate">
             ${this.sentenceExampleTranslation}
         </div>
     </div>
     `;
     const cardButtons = document.createElement('div');
-    cardButtons.classList.add('card__buttons');
+    cardButtons.classList.add('card-sentence__buttons');
     const buttonLearn = document.createElement('button');
     buttonLearn.classList.add('btn', 'btn_bordered', 'btn_card', 'btn_bold');
     buttonLearn.textContent = 'Учить';

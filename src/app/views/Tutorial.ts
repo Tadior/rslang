@@ -1,18 +1,23 @@
 import audioImage from '../../assets/img/main-page/audio.png';
 import gamepadImage from '../../assets/img/main-page/gamepad.png';
+import arrowImage from '../../assets/img/icons/arrow.svg';
 
 export default class Tutorial {
   renderTutorialPage() {
     const tutorialSection = document.createElement('section');
     tutorialSection.classList.add('tutorial');
+    tutorialSection.id = 'tutorial';
     const container = document.createElement('div');
     container.classList.add('container');
     const tutorialWrapper = document.createElement('div');
     tutorialWrapper.classList.add('tutorial__wrapper');
-    tutorialWrapper.append(this.createTutorialNavigation(), this.createTutorialBody());
+    tutorialWrapper.append(
+      this.createTutorialNavigation(),
+      this.createTutorialBody(),
+      this.createArrow(),
+    );
     container.append(tutorialWrapper);
     tutorialSection.append(container);
-    console.log(tutorialSection);
     document.querySelector('.main').append(tutorialSection);
   }
 
@@ -84,5 +89,15 @@ export default class Tutorial {
     tab.classList.add('tabs__block', classModificator);
     tab.id = id;
     return tab;
+  }
+
+  private createArrow(): HTMLAnchorElement {
+    const arrowLink = document.createElement('a');
+    arrowLink.classList.add('arrow-link');
+    arrowLink.href = '#tutorial';
+    arrowLink.innerHTML = `
+    <img src='${arrowImage}'>
+    `;
+    return arrowLink;
   }
 }

@@ -2,7 +2,7 @@ export default class Pagination {
   renderPagination() {
     function createPaginationButton(pageValue: number, isActive = false) {
       const pageClasses: string[] = ['pagination__btn'];
-      if (isActive === true) {
+      if (isActive) {
         pageClasses.push('pagination__btn_active');
       }
       const button = document.createElement('button');
