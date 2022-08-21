@@ -17,6 +17,6 @@ export default class Page404 {
         <div>
       </div>
     `;
-    document.querySelector('main').append(page404);
+    (<HTMLElement>document.querySelector('main')).append(page404);
   }
 }

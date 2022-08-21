@@ -1,0 +1,140 @@
+.statistic {
+  margin: 40px 0 60px;
+  &__today {
+    margin-bottom: 40px;
+  }
+}
+
+.title_today,
+.title_all-time {
+  text-align: center;
+  margin-bottom: 50px;
+}
+
+.today__info {
+  display: flex;
+  gap: 40px;
+}
+
+.today__common {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.today__words,
+.today__accuracy,
+.today__minigame {
+    width: 379px;
+}
+
+.today__words,
+.today__accuracy,
+.today__minigame,
+.chart__days,
+.chart__words {
+  background: #FAFAFA;
+  box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
+  border-radius: 40px;
+}
+
+.title_accuracy,
+.title_minigame,
+.title_chart {
+  font-size: 34px;
+  margin-top: 10px;
+}
+
+.today__words {
+  height: 170px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  .words__number {
+    font-size: 100px;
+    color: $light-blue;
+    font-family: 'Jost-Bold', serif;
+  }
+
+  .words__text {
+    font-size: 32px;
+    font-family: 'Jost-Medium', serif;
+    line-height: 43.2px;
+
+    span {
+      font-style: italic;
+      color: $grey;
+    }
+  }
+}
+
+.today__accuracy {
+  height: 380px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+
+  .title_accuracy {
+    text-align: center;
+  }
+
+  .accuracy__chart {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+.today__minigame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 580px;
+  gap: 10px;
+}
+
+.minigame {
+  &__words,
+  &__accuracy,
+  &__row {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  &__number {
+    font-size: 40px;
+    color: $light-blue;
+    font-family: 'Jost-Bold', serif;
+  }
+
+  &__text {
+    font-size: 24px;
+    font-weight: 500;
+    font-family: 'Jost-Medium', serif;
+  }
+
+  &__img {
+    margin-top: 20px;
+    img {
+      height: 120px;
+    }
+  }
+}
+
+.all-time__charts {
+  display: flex;
+  gap: 40px;
+
+  .chart__days,
+  .chart__words {
+    width: 600px;
+    height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+}
