@@ -1,0 +1,23 @@
+.page-404 {
+  display: flex;
+  margin: auto auto;
+  position: absolute;
+  align-items: center;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  
+  &__wrapper {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+  }
+
+  &__info {
+    width: 530px;
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+  }
+}
