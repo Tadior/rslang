@@ -37,6 +37,6 @@ export default class Footer {
         </div>
     </div>
     `;
-    document.querySelector('main').append(footer);
+    document.querySelector('.wrapper').append(footer);
   }
 }
