@@ -6,7 +6,6 @@ import {
   ParseUUIDPipe,
   Put,
 } from '@nestjs/common';
-import { UpdateUserStatisticsDto } from 'src/users-statistic/dto/update-user-statisctic.dto';
 import { UpdateUserSettingsDto } from './dto/update-user-settings.dto';
 import { UsersSettingsService } from './users-settings.service';
 

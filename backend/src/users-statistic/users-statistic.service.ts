@@ -1,6 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UpdateUserWordsDto } from 'src/users-words/dto/update-user-words.dto';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { UpdateUserStatisticsDto } from './dto/update-user-statisctic.dto';
 import { UserStatisticEntity } from './entities/users-statistic.entity';
@@ -10,9 +15,12 @@ export class UsersStatisticService {
   constructor(
     @InjectRepository(UserStatisticEntity)
     private readonly userStatisticRepository: Repository<UserStatisticEntity>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
   ) {}
 
   async getUserStatistics(userId: string) {
+    await this.usersService.getUserById(userId);
     const userStatistics = await this.userStatisticRepository.find({
       where: { userId: userId },
     });
@@ -20,6 +28,7 @@ export class UsersStatisticService {
   }
 
   async getUserStatisticsById(userId: string, fullData?: boolean) {
+    await this.usersService.getUserById(userId);
     const userStatistics = await this.userStatisticRepository.findOne({
       where: { userId: userId },
     });
@@ -33,6 +42,7 @@ export class UsersStatisticService {
     userId: string,
     updateUserStatisticsDto: UpdateUserStatisticsDto,
   ) {
+    await this.usersService.getUserById(userId);
     const { learnedWords, optional } = updateUserStatisticsDto;
     const updatedUserStatistics = {
       userId: userId,

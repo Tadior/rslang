@@ -1,6 +1,8 @@
 import {
+  forwardRef,
   HttpException,
   HttpStatus,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -10,15 +12,19 @@ import { CreateUserWordsDto } from './dto/create-user-words.dto';
 import { UserWordsEntity } from './entities/users-words.entity';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserWordsDto } from './dto/update-user-words.dto';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class UsersWordsService {
   constructor(
     @InjectRepository(UserWordsEntity)
     private readonly userWordsRepository: Repository<UserWordsEntity>,
+    @Inject(forwardRef(() => UsersService))
+    private readonly usersService: UsersService,
   ) {}
 
   async getUserWords(userId: string) {
+    await this.usersService.getUserById(userId);
     const userWords = await this.userWordsRepository.find({
       where: { userId: userId },
     });
@@ -33,6 +39,7 @@ export class UsersWordsService {
     userId: string,
     createUserWordsDto: CreateUserWordsDto,
   ) {
+    await this.usersService.getUserById(userId);
     const newUserWord = {
       id: uuidv4(),
       wordId: id,
@@ -65,6 +72,7 @@ export class UsersWordsService {
   }
 
   async getUserWordsById(userId: string, wordId: string, fullData?: boolean) {
+    await this.usersService.getUserById(userId);
     const userWords = await this.userWordsRepository.findOne({
       where: { userId: userId, wordId: wordId },
     });
@@ -79,6 +87,7 @@ export class UsersWordsService {
     userId: string,
     updateUserWordsDto: UpdateUserWordsDto,
   ) {
+    await this.usersService.getUserById(userId);
     const userWords = await this.getUserWordsById(userId, wordId, true);
     if (!userWords) {
       throw new NotFoundException('User or user word not found!');
@@ -98,6 +107,7 @@ export class UsersWordsService {
   }
 
   async deleteUserWords(wordId: string, userId: string) {
+    await this.usersService.getUserById(userId);
     const userWords = await this.getUserWordsById(userId, wordId, true);
     if (userWords) {
       await this.userWordsRepository.delete(userWords);
