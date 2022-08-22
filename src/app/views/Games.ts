@@ -1,25 +1,24 @@
-import soundIcon from '../../assets/img/sprint/sound_icon.png';
-import fullscreenIcon from '../../assets/img/sprint/fullscreen_icon.png';
 import robot from '../../assets/img/sprint/sprint_robot.png';
+import listenIcon from '../../assets/img/sprint/listen_icon.png';
 
-export default class SprintPage {
-  renderSprintPage() {
+export default class Games {
+  renderSprintGame():void {
     const sprintPage = document.createElement('section');
-    sprintPage.classList.add('sprint');
+    sprintPage.classList.add('game');
     sprintPage.innerHTML = `
       <div class='container'>
-        <div class='sprint__wrapper'>
-          <div class='sprint__header'>
-            <h4 class='title title_sprint'>Спринт</h4>
-            <div class='header__icons'>
-              <div class='minigame__sound'>
-                <img src='${soundIcon}' alt='sound-icon'>
-              </div>
-              <div class='minigame__fullscreen'>
-                <img src='${fullscreenIcon}' alt='fullscreen-icon'>
-              </div>
-            </div>
+        <div class='game-header'>
+          <h2 class='title title_corner'>Cпринт</h2>
+          <div class='game-header__buttons'>
+            <button class='game-header__btn btn__audio'>
+              <img src='${MelodyImage}' alt='sound-icon'>
+            </button>
+            <button class='game-header__btn btn__window'>
+              <img src='${WindowImage}' alt='window-icon'>
+            </button>
           </div>
+        </div>
+        <div class='game__wrapper'>
           <div class='sprint__interface'>
             <div class='sprint__points'>
               <div class='points__current'>10</div>
@@ -52,11 +51,9 @@ export default class SprintPage {
     `;
     (<HTMLElement>document.querySelector('main')).append(sprintPage);
     this.addSprintTimer();
-    const footer = document.querySelector('footer');
-    footer.parentElement.remove();
   }
 
-  addSprintTimer() {
+  addSprintTimer():void {
     const timer = document.querySelector('.sprint__timer');
     const timerHTML = `
       <div class='timer__line'></div>
@@ -126,5 +123,55 @@ export default class SprintPage {
       </div>
     `;
     timer.insertAdjacentHTML('afterbegin', timerHTML);
+  }
+
+  renderGameResults(game: string, mistakes: any[], correct: any[]):void {
+    const main = document.querySelector('main');
+    const gameResult: HTMLElement = document.createElement('section');
+    gameResult.classList.add('game-result');
+    gameResult.innerHTML = `
+      <div class='container'>
+        <h2 class='title title_corner'>${game}</h2>
+        <div class='result__wrapper'>
+          <div class='result__console'>
+            <h5 class='result__points'>Вы набрали 60 баллов!</h5>
+            <h5 class='result__row'>Длина серии: 4</h5>
+            <div class='result__details'>
+              <div class='result__mistakes'>
+                <h6 class='title_mistakes'>Ошибки: 1</h6>
+                ${mistakes.map((mistake) => `
+                  <div class='mistakes__item'>
+                    <div class='item__listen'>
+                      <audio src='${mistake.sound}'></audio>
+                      <img src='${listenIcon}' alt='listen_icon'>
+                    </div>
+                    <div class='item__english'>${mistake.english}</div>
+                    <div class='item__russian'>${mistake.russian}</div>
+                  </div>
+                `).join('')}
+              </div>
+              <div class='result__correct'>
+                <h6 class='title_correct'>Изученные слова: 4</h6>
+                ${correct.map((word) => `
+                  <div class='correct__item'>
+                    <div class='item__listen'>
+                      <audio src='${word.sound}'></audio>
+                      <img src='${listenIcon}' alt='listen_icon'>
+                    </div>
+                    <div class='item__english'>${word.english}</div>
+                    <div class='item__russian'>${word.russian}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+            <div class='result__buttons'>
+              <button class='btn btn_bordered btn__home'>На главную</button>
+              <button class='btn btn__new-game'>Новая игра</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    main.append(gameResult);
   }
 }

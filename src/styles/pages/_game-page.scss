@@ -1,10 +1,4 @@
 .sprint {
-  background-color: rgba(255, 218, 146, 0.5);
-  padding-bottom: 30px;
-  height: max-content;
-  display: flex;
-  align-items: center;
-
   &__header {
     display: flex;
     justify-content: space-between;
@@ -217,7 +211,7 @@
       text-align: center;
       overflow: hidden;
       z-index: 5;
-      border: 1px solid rgba(255, 218, 146, 0.5);
+      border: 1px solid rgba($yellow, .5);;
 
       .timer__counter {
         animation: timer 60s steps(59, end) forwards;
