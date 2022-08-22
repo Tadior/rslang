@@ -12,6 +12,8 @@ import { UsersWordsController } from './users-words/users-words.controller';
 import { UsersWordsModule } from './users-words/users-words.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { UsersStatisticController } from './users-statistic/users-statistic.controller';
+import { UsersStatisticModule } from './users-statistic/users-statistic.module';
 
 @Module({
   imports: [
@@ -20,6 +22,7 @@ import { join } from 'path';
     WordsModule,
     UsersModule,
     UsersWordsModule,
+    UsersStatisticModule,
   ],
   controllers: [AppController],
   providers: [AppService],

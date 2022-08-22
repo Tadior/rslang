@@ -10,8 +10,9 @@ const PORT = process.env.PORT || 4444;
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.useStaticAssets(join(__dirname, '..', 'src', 'files'), { prefix: '/files' });
-  console.log(join(__dirname, '..', 'files'));
+  app.useStaticAssets(join(__dirname, '..', 'src', 'files'), {
+    prefix: '/files',
+  });
   await app.listen(PORT, () => {
     console.log(`Start server on the ${PORT} port!`);
   });
