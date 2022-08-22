@@ -60,5 +60,11 @@
     }
     &__buttons {
         margin-top: 40px;
+
+        .btn_difficulty {
+            width: 150px;
+            height: 60px;
+            padding: 0;
+        }
     }
 }

@@ -125,7 +125,7 @@ export default class Games {
         </div>
       </div>
     `;
-    timer.insertAdjacentHTML('afterbegin', timerHTML);
+    timer!.insertAdjacentHTML('afterbegin', timerHTML);
   }
 
   renderGameResults(game: string, mistakes: any[], correct: any[]):void {
@@ -175,10 +175,10 @@ export default class Games {
         </div>
       </div>
     `;
-    main.append(gameResult);
-    }
-    
-    renderDifficultMenu() {
+    main!.append(gameResult);
+  }
+
+  renderDifficultMenu():void {
     function createDifficultButton(text: string, class_modificator: string): HTMLButtonElement {
       const button = document.createElement('button');
       button.classList.add('difficulty__level', `${class_modificator}`);
@@ -218,10 +218,10 @@ export default class Games {
     difficultyWrapper.append(difficultyTopic, difficultyLevels, difficultyButtons);
     container.append(title, difficultyWrapper);
     difficultSection.append(container);
-    document.querySelector('.main').append(difficultSection);
+    document.querySelector('.main')!.append(difficultSection);
   }
 
-  renderAudioGame() {
+  renderAudioGame():void {
     const gameSection = document.createElement('section');
     gameSection.classList.add('game');
     const container = document.createElement('div');
@@ -263,10 +263,10 @@ export default class Games {
     gameWrapper.append(gameAudioButton, answersExamples, gameButton);
     container.append(gameHeader, gameWrapper);
     gameSection.append(container);
-    document.querySelector('main').append(gameSection);
+    document.querySelector('main')!.append(gameSection);
   }
 
-  createAudioAnswers(answers: string[]) {
+  createAudioAnswers(answers: string[]):HTMLButtonElement[] {
     return answers.map((value, index) => {
       const button = document.createElement('button');
       button.classList.add('audio-call__answer');
@@ -274,5 +274,4 @@ export default class Games {
       return button;
     });
   }
- }
-    
+}
