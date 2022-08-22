@@ -1,0 +1,59 @@
+.game {
+    background: rgba($yellow, .5);
+    padding: 25px 0 40px 0;
+    &__wrapper {
+        text-align: center;
+        margin-top: 63px;
+    }
+    &__audio-button {
+        background: #fff;
+        border-radius: 50%;
+        padding: 40px;
+        border: 3px solid #fff;
+        transition: all ease .5s;
+        &:hover {
+            transform: translateY(-10px);
+            border-color: $purpule;
+        }
+    }
+    &__answers {
+        margin-top: 150px;
+        display: flex;
+        justify-content: center;
+    }
+    &__answer {
+        flex: 1 1 20%;
+        margin: 0 10px;
+        padding: 20px;
+        background-color: rgba($purpule, .3);
+        border-radius: 10px;
+        transition: all ease .5s;
+        border: 3px solid rgba($purpule, 0);
+        font-size: 24px;
+        color: $dark-blue;
+        &:hover {
+            border-color: $purpule;
+        }
+    }
+}
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    &__buttons {
+        display: flex;
+        align-items: center;
+    }
+    &__btn {
+        background: transparent;
+        transition: all ease .5s;
+        &:hover {
+            transform: translateY(-5px);
+        }
+    }
+}
+.btn__audio {
+    margin: 0 25px 0 0;
+}
+.btn_call {
+    margin-top: 100px;
+}
