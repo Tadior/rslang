@@ -2,6 +2,7 @@
     border-radius: 10px;
     transition: all ease .5s;
     color: #fff;
+    font-family: 'Jost-Medium',serif;
     background: $light-blue;
     padding: 18px 50px;
     &_bordered {
@@ -13,9 +14,17 @@
             color: #fff;
         }
     }
+    &_bold {
+        color: $dark-blue;
+    }
     &_navigation {
         padding: 9px 36px;
         color: $dark-blue;
+    }
+    &_card {
+        margin: 0 5px;
+        font-size: 20px;
+        padding: 9px 30px;
     }
     &:hover {
         background: $button-hover;
