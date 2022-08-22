@@ -73,17 +73,17 @@ export default class Games {
     const gameWrapper = document.createElement('div');
     gameWrapper.classList.add('game__wrapper');
     const gameAudioButton = document.createElement('button');
-    gameAudioButton.classList.add('game__audio-button');
+    gameAudioButton.classList.add('audio-call-button');
     const gameAudioImage = document.createElement('img');
-    gameAudioImage.classList.add('game__audio-image');
+    gameAudioImage.classList.add('audio-call-image');
     gameAudioImage.src = AudioImage;
     gameAudioButton.append(gameAudioImage);
     const answersExamples = document.createElement('div');
-    answersExamples.classList.add('game__answers');
+    answersExamples.classList.add('audio-call__answers');
     const answers = ['завтрак', 'солнце', 'злодей', 'семья', 'усталость'];
     answersExamples.append(...this.createAudioAnswers(answers));
     const gameButton = document.createElement('button');
-    gameButton.classList.add('btn', 'btn_call');
+    gameButton.classList.add('btn', 'audio-call__btn');
     gameButton.textContent = 'Я не знаю :(';
     gameWrapper.append(gameAudioButton, answersExamples, gameButton);
     container.append(gameHeader, gameWrapper);
@@ -94,7 +94,7 @@ export default class Games {
   createAudioAnswers(answers: string[]) {
     return answers.map((value, index) => {
       const button = document.createElement('button');
-      button.classList.add('game__answer');
+      button.classList.add('audio-call__answer');
       button.textContent = `${index + 1}.${value}`;
       return button;
     });
