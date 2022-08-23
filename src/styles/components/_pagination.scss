@@ -1,0 +1,26 @@
+.pagination {
+    margin-top: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-family: "Jost-Medium",serif;
+    font-size: 24px;
+}
+.pagination__btn {
+    padding: 8px;
+    width: 60px;
+    background: transparent;
+    transition: all ease .5s;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    margin: 0 5px;
+    &:hover {
+        border: 1px solid $button-hover;
+    }
+}
+.pagination__btn_active {
+    border: 1px solid $button-hover;
+}
+.pagination__points {
+    margin: 0 5px;
+}

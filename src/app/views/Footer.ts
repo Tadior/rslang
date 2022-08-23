@@ -6,11 +6,7 @@ export default class Footer {
   renderFooter() {
     const footer = document.createElement('footer');
     footer.classList.add('footer');
-    const githubNames: string[] = [
-      'tadior',
-      'ivanpratasevich',
-      'ilonmakh',
-    ];
+    const githubNames: string[] = ['tadior', 'ivanpratasevich', 'ilonmakh'];
     footer.innerHTML = `
     <div class="container">
         <div class="footer__wrapper">
@@ -32,11 +28,11 @@ export default class Footer {
                     <div class="github__name">
                         @${name}
                     </div>
-                </a>`)}
+                </a>`).join('')}
             </div>
         </div>
     </div>
     `;
-    document.querySelector('main').append(footer);
+    document.querySelector('.wrapper').append(footer);
   }
 }

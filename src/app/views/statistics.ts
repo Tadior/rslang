@@ -4,8 +4,8 @@ import sprintImage from '../../assets/img/main-page/gamepad.png';
 import audioImage from '../../assets/img/main-page/audio.png';
 
 export default class StatisticPage {
-  renderStatistic() {
-    const statistic = document.createElement('section');
+  renderStatistic():void {
+    const statistic: HTMLElement = document.createElement('section');
     statistic.classList.add('statistic');
     statistic.innerHTML = `
       <div class='container'>
@@ -85,11 +85,11 @@ export default class StatisticPage {
     this.createLineChart();
   }
 
-  createDoughnutChart() {
+  createDoughnutChart():void {
     const datapointsDoughnut = [87, 13];
     const counter = {
       id: 'counter',
-      beforeDraw(chart: Chart, args: any[], options: ChartPluginsOptions) {
+      beforeDraw(chart: Chart, args: {}, options: any) {
         const { ctx, chartArea: { width, height } } = chart;
         ctx.save();
         ctx.fillStyle = options.fontColor;
@@ -101,7 +101,7 @@ export default class StatisticPage {
 
     const dataDoughnut = {
       datasets: [{
-        label: '# of Votes',
+        label: 'Процент точности',
         data: datapointsDoughnut,
         backgroundColor: [
           '#5685FF',
@@ -146,7 +146,7 @@ export default class StatisticPage {
     );
   }
 
-  createBarChart() {
+  createBarChart(): void {
     const labels = ['01.08', '02.08', '03.08', '04.08', '05.08', '06.08', '07.08'];
     const dataBar = {
       labels,
@@ -186,14 +186,13 @@ export default class StatisticPage {
     );
   }
 
-  createLineChart() {
+  createLineChart():void {
     const labels = ['01.08', '02.08', '03.08', '04.08', '05.08', '06.08', '07.08'];
     const dataLine = {
       labels,
       datasets: [{
         label: 'Всего слов изучено',
         data: [45, 105, 120, 144, 182, 187, 202],
-        lineTension: 0,
         fill: false,
         borderColor: '#FF9292',
         backgroundColor: 'transparent',
