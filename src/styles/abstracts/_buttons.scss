@@ -21,11 +21,17 @@
         padding: 9px 36px;
         color: $dark-blue;
     }
+    &_difficulty {
+        padding: 17px 33px;
+        margin: 0 25px;
+     }
+        
     &_card {
         margin: 0 5px;
         font-size: 20px;
         padding: 9px 30px;
-    }
+     }
+        
     &:hover {
         background: $button-hover;
         box-shadow: 0px 8px 24px rgba(86, 133, 255, 0.25);

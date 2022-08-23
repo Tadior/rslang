@@ -1,0 +1,70 @@
+.difficulty {
+    padding-top: 25px;
+    background: rgba($yellow, .5);
+    height: calc(100vh - 114px);
+    &__wrapper {
+        padding: 30px 0 56px;
+        margin-top: 100px;
+        background: #fff;
+        box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
+        border-radius: 40px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    &__topic {
+        color: $dark-blue;
+        font-size: 30px;
+        font-family: 'Jost-Medium',serif;
+    }
+    &__levels {
+        margin-top: 50px;
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        grid-column-gap: 50px
+    }
+    &__level {
+        padding: 10px;
+        font-size: 41px;
+        color: $dark-blue;
+        border-radius: 10px;
+        border: 3px solid rgba(#000, .3);
+        transition: all ease .5s;
+        &:hover {
+            border-color: rgba(#000, .3);
+        }
+    }
+    &__level_blue {
+        background-color: rgba($light-blue, .3);
+        border-color: rgba($light-blue, .0);
+    }
+    &__level_pink {
+        background-color: rgba($pink, .3);
+        border-color: rgba($pink, .0);
+    }
+    &__level_yellow {
+        background-color: rgba($yellow, .3);
+        border-color: rgba($yellow, .0)
+    }
+    &__level_light-purpule {
+        background-color: rgba($purpule, .3);
+        border-color: rgba($purpule, .0);
+    }
+    &__level_aquamarine {
+        background-color: rgba($aquamarine, .3);
+        border-color: rgba($aquamarine, .0);
+    }
+    &__level_purple {
+        background-color: rgba($light-purple, .3);
+        border-color: rgba($light-purple, .0);
+    }
+    &__buttons {
+        margin-top: 40px;
+
+        .btn_difficulty {
+            width: 150px;
+            height: 60px;
+            padding: 0;
+        }
+    }
+}
