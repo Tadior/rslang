@@ -13,6 +13,7 @@ async function bootstrap() {
   app.useStaticAssets(join(__dirname, '..', 'src', 'files'), {
     prefix: '/files',
   });
+  app.enableCors();
   await app.listen(PORT, () => {
     console.log(`Start server on the ${PORT} port!`);
   });
