@@ -9,6 +9,7 @@ import { UsersModule } from './users/users.module';
 import { UsersWordsModule } from './users-words/users-words.module';
 import { UsersStatisticModule } from './users-statistic/users-statistic.module';
 import { UsersSettingsModule } from './users-settings/users-settings.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersSettingsModule } from './users-settings/users-settings.module';
     UsersWordsModule,
     UsersStatisticModule,
     UsersSettingsModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

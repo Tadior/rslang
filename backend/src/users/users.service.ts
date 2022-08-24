@@ -80,4 +80,11 @@ export class UsersService {
       await this.userRepository.delete(id);
     }
   }
+
+  async getUserByLoginAndPassword(email: string, password: string) {
+    const user = await this.userRepository.findOne({
+      where: { email: email, password: password },
+    });
+    return user;
+  }
 }
