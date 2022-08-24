@@ -24,10 +24,10 @@ export default class Games {
         <div class='game__wrapper'>
           <div class='sprint__interface'>
             <div class='sprint__points'>
-              <div class='points__current'>10</div>
+              <div class='points__current'>0</div>
               <div class='points__category'>+ 10 баллов</div>
               <div class='points__row'>
-                <div class='row__cube_active'></div>
+                <div class='row__cube'></div>
                 <div class='row__cube'></div>
                 <div class='row__cube'></div>
               </div>
