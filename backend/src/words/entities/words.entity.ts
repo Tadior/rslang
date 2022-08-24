@@ -39,13 +39,13 @@ export class WordsEntity {
   __v: number;
 
   @Column()
-  wordTranslate: string;
+  textExampleTranslate: string;
 
   @Column()
   textMeaningTranslate: string;
 
   @Column()
-  textExampleTranslate: string;
+  wordTranslate: string;
 
   toResponse() {
     const {
