@@ -1,5 +1,5 @@
 import {
-  Word, User, UpdateUser, UserWord, UserStatistics, Settings,
+  Word, User, UpdateUser, UserWord, UserStatistics, Settings, SignInResponse,
 } from '../../types/types';
 
 export default class Api {
@@ -117,6 +117,17 @@ export default class Api {
     : Promise<Settings> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.userId}/settings`, {
       method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+      body: JSON.stringify(bodyObj),
+    });
+    return request.json();
+  }
+
+  async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
+    const request = await fetch(`${this.baseUrl}signin`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
