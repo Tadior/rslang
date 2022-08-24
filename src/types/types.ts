@@ -33,7 +33,14 @@ export interface UserStatistics {
   optional?: {};
 }
 export interface Settings {
-  userId: string,
-  wordsPerDay: number,
-  optional?: {}
+  userId: string;
+  wordsPerDay: number;
+  optional?: {};
+}
+export interface SignInResponse {
+  message: string;
+  token: string;
+  refreshToken?: string;
+  userId: string;
+  name: string;
 }
