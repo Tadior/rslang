@@ -43,7 +43,6 @@ const optimization = () => {
                 },
               ],
             ],
-
           },
         },
       }),
@@ -135,6 +134,13 @@ module.exports = {
         },
       },
       {
+        test: /\.(mp3)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'sounds/[name][ext]',
+        },
+      },
+      {
         test: /\.(ttf|woff|woff2|eot)$/,
         type: 'asset/resource',
         generator: {
@@ -157,10 +163,7 @@ module.exports = {
         exclude: /node_modules/, // Убираем папку node__modules из поиска для компиляциии
         loader: 'babel-loader',
         options: {
-          presets: [
-            '@babel/preset-env',
-            '@babel/preset-typescript',
-          ],
+          presets: ['@babel/preset-env', '@babel/preset-typescript'],
         },
       },
     ],
