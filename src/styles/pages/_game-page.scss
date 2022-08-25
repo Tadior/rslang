@@ -5,6 +5,10 @@
         text-align: center;
         margin-top: 63px;
     }
+
+    &:fullscreen::backdrop{
+      background-color: #ffff;
+  }
 }
 .audio-call {
     &-button {
@@ -58,6 +62,11 @@
 }
 .btn__audio {
     margin: 0 25px 0 0;
+    width:60px;
+
+    img {
+      width: 60px;
+    }
 }
 
 .sprint {

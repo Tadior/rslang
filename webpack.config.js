@@ -135,6 +135,13 @@ module.exports = {
         },
       },
       {
+        test: /\.(mp3|wav)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'sounds/[name][ext]',
+        },
+      },
+      {
         test: /\.(ttf|woff|woff2|eot)$/,
         type: 'asset/resource',
         generator: {
