@@ -1,6 +1,8 @@
 import audioImage from '../../assets/img/main-page/audio.png';
 import gamepadImage from '../../assets/img/main-page/gamepad.png';
 import arrowImage from '../../assets/img/icons/arrow.svg';
+import Pagination from './Pagination';
+import TutorialControllers from '../controllers/TutorialControllers';
 
 export default class Tutorial {
   renderTutorialPage() {
@@ -19,13 +21,27 @@ export default class Tutorial {
     container.append(tutorialWrapper);
     tutorialSection.append(container);
     document.querySelector('.main').append(tutorialSection);
+    const pagination = new Pagination();
+    pagination.renderPagination();
+    const firstTabContainer = document.getElementById('tab_0');
+    const tutorialControllers = new TutorialControllers();
+    tutorialControllers.renderCards('0', firstTabContainer);
   }
 
   private createTutorialNavigation(): HTMLDivElement {
-    function createLink(name:string, id: string, classModificator: string): HTMLAnchorElement {
-      const tutorialLink = document.createElement('a');
+    function createLink(
+      name:string,
+      id: string,
+      group: string,
+      classModificator: string,
+    ): HTMLButtonElement {
+      const tutorialLink = document.createElement('button');
       tutorialLink.classList.add('tutorial__link', classModificator);
-      tutorialLink.href = `#${id}`;
+      if (group === 'tab_0') {
+        tutorialLink.classList.add('tutorial__link_active');
+      }
+      tutorialLink.id = `${id}`;
+      tutorialLink.dataset.group = group.toString();
       tutorialLink.textContent = name;
       return tutorialLink;
     }
@@ -34,18 +50,18 @@ export default class Tutorial {
     const tutorialLinks = document.createElement('div');
     tutorialLinks.classList.add('tutorial__links');
     tutorialLinks.append(
-      createLink('A1', 'tab_01', 'tutorial_light-blue'),
-      createLink('A2', 'tab_02', 'tutorial_pink'),
-      createLink('B1', 'tab_03', 'tutorial_yellow'),
-      createLink('B2', 'tab_04', 'tutorial_light-purpule'),
-      createLink('C1', 'tab_05', 'tutorial_aquamarine'),
-      createLink('C2', 'tab_06', 'tutorial_purple'),
+      createLink('A1', 'nav_tab_1', 'tab_0', 'tutorial_light-blue'),
+      createLink('A2', 'nav_tab_1', 'tab_1', 'tutorial_pink'),
+      createLink('B1', 'nav_tab_1', 'tab_2', 'tutorial_yellow'),
+      createLink('B2', 'nav_tab_1', 'tab_3', 'tutorial_light-purpule'),
+      createLink('C1', 'nav_tab_1', 'tab_4', 'tutorial_aquamarine'),
+      createLink('C2', 'nav_tab_1', 'tab_5', 'tutorial_purple'),
     );
 
     const tutorialDictionary = document.createElement('div');
     tutorialDictionary.classList.add('tutorial__dictionary');
     tutorialDictionary.append(
-      createLink('Мой словарь', 'myVocabulary', 'tutorial_green'),
+      createLink('Мой словарь', 'nav_myVocabulary', 'myVocabulary', 'tutorial_green'),
     );
 
     const tutorialGames = document.createElement('div');
@@ -73,20 +89,27 @@ export default class Tutorial {
     const tutorialBody = document.createElement('div');
     tutorialBody.classList.add('tutorial__body', 'tabs');
     tutorialBody.append(
-      this.createTab('tab_01', 'tutorial_light-blue'),
-      this.createTab('tab_02', 'tutorial_pink'),
-      this.createTab('tab_03', 'tutorial_yellow'),
-      this.createTab('tab_04', 'tutorial_light-purpule'),
-      this.createTab('tab_05', 'tutorial_aquamarine'),
-      this.createTab('tab_06', 'tutorial_purple'),
+      this.createTab('tab_0', 'tutorial_light-blue', true),
+      this.createTab('tab_1', 'tutorial_pink'),
+      this.createTab('tab_2', 'tutorial_yellow'),
+      this.createTab('tab_3', 'tutorial_light-purpule'),
+      this.createTab('tab_4', 'tutorial_aquamarine'),
+      this.createTab('tab_5', 'tutorial_purple'),
       this.createTab('myVocabulary', 'tutorial_green'),
     );
     return tutorialBody;
   }
 
-  private createTab(id: string, classModificator: string): HTMLDivElement {
+  private createTab(
+    id: string,
+    classModificator: string,
+    isActive: boolean = false,
+  ): HTMLDivElement {
     const tab = document.createElement('div');
     tab.classList.add('tabs__block', classModificator);
+    if (isActive) {
+      tab.classList.add('tabs__block_active');
+    }
     tab.id = id;
     return tab;
   }

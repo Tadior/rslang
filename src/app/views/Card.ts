@@ -1,53 +1,59 @@
 import bell from '../../assets/img/icons/sound.svg';
+import { Word } from '../../types/types';
+import url from '../models/variables';
 
-export default class Card {
+export default class Card implements Word {
+  id: string;
+
+  group: number;
+
+  page: number;
+
   word: string;
-
-  wordTranslation: string;
-
-  wordTranscription: string;
 
   image: string;
 
   audio: string;
 
-  sentenceExplaining: string;
+  audioMeaning: string;
 
-  sentenceExplainingTranslation: string;
+  audioExample: string;
 
-  sentenceExample: string;
+  textMeaning: string;
 
-  sentenceExampleTranslation: string;
+  textExample: string;
+
+  transcription: string;
+
+  wordTranslate: string;
+
+  textMeaningTranslate: string;
+
+  textExampleTranslate: string;
 
   constructor(
-    word: string,
-    wordTranslation: string,
-    wordTranscription: string,
-    image: string,
-    audio: string,
-    sentenceExplaining: string,
-    sentenceExplainingTranslation: string,
-    sentenceExample: string,
-    sentenceExampleTranslation: string,
+    wordObject: Word,
   ) {
-    this.word = word;
-    this.wordTranslation = wordTranslation;
-    this.wordTranscription = wordTranscription;
-    this.image = image;
-    this.audio = audio;
-    this.sentenceExplaining = sentenceExplaining;
-    this.sentenceExplainingTranslation = sentenceExplainingTranslation;
-    this.sentenceExample = sentenceExample;
-    this.sentenceExampleTranslation = sentenceExampleTranslation;
+    this.word = wordObject.word;
+    this.wordTranslate = wordObject.wordTranslate;
+    this.transcription = wordObject.transcription;
+    this.image = wordObject.image;
+    this.audio = wordObject.audio;
+    this.audioMeaning = wordObject.audioMeaning;
+    this.audioExample = wordObject.audioExample;
+    this.textMeaning = wordObject.textMeaning;
+    this.textMeaningTranslate = wordObject.textMeaningTranslate;
+    this.textExample = wordObject.textExample;
+    this.textExampleTranslate = wordObject.textExampleTranslate;
   }
 
-  renderCard() {
+  renderCard(positionToPlace: HTMLElement) {
     const card = document.createElement('div');
     card.classList.add('card');
     const cardImageFluid = document.createElement('div');
     cardImageFluid.classList.add('card__image-fluid');
     cardImageFluid.innerHTML = `
-    <img class="card__img" src="${this.image}" alt="Картинка для слова ${this.word}">
+    <img class="card__img" src="${url}${this.image}" alt="Картинка для слова ${this.word}">
     `;
     const cardInfo = document.createElement('div');
     cardInfo.classList.add('card__info');
@@ -55,28 +61,28 @@ export default class Card {
     cardName.classList.add('card-name');
     cardName.innerHTML = `
         <div class="card-name__original">${this.word}</div>
-        <div class="card-name__translation">${this.wordTranslation}</div>
+        <div class="card-name__translation">${this.wordTranslate}</div>
     `;
     const cardTranscription = document.createElement('div');
     cardTranscription.classList.add('card-transcription');
-    cardTranscription.textContent = `${this.wordTranscription}`;
+    cardTranscription.textContent = `${this.transcription}`;
     const cardSentences = document.createElement('div');
     cardSentences.classList.add('card-sentences');
     cardSentences.innerHTML = `
     <div class="card-sentence">
         <div class="card-sentence__original">
-            ${this.sentenceExplaining}
+            ${this.textMeaning}
         </div>
         <div class="card-sentence__translate">
-            ${this.sentenceExplainingTranslation}
+            ${this.textMeaningTranslate}
         </div>
     </div>
     <div class="card-sentence">
         <div class="card-sentence__original">
-            ${this.sentenceExample}
+            ${this.textExample}
         </div>
         <div class="card-sentence__translate">
-            ${this.sentenceExampleTranslation}
+            ${this.textExampleTranslate}
         </div>
     </div>
     `;
@@ -96,6 +102,18 @@ export default class Card {
     cardButtons.append(buttonLearn, buttonRemove);
     cardInfo.append(cardName, cardTranscription, cardSentences, cardButtons, buttonAudio);
     card.append(cardImageFluid, cardInfo);
-    document.getElementById('tab_01').append(card);
+    positionToPlace.append(card);
+    buttonAudio.addEventListener('click', () => {
+      const audioWord = new Audio(url + this.audio);
+      audioWord.addEventListener('ended', () => {
+        const audioMeaning = new Audio(url + this.audioMeaning);
+        audioMeaning.play();
+        audioMeaning.addEventListener('ended', () => {
+          const audioExample = new Audio(url + this.audioExample);
+          audioExample.play();
+        });
+      });
+      audioWord.play();
+    });
   }
 }

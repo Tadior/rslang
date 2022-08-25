@@ -1,12 +1,14 @@
 import {
   Word, User, UpdateUser, UserWord, UserStatistics, Settings, SignInResponse,
 } from '../../types/types';
+import url from './variables';
 
 export default class Api {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = 'http://localhost:4000/';
+    // this.baseUrl = 'http://localhost:4000/';
+    this.baseUrl = url;
   }
 
   async getWords(group: string, page: string): Promise<Word[]> {
