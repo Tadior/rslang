@@ -30,7 +30,7 @@ export class UsersLearnedWordsService {
         where: { userId: userId },
       },
     );
-    return userLearnWords ? userLearnWords.toResponse() : undefined;
+    return userLearnWords.toResponse();
   }
 
   async getUserLearnWordsByWordId(userId: string, id: string) {
@@ -38,9 +38,18 @@ export class UsersLearnedWordsService {
     const userLearnedWordsExists = await this.usersLearnedWordsEntityRepository
       .createQueryBuilder('usersLearnedWords')
       .where(
-        ":learnedWords = ANY ( string_to_array(usersLearnedWords.learnedWords, ','))",
+        `
+        :userId = usersLearnedWords.userId 
+        `,
         {
           userId: userId,
+        },
+      )
+      .andWhere(
+        `
+        :learnedWords = ANY ( string_to_array(usersLearnedWords.learnedWords, ',')) 
+        `,
+        {
           learnedWords: id,
         },
       )
@@ -63,7 +72,6 @@ export class UsersLearnedWordsService {
         HttpStatus.EXPECTATION_FAILED,
       );
     }
-
     const userLearnedWords = await this.getUserLearnWordsByUserId(userId);
     const updateUserLearnedWords = {
       userId: userId,
