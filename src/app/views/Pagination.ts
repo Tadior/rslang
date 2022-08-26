@@ -29,7 +29,7 @@ export default class Pagination {
       createPaginationButton(3),
       createPaginationButton(4),
       paginationPoints,
-      createPaginationButton(7),
+      createPaginationButton(30),
       nextButton,
     );
     document.querySelector('.tutorial__wrapper').after(pagination);

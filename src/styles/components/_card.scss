@@ -7,11 +7,19 @@
     border-radius: 40px;
     &__img {
         max-width: 359px;
+        width: 100%;
+        object-fit: contain;
+        border-radius: 10px;
     }
     &__info {
         margin-left: 68px;
         flex: 1 1 auto;
         position: relative;
+    }
+    &__image-fluid {
+        max-width: 359px;
+        width: 100%;
+        border-radius: 10px;
     }
 }
 .card-btn__audio {

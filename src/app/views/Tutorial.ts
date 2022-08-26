@@ -37,7 +37,7 @@ export default class Tutorial {
     ): HTMLButtonElement {
       const tutorialLink = document.createElement('button');
       tutorialLink.classList.add('tutorial__link', classModificator);
-      if (group === 'tab_0') {
+      if (group === '0') {
         tutorialLink.classList.add('tutorial__link_active');
       }
       tutorialLink.id = `${id}`;
@@ -50,12 +50,12 @@ export default class Tutorial {
     const tutorialLinks = document.createElement('div');
     tutorialLinks.classList.add('tutorial__links');
     tutorialLinks.append(
-      createLink('A1', 'nav_tab_1', 'tab_0', 'tutorial_light-blue'),
-      createLink('A2', 'nav_tab_1', 'tab_1', 'tutorial_pink'),
-      createLink('B1', 'nav_tab_1', 'tab_2', 'tutorial_yellow'),
-      createLink('B2', 'nav_tab_1', 'tab_3', 'tutorial_light-purpule'),
-      createLink('C1', 'nav_tab_1', 'tab_4', 'tutorial_aquamarine'),
-      createLink('C2', 'nav_tab_1', 'tab_5', 'tutorial_purple'),
+      createLink('A1', 'nav_tab_1', '0', 'tutorial_light-blue'),
+      createLink('A2', 'nav_tab_1', '1', 'tutorial_pink'),
+      createLink('B1', 'nav_tab_1', '2', 'tutorial_yellow'),
+      createLink('B2', 'nav_tab_1', '3', 'tutorial_light-purpule'),
+      createLink('C1', 'nav_tab_1', '4', 'tutorial_aquamarine'),
+      createLink('C2', 'nav_tab_1', '5', 'tutorial_purple'),
     );
 
     const tutorialDictionary = document.createElement('div');

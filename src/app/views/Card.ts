@@ -34,6 +34,7 @@ export default class Card implements Word {
   constructor(
     wordObject: Word,
   ) {
+    this.id = wordObject.id;
     this.word = wordObject.word;
     this.wordTranslate = wordObject.wordTranslate;
     this.transcription = wordObject.transcription;
@@ -50,6 +51,7 @@ export default class Card implements Word {
   renderCard(positionToPlace: HTMLElement) {
     const card = document.createElement('div');
     card.classList.add('card');
+    card.id = this.id;
     const cardImageFluid = document.createElement('div');
     cardImageFluid.classList.add('card__image-fluid');
     cardImageFluid.innerHTML = `
@@ -69,7 +71,7 @@ export default class Card implements Word {
     const cardSentences = document.createElement('div');
     cardSentences.classList.add('card-sentences');
     cardSentences.innerHTML = `
-    <div class="card-sentence">
+    <div class="card-sentence card-sentence_example">
         <div class="card-sentence__original">
             ${this.textMeaning}
         </div>
@@ -77,7 +79,7 @@ export default class Card implements Word {
             ${this.textMeaningTranslate}
         </div>
     </div>
-    <div class="card-sentence">
+    <div class="card-sentence card-sentence_meaning">
         <div class="card-sentence__original">
             ${this.textExample}
         </div>
