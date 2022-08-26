@@ -10,6 +10,8 @@ import { UsersWordsModule } from './users-words/users-words.module';
 import { UsersStatisticModule } from './users-statistic/users-statistic.module';
 import { UsersSettingsModule } from './users-settings/users-settings.module';
 import { AuthModule } from './auth/auth.module';
+import { UsersLearnedWordsController } from './users-learned-words/users-learned-words.controller';
+import { UsersLearnedWordsModule } from './users-learned-words/users-learned-words.module';
 
 @Module({
   imports: [
@@ -21,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     UsersStatisticModule,
     UsersSettingsModule,
     AuthModule,
+    UsersLearnedWordsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

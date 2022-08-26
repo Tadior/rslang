@@ -22,6 +22,7 @@ export class WordsService {
     const word = await this.wordsRepository.findOne({
       where: { id: id },
     });
+    console.log(word);
     if (!word) {
       throw new NotFoundException('Word not found');
     }
