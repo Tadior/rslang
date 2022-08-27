@@ -11,10 +11,23 @@ export default class TutorialControllers {
       const eventInfo = {
         target: event.target as HTMLElement,
       };
+      // Если клик совершен по одной из вкладок
       if (eventInfo.target.hasAttribute('data-group')) {
         const group = eventInfo.target.getAttribute('data-group');
-        this.changeCategory(group, eventInfo.target);
-        this.createPagination(30, 1);
+        const prevNav = document.querySelector('.tutorial__link_active');
+        const prevNavGroup = prevNav.getAttribute('data-group');
+        const prevPaginationValue = document.querySelector('.pagination__btn_active').textContent;
+        this.updateStorage(prevNavGroup, prevPaginationValue);
+        this.updateStorage('lastNav', group);
+        // Если в local storage есть страница на которой пользователь остановился - загрузить эту страницу
+        const localStoragePage = this.checkStorage(group);
+        if (localStoragePage !== -1) {
+          this.changeCategory(group, eventInfo.target, String(localStoragePage - 1));
+          this.createPagination(30, localStoragePage);
+        } else {
+          this.changeCategory(group, eventInfo.target, '0');
+          this.createPagination(30, 1);
+        }
       }
     });
     const paginationWrapper = document.querySelector('.pagination');
@@ -38,6 +51,8 @@ export default class TutorialControllers {
 
       const currentGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
       const api = new Api();
+      // Обновляем localStorage при переключении страницы
+      this.updateStorage(currentGroup, page.toString());
       // Отнимаем единицу так как считаем страницы от 0 до 29
       page -= 1;
       if (page < 0) {
@@ -51,14 +66,18 @@ export default class TutorialControllers {
     });
   }
 
-  changeCategory(group: string, target: HTMLElement): void | boolean {
+  changeCategory(group: string, target: HTMLElement | string, page: string): void | boolean {
     const prevNavActive = document.querySelector('.tutorial__link_active');
     if (prevNavActive) {
       prevNavActive.classList.remove('tutorial__link_active');
     }
     const prevTabActive = document.querySelector('.tabs__block_active');
     prevTabActive.classList.remove('tabs__block_active');
-    target.classList.add('tutorial__link_active');
+    if (typeof target === 'string') {
+      document.querySelector(target).classList.add('tutorial__link_active');
+    } else {
+      target.classList.add('tutorial__link_active');
+    }
     const tabActive = document.getElementById(`tab_${group}`);
     tabActive.classList.add('tabs__block_active');
     // Если на странице есть карточки то не добавлять новые
@@ -74,13 +93,13 @@ export default class TutorialControllers {
     }
     //---------------------------------------
     const groupValue = group.toString();
-    this.renderCards(`${groupValue[groupValue.length - 1]}`, categoryWrapper);
+    this.renderCards(`${groupValue[groupValue.length - 1]}`, categoryWrapper, page);
     return true;
   }
 
-  renderCards(group: string, renderContainer: HTMLElement) {
+  renderCards(group: string, renderContainer: HTMLElement, page: string) {
     const api = new Api();
-    const response = api.getWords(group, '0');
+    const response = api.getWords(group, page);
     response.then((data) => {
       for (let i = 0; i < data.length; i += 1) {
         const card = new Card(data[i]);
@@ -224,5 +243,17 @@ export default class TutorialControllers {
       });
     });
     audioWord.play();
+  }
+
+  updateStorage(key: string, value: string) {
+    localStorage.setItem(key, value);
+  }
+
+  checkStorage(key: string): number {
+    const out = localStorage.getItem(key);
+    if (out !== null) {
+      return Number(out);
+    }
+    return -1;
   }
 }

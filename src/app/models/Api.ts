@@ -7,7 +7,6 @@ export default class Api {
   baseUrl: string;
 
   constructor() {
-    // this.baseUrl = 'http://localhost:4000/';
     this.baseUrl = url;
   }
 

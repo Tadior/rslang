@@ -24,8 +24,24 @@ export default class Tutorial {
     const pagination = new Pagination();
     pagination.renderPagination();
     const firstTabContainer = document.getElementById('tab_0');
+    // При перезагрузке страницы загрузить ту же страницу
     const tutorialControllers = new TutorialControllers();
-    tutorialControllers.renderCards('0', firstTabContainer);
+    const lastNavValue = tutorialControllers.checkStorage('lastNav');
+    if (lastNavValue !== -1) {
+      document.querySelector('.tutorial__link_active').classList.remove('tutorial__link_active');
+      const tutorialLinks = document.querySelectorAll('.tutorial__link');
+      let target;
+      tutorialLinks.forEach((element) => {
+        if (element.getAttribute('data-group') === lastNavValue.toString()) {
+          target = element;
+        }
+      });
+      const page = tutorialControllers.checkStorage(lastNavValue.toString());
+      tutorialControllers.changeCategory(`${lastNavValue}`, target, `${page - 1}`);
+      tutorialControllers.createPagination(30, page);
+    } else {
+      tutorialControllers.renderCards('0', firstTabContainer, '0');
+    }
   }
 
   private createTutorialNavigation(): HTMLDivElement {
