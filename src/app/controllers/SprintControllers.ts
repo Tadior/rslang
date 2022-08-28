@@ -345,17 +345,4 @@ export default class SprintControllers {
       newGame.startSprintRandom();
     });
   }
-
-  /* async checkMaxRow(userId: string) {
-    const today = new Date().toLocaleDateString().slice(0, -5);
-    const userStatistic: UserStatistics = await this.api.getUserStatisticsById(userId);
-    if (userStatistic.optional.hasOwnProperty(today)) {
-      const currentRow = userStatistic.optional.today.sprintRow;
-      if (currentRow < this.maxRow ) {
-        this.api.updateUserStatisticsById(userId, {learnedWords: userStatistic.learnedWords, optional: {today: { sprintRow: this.maxRow }}});
-      };
-    } else {
-      this.api.updateUserStatisticsById(userId, {learnedWords: userStatistic.learnedWords, optional: {today: { sprintRow: this.maxRow }}});
-    }
-  } */
 }
