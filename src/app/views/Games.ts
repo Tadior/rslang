@@ -1,6 +1,6 @@
 import robot from '../../assets/img/sprint/sprint_robot.png';
 import listenIcon from '../../assets/img/sprint/listen_icon.png';
-import BlockMelodyImage from '../../assets/img/icons/melody_block.png';
+import MelodyImage from '../../assets/img/icons/melody.svg';
 import WindowImage from '../../assets/img/icons/window.svg';
 import AudioImage from '../../assets/img/icons/audio.svg';
 import { Word } from '../../types/types';
@@ -15,7 +15,7 @@ export default class Games {
           <h2 class='title title_corner'>Cпринт</h2>
           <div class='game-header__buttons'>
             <button class='game-header__btn btn__audio'>
-              <img src='${BlockMelodyImage}' alt='sound-icon'>
+              <img src='${MelodyImage}' alt='sound-icon'>
             </button>
             <button class='game-header__btn btn__window'>
               <img src='${WindowImage}' alt='window-icon'>
@@ -53,6 +53,7 @@ export default class Games {
         <div>
       </div>
     `;
+    (<HTMLElement>document.querySelector('main')).innerHTML = '';
     (<HTMLElement>document.querySelector('main')).append(sprintPage);
     this.addSprintTimer();
   }
@@ -148,7 +149,7 @@ export default class Games {
                   <div class='mistakes__item'>
                     <div class='item__listen'>
                       <audio src='http://localhost:4000/${mistake.audio}'></audio>
-                      <img src='${listenIcon}' alt='listen_icon'>
+                      <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
                     <div class='item__english'>${mistake.word}</div>
                     <div class='item__russian'>${mistake.wordTranslate}</div>
@@ -161,7 +162,7 @@ export default class Games {
                   <div class='correct__item'>
                     <div class='item__listen'>
                       <audio src='http://localhost:4000/${word.audio}'></audio>
-                      <img src='${listenIcon}' alt='listen_icon'>
+                      <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
                     <div class='item__english'>${word.word}</div>
                     <div class='item__russian'>${word.wordTranslate}</div>
@@ -239,7 +240,7 @@ export default class Games {
     const buttonAudio = document.createElement('button');
     buttonAudio.classList.add('game-header__btn', 'btn__audio');
     buttonAudio.innerHTML = `
-      <img class="btn__game-image" src="${BlockMelodyImage}">
+      <img class="btn__game-image" src="${MelodyImage}">
     `;
     const buttonWindow = document.createElement('button');
     buttonWindow.classList.add('game-header__btn', 'btn__window');

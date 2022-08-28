@@ -9,7 +9,7 @@ header.renderHeader();
 // const games = new Games();
 // games.renderSprintGame();
 const controller = new SprintControllers();
-controller.startSprintMenu('1');
+controller.startSprintPage('1', '2', 'd97d52cc-b35e-42fa-becf-8c2ab8caec57');
 /* const mainPage = new MainPage();
 mainPage.renderMainPage();
 const footer = new Footer();
