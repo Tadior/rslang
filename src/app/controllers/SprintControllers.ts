@@ -201,8 +201,6 @@ export default class SprintControllers {
       english.innerHTML = questions[this.wordCounter];
       russian.innerHTML = answers[this.getRandomIndex(this.wordCounter)];
       this.wordCounter += 1;
-      console.log(this.wordCounter);
-      console.log(questions.length);
     } else {
       this.wordCounter = 0;
       this.finishSprintGame();
@@ -222,9 +220,7 @@ export default class SprintControllers {
       const wordCheck = this.api.isWordLearned(userId, word.id);
       return wordCheck;
     }));
-    console.log(results);
     const filteredWords = words.filter((_word, index) => !results[index].userLearnedWordsExists);
-    console.log(filteredWords);
     return filteredWords;
   }
 
