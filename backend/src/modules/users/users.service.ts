@@ -24,7 +24,6 @@ export class UsersService {
         const user: UserEntity = await this.userRepository.findOne({
             where: { id: id },
         });
-        console.log(user);
         if (!user) {
             throw new NotFoundException("User not found");
         }
