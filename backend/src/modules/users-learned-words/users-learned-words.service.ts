@@ -21,6 +21,9 @@ export class UsersLearnedWordsService {
         const userLearnWords: UsersLearnedWordsEntity = await this.usersLearnedWordsEntityRepository.findOne({
             where: { userId: userId },
         });
+        if (!userLearnWords) {
+            return undefined;
+        }
         return userLearnWords.toResponse();
     }
 
@@ -51,7 +54,6 @@ export class UsersLearnedWordsService {
     }
 
     async updateUserLearndedWords(id: string, userId: string): Promise<IUserLearnedWords> {
-        await this.usersService.getUserById(userId);
         await this.wordsService.getWordById(id);
         const { userLearnedWordsExists } = await this.getUserLearnWordsByWordId(userId, id);
         if (userLearnedWordsExists) {
