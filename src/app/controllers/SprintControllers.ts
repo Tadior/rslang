@@ -71,9 +71,10 @@ export default class SprintControllers {
     if (userId) {
       this.words = await this.api.getWords(group, page);
       this.words = await this.checkIfLearned(userId, this.words);
-      this.words = await this.checkWordsLength(userId, group, page, this.words);
+      this.words = await this.checkWordsPage(group, page, this.words, userId);
     } else {
       this.words = await this.api.getWords(group, page);
+      this.words = await this.checkWordsPage(group, page, this.words);
     }
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
@@ -84,13 +85,14 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newSprintQuestion();
     return this.timer;
   }
 
   async startSprintMenu(group: string): Promise<NodeJS.Timeout> {
     const page = (Math.floor(Math.random() * (30 - 1)) + 1).toString();
     this.words = await this.api.getWords(group, page);
+    this.words = await this.checkWordsPage(group, page, this.words);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
@@ -100,7 +102,7 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newSprintQuestion();
     return this.timer;
   }
 
@@ -119,7 +121,7 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newSprintQuestion();
     return this.timer;
   }
 
@@ -137,7 +139,7 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion(this.questions, this.answers);
+      this.newSprintQuestion();
     });
 
     document.addEventListener('keydown', (event) => {
@@ -155,7 +157,7 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion(this.questions, this.answers);
+      this.newSprintQuestion();
     });
     document.addEventListener('keydown', (event) => {
       if (event.code === 'ArrowRight') {
@@ -194,12 +196,12 @@ export default class SprintControllers {
     });
   }
 
-  newSprintQuestion(questions: string[], answers: string[]): void {
+  newSprintQuestion(): void {
     const english = document.querySelector('.console__english');
     const russian = document.querySelector('.console__russian');
-    if (this.wordCounter < questions.length) {
-      english.innerHTML = questions[this.wordCounter];
-      russian.innerHTML = answers[this.getRandomIndex(this.wordCounter)];
+    if (this.wordCounter < this.questions.length) {
+      english.innerHTML = this.questions[this.wordCounter];
+      russian.innerHTML = this.answers[this.getRandomIndex(this.wordCounter)];
       this.wordCounter += 1;
     } else {
       this.wordCounter = 0;
@@ -224,16 +226,21 @@ export default class SprintControllers {
     return filteredWords;
   }
 
-  async checkWordsLength(userId: string, group: string, page: string, words: Word[])
+  async checkWordsPage(group: string, page: string, words: Word[], userId?: string)
     : Promise<Word[]> {
-    if (words.length < 20 && Number(page) > 1) {
+    let allWords: Word[];
+    if (Number(page) > 1) {
       let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
-      concatWords = await this.checkIfLearned(userId, concatWords);
-      words = words.concat(concatWords); // eslint-disable-line
-      this.checkWordsLength(userId, group, (Number(page) - 1).toString(), words);
+      if (userId) {
+        concatWords = await this.checkIfLearned(userId, concatWords);
+        allWords = words.concat(concatWords);
+      } else {
+        allWords = words.concat(concatWords);
+      }
+      return this.checkWordsPage(group, (Number(page) - 1).toString(), allWords);
     }
-    words = words.slice(0, 20); // eslint-disable-line
-    return words;
+    allWords = words;
+    return allWords;
   }
 
   checkAnswer(): boolean {

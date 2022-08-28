@@ -1,6 +1,6 @@
 import {
   Word, User, UpdateUser, UserWord, UserStatistics, Settings,
-  UserLearnedWords, UserLearnedWordsCheck, SignInResponse
+  UserLearnedWords, UserLearnedWordsCheck, SignInResponse,
 } from '../../types/types';
 
 export default class Api {
@@ -158,7 +158,7 @@ export default class Api {
       throw new Error(e);
     }
   }
-  
+
   async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',
