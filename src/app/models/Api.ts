@@ -1,5 +1,6 @@
 import {
-  Word, User, UpdateUser, UserWord, UserStatistics, Settings, SignInResponse,
+  Word, User, UpdateUser, UserWord, UserStatistics, Settings,
+  UserLearnedWords, UserLearnedWordsCheck
 } from '../../types/types';
 
 export default class Api {
@@ -14,7 +15,7 @@ export default class Api {
     return request.json();
   }
 
-  async getWordsById(wordId: string): Promise<Word[]> {
+  async getWordById(wordId: string): Promise<Word> {
     const request = await fetch(`${this.baseUrl}words?id=${wordId}`);
     return request.json();
   }
@@ -78,7 +79,7 @@ export default class Api {
     return request.json();
   }
 
-  async deleteUserWordById(userId: string, wordId: string) {
+  async deleteUserWordById(userId: string, wordId: string): Promise<void> {
     try {
       await fetch(`${this.baseUrl}users/${userId}/words/${wordId}`, {
         method: 'DELETE',
@@ -125,6 +126,39 @@ export default class Api {
     return request.json();
   }
 
+  async getAllLearnedWords(userId: string): Promise<UserLearnedWords> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords`);
+    return request.json();
+  }
+
+  async isWordLearned(userId: string, wordId: string): Promise<UserLearnedWordsCheck> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`);
+    return request.json();
+  }
+
+  async updateUserLearnedWords(userId: string, wordId: string): Promise<UserLearnedWords> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    });
+    return request.json();
+  }
+
+  async deleteUserLearnedWordById(userId: string, wordId: string): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      });
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }
+  
   async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',

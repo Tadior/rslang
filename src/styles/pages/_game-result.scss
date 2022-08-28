@@ -34,12 +34,13 @@
 
   &__details {
     height: 360px;
-    width: 360px;
+    width: 400px;
     overflow-y: scroll;
     margin-bottom: 40px;
 
     &::-webkit-scrollbar {
       width: 5px;
+      height: 5px;
       background-color: inherit;
   }
 
