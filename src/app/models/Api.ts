@@ -1,6 +1,6 @@
 import {
   Word, User, UpdateUser, UserWord, UserStatistics, Settings,
-  UserLearnedWords, UserLearnedWordsCheck
+  UserLearnedWords, UserLearnedWordsCheck, SignInResponse
 } from '../../types/types';
 
 export default class Api {
