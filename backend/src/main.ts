@@ -7,8 +7,9 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 
 const PORT = process.env.PORT || 4444;
 
-async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+async function bootstrap(): Promise<void> {
+  const app: NestExpressApplication =
+    await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.useStaticAssets(join(__dirname, '..', 'src', 'files'), {
     prefix: '/files',

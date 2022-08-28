@@ -1,17 +1,13 @@
 import {
-  Injectable,
-  Inject,
-  forwardRef,
   ForbiddenException,
+  forwardRef,
+  Inject,
+  Injectable,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { SignInUserDto } from 'src/modules/auth/dto/signInUser.dto';
-import {
-  IUserSignIn,
-  JWTResponce,
-  IPayload,
-} from 'src/modules/auth/interfaces/interfaces';
-import { UsersService } from 'src/modules/users/users.service';
+import { UsersService } from '../users/users.service';
+import { SignInUserDto } from './dto/signInUser.dto';
+import { IPayload, IUserSignIn, JWTResponce } from './interfaces/interfaces';
 
 @Injectable()
 export class AuthService {

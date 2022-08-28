@@ -1,17 +1,16 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from './ormconfig';
-import { WordsModule } from './words/words.module';
-import { UsersModule } from './users/users.module';
-import { UsersWordsModule } from './users-words/users-words.module';
-import { UsersStatisticModule } from './users-statistic/users-statistic.module';
-import { UsersSettingsModule } from './users-settings/users-settings.module';
-import { AuthModule } from './auth/auth.module';
-import { UsersLearnedWordsController } from './users-learned-words/users-learned-words.controller';
-import { UsersLearnedWordsModule } from './users-learned-words/users-learned-words.module';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersLearnedWordsModule } from './modules/users-learned-words/users-learned-words.module';
+import { UsersSettingsModule } from './modules/users-settings/users-settings.module';
+import { UsersStatisticModule } from './modules/users-statistic/users-statistic.module';
+import { UsersWordsModule } from './modules/users-words/users-words.module';
+import { UsersModule } from './modules/users/users.module';
+import { WordsModule } from './modules/words/words.module';
 
 @Module({
   imports: [
