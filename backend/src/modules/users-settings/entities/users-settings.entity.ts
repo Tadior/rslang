@@ -1,18 +1,18 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity('userSettingsEntity')
+@Entity("userSettingsEntity")
 export class UserSettingsEntity {
-  @PrimaryColumn()
-  userId: string;
+    @PrimaryColumn()
+    userId: string;
 
-  @Column()
-  wordsPerDay: number;
+    @Column()
+    wordsPerDay: number;
 
-  @Column('simple-json')
-  optional: Record<string, unknown>;
+    @Column("simple-json")
+    optional: Record<string, unknown>;
 
-  toResponse() {
-    const { userId, wordsPerDay, optional } = this;
-    return { userId, wordsPerDay, optional };
-  }
+    toResponse() {
+        const { userId, wordsPerDay, optional } = this;
+        return { userId, wordsPerDay, optional };
+    }
 }

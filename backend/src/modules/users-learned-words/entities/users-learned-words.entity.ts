@@ -1,15 +1,15 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity('usersLearnedWords')
+@Entity("usersLearnedWords")
 export class UsersLearnedWordsEntity {
-  @PrimaryColumn()
-  userId: string;
+    @PrimaryColumn()
+    userId: string;
 
-  @Column('simple-array')
-  learnedWords: string[];
+    @Column("simple-array")
+    learnedWords: string[];
 
-  toResponse() {
-    const { userId, learnedWords } = this;
-    return { userId, learnedWords };
-  }
+    toResponse() {
+        const { userId, learnedWords } = this;
+        return { userId, learnedWords };
+    }
 }

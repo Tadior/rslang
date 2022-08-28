@@ -1,84 +1,84 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity('word')
+@Entity("word")
 export class WordsEntity {
-  @PrimaryColumn()
-  id: string;
+    @PrimaryColumn()
+    id: string;
 
-  @Column()
-  group: number;
+    @Column()
+    group: number;
 
-  @Column()
-  page: number;
+    @Column()
+    page: number;
 
-  @Column()
-  word: string;
+    @Column()
+    word: string;
 
-  @Column()
-  image: string;
+    @Column()
+    image: string;
 
-  @Column()
-  audio: string;
+    @Column()
+    audio: string;
 
-  @Column()
-  audioMeaning: string;
+    @Column()
+    audioMeaning: string;
 
-  @Column()
-  audioExample: string;
+    @Column()
+    audioExample: string;
 
-  @Column()
-  textMeaning: string;
+    @Column()
+    textMeaning: string;
 
-  @Column()
-  textExample: string;
+    @Column()
+    textExample: string;
 
-  @Column()
-  transcription: string;
+    @Column()
+    transcription: string;
 
-  @Column()
-  __v: number;
+    @Column()
+    __v: number;
 
-  @Column()
-  textExampleTranslate: string;
+    @Column()
+    textExampleTranslate: string;
 
-  @Column()
-  textMeaningTranslate: string;
+    @Column()
+    textMeaningTranslate: string;
 
-  @Column()
-  wordTranslate: string;
+    @Column()
+    wordTranslate: string;
 
-  toResponse() {
-    const {
-      id,
-      group,
-      page,
-      word,
-      image,
-      audio,
-      audioMeaning,
-      audioExample,
-      textMeaning,
-      textExample,
-      transcription,
-      wordTranslate,
-      textMeaningTranslate,
-      textExampleTranslate,
-    } = this;
-    return {
-      id,
-      group,
-      page,
-      word,
-      image,
-      audio,
-      audioMeaning,
-      audioExample,
-      textMeaning,
-      textExample,
-      transcription,
-      wordTranslate,
-      textMeaningTranslate,
-      textExampleTranslate,
-    };
-  }
+    toResponse() {
+        const {
+            id,
+            group,
+            page,
+            word,
+            image,
+            audio,
+            audioMeaning,
+            audioExample,
+            textMeaning,
+            textExample,
+            transcription,
+            wordTranslate,
+            textMeaningTranslate,
+            textExampleTranslate,
+        } = this;
+        return {
+            id,
+            group,
+            page,
+            word,
+            image,
+            audio,
+            audioMeaning,
+            audioExample,
+            textMeaning,
+            textExample,
+            transcription,
+            wordTranslate,
+            textMeaningTranslate,
+            textExampleTranslate,
+        };
+    }
 }

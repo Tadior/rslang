@@ -1,21 +1,21 @@
-import { PrimaryGeneratedColumn, Column, Entity } from 'typeorm';
+import { PrimaryGeneratedColumn, Column, Entity } from "typeorm";
 
-@Entity('user')
+@Entity("user")
 export class UserEntity {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
+    @PrimaryGeneratedColumn("uuid")
+    id: string;
 
-  @Column()
-  name: string;
+    @Column()
+    name: string;
 
-  @Column()
-  password: string;
+    @Column()
+    password: string;
 
-  @Column()
-  email: string;
+    @Column()
+    email: string;
 
-  toResponse() {
-    const { id, name, email } = this;
-    return { id, name, email };
-  }
+    toResponse() {
+        const { id, name, email } = this;
+        return { id, name, email };
+    }
 }
