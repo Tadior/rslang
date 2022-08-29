@@ -26,13 +26,16 @@ export default class TutorialControllers {
         if (localStoragePage !== -1) {
           this.changeCategory(group, eventInfo.target, String(localStoragePage - 1));
           this.createPagination(30, localStoragePage);
+          // this.toggleGamesButtons(true);
           // this.checkPage();
         } else {
           this.updateStorage(group, '1');
           this.changeCategory(group, eventInfo.target, '0');
           this.createPagination(30, 1);
+          // this.toggleGamesButtons(false);
           // this.checkPage();
         }
+        // this.checkPage();
       }
     });
     const paginationWrapper = document.querySelector('.pagination');
@@ -89,6 +92,7 @@ export default class TutorialControllers {
     const categoryWrapper = document.getElementById(`tab_${group}`);
 
     if (categoryWrapper.querySelector('.card')) {
+      this.checkPage();
       return false;
     }
     // Если открыт словарь
@@ -99,7 +103,6 @@ export default class TutorialControllers {
     //---------------------------------------
     const groupValue = group.toString();
     this.renderCards(`${groupValue[groupValue.length - 1]}`, categoryWrapper, page);
-    // this.checkPage();
     return true;
   }
 
@@ -396,12 +399,22 @@ export default class TutorialControllers {
     return Promise.all(promisses).then((values) => values);
   }
 
+  toggleGamesButtons(status: boolean): void {
+    const games = document.querySelectorAll('.tutorial-game');
+    if (status) {
+      games.forEach((button) => button.classList.add('tutorial-game_disabled'));
+    } else {
+      games.forEach((button) => button.classList.remove('tutorial-game_disabled'));
+    }
+  }
+
   checkPage() {
     const activeTab = document.querySelector('.tabs__block_active');
     const allCardsOnPage = activeTab.querySelectorAll('.card').length;
     const checkedLearnedWordsCounter = activeTab.querySelectorAll('.card_learned').length;
     const checkedHardWordsCounter = activeTab.querySelectorAll('.card_hard').length;
     if (checkedLearnedWordsCounter + checkedHardWordsCounter === allCardsOnPage) {
+      this.toggleGamesButtons(true);
       activeTab.classList.add('tabs__block-learned');
       const paginationActive = document.querySelector('.pagination__btn_active');
       paginationActive.classList.add('pagination__btn-learned');
@@ -427,7 +440,6 @@ export default class TutorialControllers {
         localStorage.setItem('pagination', JSON.stringify(value));
       }
     } else if (activeTab.classList.contains('tabs__block-learned')) {
-      console.log('here');
       activeTab.classList.remove('tabs__block-learned');
       const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
       const page: string = document.querySelector('.pagination__btn_active').textContent;
@@ -439,6 +451,9 @@ export default class TutorialControllers {
         localStorage.setItem('pagination', JSON.stringify(paginationData));
       }
       this.createPagination(30, Number(page));
+      this.toggleGamesButtons(false);
+    } else {
+      this.toggleGamesButtons(false);
     }
   }
 }

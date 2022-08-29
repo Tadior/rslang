@@ -75,6 +75,10 @@
             max-height: 46px;
         }
     }
+    &_disabled {
+        background: #757171;
+        pointer-events: none;
+    }
 }
 .tabs__block {
     padding: 40px 50px 50px;
