@@ -44,3 +44,10 @@ export interface SignInResponse {
   userId: string;
   name: string;
 }
+export interface CheckLearnedWord {
+  userLearnedWordsExists: boolean;
+}
+export interface AllUserLearnedWords {
+  userId: string;
+  learnedWords: string[];
+}

@@ -74,12 +74,6 @@ export default class Tutorial {
       createLink('C2', 'nav_tab_1', '5', 'tutorial_purple'),
     );
 
-    const tutorialDictionary = document.createElement('div');
-    tutorialDictionary.classList.add('tutorial__dictionary');
-    tutorialDictionary.append(
-      createLink('Мой словарь', 'nav_myVocabulary', 'myVocabulary', 'tutorial_green'),
-    );
-
     const tutorialGames = document.createElement('div');
     tutorialGames.classList.add('tutorial__games');
     const tutorialGameAudio = document.createElement('button');
@@ -92,11 +86,23 @@ export default class Tutorial {
     tutorialGameSprint.innerHTML = `
       <img class="tutorial-game__image tutorial-game__image_audio" src="${gamepadImage}" alt="Спринт">
     `;
+    const itemsToAppend = [tutorialLinks, tutorialGames];
+    localStorage.setItem('userId', '622552a0-0732-41ce-9815-9d173e8b7649');
+    // Проверка авторизован ли пользователь
+    if (localStorage.getItem('userId')) {
+      const tutorialDictionary = document.createElement('div');
+      tutorialDictionary.classList.add('tutorial__dictionary');
+      tutorialDictionary.append(
+        createLink('Мой словарь', 'nav_myVocabulary', 'myVocabulary', 'tutorial_green'),
+      );
+      itemsToAppend.splice(1, 0, tutorialDictionary);
+    }
     tutorialGames.append(tutorialGameAudio, tutorialGameSprint);
     tutorialNavigation.append(
-      tutorialLinks,
-      tutorialDictionary,
-      tutorialGames,
+      // tutorialLinks,
+      // tutorialDictionary,
+      // tutorialGames,
+      ...itemsToAppend,
     );
     return tutorialNavigation;
   }

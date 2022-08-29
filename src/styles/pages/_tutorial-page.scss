@@ -6,6 +6,7 @@
     &__navigation {
         display: flex;
         align-items: flex-end;
+        justify-content: space-between;
         margin: 0 17px 0 10px;
     }
     &__dictionary {
@@ -85,6 +86,9 @@
     &_active {
         display: block;
     }
+}
+.tabs__block-learned {
+    background-color: rgb(197, 255, 197);
 }
 .arrow-link {
     position: absolute;

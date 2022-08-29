@@ -1,4 +1,4 @@
-import { Word } from '../../types/types';
+import { Word, CheckLearnedWord, UserWord } from '../../types/types';
 import Api from '../models/Api';
 import Card from '../views/Card';
 import soundImage from '../../assets/img/icons/sound.svg';
@@ -17,16 +17,21 @@ export default class TutorialControllers {
         const prevNav = document.querySelector('.tutorial__link_active');
         const prevNavGroup = prevNav.getAttribute('data-group');
         const prevPaginationValue = document.querySelector('.pagination__btn_active').textContent;
+        // Обновляем значение предыдущей категории
         this.updateStorage(prevNavGroup, prevPaginationValue);
+        // Обновляем текущую категорию
         this.updateStorage('lastNav', group);
         // Если в local storage есть страница на которой пользователь остановился - загрузить эту страницу
         const localStoragePage = this.checkStorage(group);
         if (localStoragePage !== -1) {
           this.changeCategory(group, eventInfo.target, String(localStoragePage - 1));
           this.createPagination(30, localStoragePage);
+          // this.checkPage();
         } else {
+          this.updateStorage(group, '1');
           this.changeCategory(group, eventInfo.target, '0');
           this.createPagination(30, 1);
+          // this.checkPage();
         }
       }
     });
@@ -94,23 +99,45 @@ export default class TutorialControllers {
     //---------------------------------------
     const groupValue = group.toString();
     this.renderCards(`${groupValue[groupValue.length - 1]}`, categoryWrapper, page);
+    // this.checkPage();
     return true;
   }
 
   renderCards(group: string, renderContainer: HTMLElement, page: string) {
     const api = new Api();
     const response = api.getWords(group, page);
+    // const userId = localStorage.getItem('userID');
     response.then((data) => {
       for (let i = 0; i < data.length; i += 1) {
-        const card = new Card(data[i]);
-        card.renderCard(renderContainer);
+        // api.checkLearnWord(userId)
+        const card = new Card();
+        const cardContainer = card.renderCard(renderContainer);
+        const hardBtn = cardContainer.querySelector('.btn_add');
+        const learnBtn = cardContainer.querySelector('.btn-learned');
+        hardBtn.addEventListener('click', (event) => {
+          const target = event.target as HTMLElement;
+          this.addWordToMyDictionary(target);
+        });
+
+        learnBtn.addEventListener('click', (event) => {
+          const target = event.target as HTMLElement;
+          this.markWordAsLearned(target);
+          this.checkPage();
+        });
       }
+      this.updateCards(data);
     });
   }
 
   createPagination(totalPages: number, page: number) {
+    const activeGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+    let learnedPages;
+    if (localStorage.getItem('pagination') !== null) {
+      learnedPages = JSON.parse(localStorage.getItem('pagination'));
+    }
     let pagination = '';
     let active = '';
+    let learned = '';
     let beforePage = page - 1;
     let afterPage = page + 1;
 
@@ -125,7 +152,11 @@ export default class TutorialControllers {
     }
     // Если страница больше 2 то добавляем первую страницу
     if (page > 2) {
-      pagination += '<button class="pagination__btn">1</button>';
+      if (learnedPages && learnedPages[activeGroup] && learnedPages[activeGroup].includes('1')) {
+        pagination += '<button class="pagination__btn pagination__btn-learned">1</button>';
+      } else {
+        pagination += '<button class="pagination__btn">1</button>';
+      }
       // Если страница больше 3 то добавляем точки
       if (page > 3) {
         pagination += '<div class="pagination__points">...</div>';
@@ -156,13 +187,25 @@ export default class TutorialControllers {
       } else {
         active = '';
       }
-      pagination += `<button class="pagination__btn ${active}">${plength}</button>`;
+      if (learnedPages
+        && learnedPages[activeGroup]
+        && learnedPages[activeGroup].includes(plength.toString())) {
+        learned = 'pagination__btn-learned';
+      }
+      pagination += `<button class="pagination__btn ${active} ${learned}">${plength}</button>`;
+      learned = '';
     }
     if (page < totalPages - 1) {
       if (page < totalPages - 2) {
         pagination += '<div class="pagination__points">...</div>';
       }
-      pagination += `<button class="pagination__btn">${totalPages}</button>`;
+      if (learnedPages
+        && learnedPages[activeGroup]
+        && learnedPages[activeGroup].includes(totalPages.toString())) {
+        pagination += `<button class="pagination__btn pagination__btn-learned">${totalPages}</button>`;
+      } else {
+        pagination += `<button class="pagination__btn">${totalPages}</button>`;
+      }
     }
     // Если страница не последняя то делаем кнопку юзабельной
     if (page === totalPages) {
@@ -174,10 +217,45 @@ export default class TutorialControllers {
     return pagination;
   }
 
-  updateCards(data: Word[]) {
+  async updateCards(data: Word[]) {
+    const checkedWordsArray = await this.checkLearnedWords(data);
+    const checkedUserWordsArray = await this.checkUserWords(data);
     const activeTab = document.querySelector('.tabs__block_active');
     const cardsOnPage = Array.from(activeTab.querySelectorAll('.card'));
     cardsOnPage.map((card, index) => {
+      if (card.classList.contains('card_learned')) {
+        card.classList.remove('card_learned');
+      }
+      if (checkedWordsArray[index].userLearnedWordsExists === true) {
+        card.classList.add('card_learned');
+        const dictionaryBtn = card.querySelector('.btn_add');
+        dictionaryBtn.classList.add('btn_disable');
+        const learnedBtn = card.querySelector('.btn-learned');
+        learnedBtn.classList.add('btn_learned');
+        learnedBtn.textContent = 'Я не знаю это слово';
+      } else {
+        const disableBtn = card.querySelector('.btn_add');
+        if (disableBtn.classList.contains('btn_disable')) {
+          disableBtn.classList.remove('btn_disable');
+        }
+        const learnedBtn = card.querySelector('.btn-learned');
+        learnedBtn.classList.remove('btn_learned');
+        learnedBtn.textContent = 'Я знаю это слово';
+      }
+      if (checkedUserWordsArray[index].id) {
+        card.classList.add('card_hard');
+        card.querySelector('.btn_add').classList.add('btn_disable');
+        card.querySelector('.btn-learned').classList.add('btn_disable');
+      } else {
+        card.classList.remove('card_hard');
+        const disableBtn = card.querySelector('.btn_add');
+        const learnedBtn = card.querySelector('.btn-learned');
+        disableBtn.classList.remove('btn_disable');
+        learnedBtn.classList.remove('btn_disable');
+      }
+      if (card.classList.contains('card_learned')) {
+        card.querySelector('.btn_add').classList.add('btn_disable');
+      }
       const cardImageContainer = card.querySelector('.card__image-fluid');
       const cardWord = card.querySelector('.card-name__original');
       const cardWordTranslation = card.querySelector('.card-name__translation');
@@ -222,14 +300,11 @@ export default class TutorialControllers {
       cardAudio.innerHTML = `<img src="${soundImage}" alt="Произнести слово ${data[index].word}">`;
       cardInfo.append(cardAudio);
       cardAudio.addEventListener('click', () => {
-        this.playAudio(
-          data[index].audio,
-          data[index].audioExample,
-          data[index].audioMeaning,
-        );
+        this.playAudio(data[index].audio, data[index].audioExample, data[index].audioMeaning);
       });
       return card;
     });
+    this.checkPage();
   }
 
   private playAudio(wordPath: string, wordMeaningPath: string, wordExamplePath: string) {
@@ -255,5 +330,112 @@ export default class TutorialControllers {
       return Number(out);
     }
     return -1;
+  }
+
+  markWordAsLearned(target: HTMLElement) {
+    const targetElement = target;
+    const api = new Api();
+    const userId = localStorage.getItem('userId');
+    const cardContainer = targetElement.parentNode.parentNode.parentElement;
+    const wordId = cardContainer.id;
+    if (targetElement.classList.contains('btn_learned')) {
+      targetElement.classList.remove('btn_learned');
+      targetElement.parentNode.querySelector('.btn_disable').classList.remove('btn_disable');
+      targetElement.textContent = 'Я знаю это слово';
+      cardContainer.classList.remove('card_learned');
+      api.deleteUserLearnedWordByID(userId, wordId);
+    } else {
+      targetElement.classList.add('btn_learned');
+      cardContainer.classList.add('card_learned');
+      targetElement.textContent = 'Я не знаю это слово';
+      const addButton = cardContainer.querySelector('.btn_add');
+      addButton.classList.add('btn_disable');
+      api.updateUserLearnedWords(userId, wordId);
+    }
+    const tutorialController = new TutorialControllers();
+    tutorialController.checkPage();
+  }
+
+  addWordToMyDictionary(target: HTMLElement) {
+    const targetElement = target;
+    const api = new Api();
+    const userId = localStorage.getItem('userId');
+    const cardContainer = targetElement.parentNode.parentNode.parentElement;
+    const wordId = cardContainer.id;
+    cardContainer.classList.add('card_hard');
+    cardContainer.querySelector('.btn_add').classList.add('btn_disable');
+    cardContainer.querySelector('.btn-learned').classList.add('btn_disable');
+    api.createUserWord({ difficulty: 'easy', id: userId, wordId });
+    const tutorialController = new TutorialControllers();
+    tutorialController.checkPage();
+  }
+
+  checkLearnedWords(data: Word[]): Promise<CheckLearnedWord[]> {
+    const api = new Api();
+    const dataValues = Object.values(data);
+    const userId = localStorage.getItem('userId');
+    const allWordId = dataValues.map((value) => value.id);
+    const promisses = allWordId.map(
+      (wordId) => new Promise((resolve: (value: Promise<CheckLearnedWord>) => void) => {
+        resolve(api.checkLearnWord(userId, wordId));
+      }),
+    );
+    return Promise.all(promisses).then((values) => values);
+  }
+
+  checkUserWords(data: Word[]): Promise<UserWord[]> {
+    const api = new Api();
+    const dataValues = Object.values(data);
+    const userId = localStorage.getItem('userId');
+    const allWordId = dataValues.map((value) => value.id);
+    const promisses = allWordId.map(
+      (wordId) => new Promise((resolve: (value: Promise<UserWord>) => void) => {
+        resolve(api.getUserWordById(userId, wordId));
+      }),
+    );
+    return Promise.all(promisses).then((values) => values);
+  }
+
+  checkPage() {
+    const activeTab = document.querySelector('.tabs__block_active');
+    const allCardsOnPage = activeTab.querySelectorAll('.card').length;
+    const checkedLearnedWordsCounter = activeTab.querySelectorAll('.card_learned').length;
+    const checkedHardWordsCounter = activeTab.querySelectorAll('.card_hard').length;
+    if (checkedLearnedWordsCounter + checkedHardWordsCounter === allCardsOnPage) {
+      activeTab.classList.add('tabs__block-learned');
+      const paginationActive = document.querySelector('.pagination__btn_active');
+      paginationActive.classList.add('pagination__btn-learned');
+      const currentLearnedPagination = localStorage.getItem('pagination');
+      const paginationActiveValue = paginationActive.textContent.trim();
+      const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+      if (currentLearnedPagination) {
+        const paginationInfo = JSON.parse(currentLearnedPagination);
+        // Если такой группы нет то создаём
+        if (!paginationInfo[Number(groupActive)]) {
+          paginationInfo[groupActive] = [paginationActiveValue];
+          localStorage.setItem('pagination', JSON.stringify(paginationInfo));
+          // Если группа есть
+        } else if (!paginationInfo[Number(groupActive)].includes(paginationActiveValue)) {
+          const value = {
+            [groupActive]: paginationInfo[Number(groupActive)].concat(paginationActiveValue),
+          };
+          paginationInfo[groupActive] = value;
+          localStorage.setItem('pagination', JSON.stringify(paginationInfo[groupActive]));
+        }
+      } else {
+        const value = { [groupActive]: [paginationActiveValue] };
+        localStorage.setItem('pagination', JSON.stringify(value));
+      }
+    } else if (activeTab.classList.contains('tabs__block-learned')) {
+      activeTab.classList.remove('tabs__block-learned');
+      const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+      const page: string = document.querySelector('.pagination__btn_active').textContent;
+      const paginationData = JSON.parse(localStorage.getItem('pagination'));
+      const newArr = paginationData[groupActive];
+      paginationData[groupActive] = newArr.splice(paginationData[groupActive].indexOf(page), 1);
+      paginationData[groupActive] = newArr;
+      localStorage.setItem('pagination', JSON.stringify(paginationData));
+      this.createPagination(30, Number(page));
+    }
   }
 }

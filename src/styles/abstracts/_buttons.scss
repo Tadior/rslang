@@ -31,6 +31,11 @@
         font-size: 20px;
         padding: 9px 30px;
      }
+    &_disable {
+        pointer-events: none;
+        background-color: rgb(117, 113, 113);
+        color: #fff;
+    }
         
     &:hover {
         background: $button-hover;

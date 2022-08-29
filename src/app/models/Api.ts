@@ -1,5 +1,13 @@
 import {
-  Word, User, UpdateUser, UserWord, UserStatistics, Settings, SignInResponse,
+  Word,
+  User,
+  UpdateUser,
+  UserWord,
+  UserStatistics,
+  Settings,
+  SignInResponse,
+  CheckLearnedWord,
+  AllUserLearnedWords,
 } from '../../types/types';
 import url from './variables';
 
@@ -97,8 +105,10 @@ export default class Api {
     return request.json();
   }
 
-  async updateUserStatisticsById(userId: string, bodyObj: UserStatistics)
-    : Promise<UserStatistics[]> {
+  async updateUserStatisticsById(
+    userId: string,
+    bodyObj: UserStatistics,
+  ): Promise<UserStatistics[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/statistics`, {
       method: 'PUT',
       headers: {
@@ -114,8 +124,7 @@ export default class Api {
     return request.json();
   }
 
-  async updateSettingsById(bodyObj: Settings)
-    : Promise<Settings> {
+  async updateSettingsById(bodyObj: Settings): Promise<Settings> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.userId}/settings`, {
       method: 'PUT',
       headers: {
@@ -135,5 +144,34 @@ export default class Api {
       body: JSON.stringify(bodyObj),
     });
     return request.json();
+  }
+
+  async checkLearnWord(userId: string, wordId: string): Promise<CheckLearnedWord> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`);
+    return request.json();
+  }
+
+  async getUserLearnWords(userId: string): Promise<AllUserLearnedWords> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords`);
+    return request.json();
+  }
+
+  async updateUserLearnedWords(userId: string, wordId: string): Promise<AllUserLearnedWords> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    });
+    return request.json();
+  }
+
+  async deleteUserLearnedWordByID(userId: string, wordId: string) {
+    await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8',
+      },
+    });
   }
 }
