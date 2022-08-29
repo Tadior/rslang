@@ -427,14 +427,17 @@ export default class TutorialControllers {
         localStorage.setItem('pagination', JSON.stringify(value));
       }
     } else if (activeTab.classList.contains('tabs__block-learned')) {
+      console.log('here');
       activeTab.classList.remove('tabs__block-learned');
       const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
       const page: string = document.querySelector('.pagination__btn_active').textContent;
       const paginationData = JSON.parse(localStorage.getItem('pagination'));
       const newArr = paginationData[groupActive];
-      paginationData[groupActive] = newArr.splice(paginationData[groupActive].indexOf(page), 1);
-      paginationData[groupActive] = newArr;
-      localStorage.setItem('pagination', JSON.stringify(paginationData));
+      if (paginationData[groupActive].indexOf(page) !== -1) {
+        paginationData[groupActive] = newArr.splice(paginationData[groupActive].indexOf(page), 1);
+        paginationData[groupActive] = newArr;
+        localStorage.setItem('pagination', JSON.stringify(paginationData));
+      }
       this.createPagination(30, Number(page));
     }
   }
