@@ -51,8 +51,7 @@ export default class AuthorizationControllers {
     signUpHeaderBtn.addEventListener('click', (): void => {
       headerBtnSignIn.classList.toggle('btn_hide');
       logoutBtn.classList.toggle('btn_hide');
-      this.clearUserInLocalStorage();
-      this.clearProgressInLocalStorage();
+      this.deleteKeysWithDataInLocalStorage(['rslang-user', 'progress']);
     });
   }
 
@@ -110,8 +109,7 @@ export default class AuthorizationControllers {
         responseSignIn = await this.api.signIn(dataFromInputs);
         if (responseSignIn.message.includes('Authenticated')) {
           this.changeStateAfterAuthentication();
-          this.setUserToLocalStorage(responseSignIn);
-          this.createProgressStorage();
+          this.setUserAndProgressToLocalStorage(responseSignIn);
         } else {
           this.messagesObserver(responseSignIn);
         }
@@ -121,8 +119,7 @@ export default class AuthorizationControllers {
         responseSignIn = await this.api.signIn(dataFromInputs);
         if (!Object.prototype.hasOwnProperty.call(responseSignUp, 'message') && responseSignIn.message.includes('Authenticated')) {
           this.changeStateAfterAuthentication();
-          this.setUserToLocalStorage(responseSignIn);
-          this.createProgressStorage();
+          this.setUserAndProgressToLocalStorage(responseSignIn);
         } else {
           this.messagesObserver(responseSignUp);
         }
@@ -164,7 +161,9 @@ export default class AuthorizationControllers {
     return undefined;
   }
 
-  private setUserToLocalStorage(user: SignInResponse): void {
+  private setUserAndProgressToLocalStorage(user: SignInResponse): void {
+    const progress = {};
+    localStorage.setItem('progress', JSON.stringify(progress));
     localStorage.setItem('rslang-user', JSON.stringify(user));
   }
 
@@ -173,17 +172,19 @@ export default class AuthorizationControllers {
     return !!user;
   }
 
-  private createProgressStorage(): void {
-    const progress = {};
-    localStorage.setItem('progress', JSON.stringify(progress));
-  }
-
-  private clearUserInLocalStorage(): void {
-    localStorage.removeItem('rslang-user');
-  }
-
-  private clearProgressInLocalStorage(): void {
-    localStorage.removeItem('progress');
+  private deleteKeysWithDataInLocalStorage(keys: string[]): void {
+    keys.forEach((key: string) => {
+      switch (key) {
+        case 'rslang-user':
+          localStorage.removeItem('rslang-user');
+          break;
+        case 'progress':
+          localStorage.removeItem('progress');
+          break;
+        default:
+          break;
+      }
+    });
   }
 
   private clearModalInputs(datasets: string[]): void {
