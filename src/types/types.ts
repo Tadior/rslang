@@ -15,6 +15,7 @@ export interface Word {
   textExampleTranslate: string;
 }
 export interface User {
+  id?: string;
   name?: string;
   email: string;
   password: string;
@@ -70,11 +71,4 @@ export interface UserDayStatistic {
   audioRow: number;
   audioAccuracy: number;
   learnedWords: number;
-}
-
-export interface NewUser {
-  id?: string;
-  name: string;
-  email: string;
-  password: string;
 }

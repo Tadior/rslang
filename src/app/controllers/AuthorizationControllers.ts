@@ -1,5 +1,4 @@
-// eslint-disable-next-line object-curly-newline
-import { User, SignInResponse, NewUser, SignUpResponse } from '../../types/types';
+import { SignInResponse, SignUpResponse, User } from '../../types/types';
 import Api from '../models/Api';
 import Authorization from '../views/Authorisation';
 
@@ -24,17 +23,11 @@ export default class AuthorizationControllers {
       const modal: HTMLDivElement = document.querySelector('.modal');
       if (!modal) {
         this.authorization.renderSignIn();
-        this.listenCloseModalBtn();
-        this.listenModal();
-        this.listenModalSwitchToSignUpBtn();
-        this.listenModalSignInBtn();
+        this.addListenersToModal();
       } else if (modal.dataset.modal === 'signup') {
-        document.querySelector('.modal')!.remove();
+        modal.remove();
         this.authorization.renderSignIn();
-        this.listenCloseModalBtn();
-        this.listenModal();
-        this.listenModalSwitchToSignUpBtn();
-        this.listenModalSignInBtn();
+        this.addListenersToModal();
       } else {
         document.body.style.overflow = 'hidden';
         this.clearModalInputs(['email-signin', 'password-signin']);
@@ -42,6 +35,13 @@ export default class AuthorizationControllers {
         modal.classList.toggle('modal_hide');
       }
     });
+  }
+
+  private addListenersToModal(): void {
+    this.listenCloseModalBtn();
+    this.listenModal();
+    this.listenModalSwitchToSignUpBtn();
+    this.listenModalSignInBtn();
   }
 
   private listenSignUpHeaderBtn(): void {
@@ -71,7 +71,7 @@ export default class AuthorizationControllers {
   private listenModalSignUpBtn(): void {
     const signUpBtn: HTMLButtonElement = document.querySelector("[data-authorization='create-account']")!;
     signUpBtn.addEventListener('click', (): void => {
-      this.signUp();
+      this.authentication('signup');
     });
   }
 
@@ -96,60 +96,72 @@ export default class AuthorizationControllers {
 
   private listenModalSignInBtn(): void {
     const signInBtn: HTMLButtonElement = document.querySelector("[data-authorization='signin']")!;
-    signInBtn.addEventListener('click', () => {
-      this.signIn();
+    signInBtn.addEventListener('click', (): void => {
+      this.authentication('signin');
     });
   }
 
-  private async signIn(): Promise<void> {
-    const email: HTMLInputElement = document.querySelector('[data-input="email-signin"]');
-    const password: HTMLInputElement = document.querySelector('[data-input="password-signin"]');
-    const user: User = {
-      email: email.value,
-      password: password.value,
-    };
-    const response: SignInResponse = await this.api.signIn(user);
-    const modal: HTMLDivElement = document.querySelector('.modal')!;
-    const headerBtnSignIn: HTMLButtonElement = document.querySelector('.btn_login');
-    const logoutBtn: HTMLButtonElement = document.querySelector('.btn_logout');
-    if (response.message.includes('Authenticated')) {
-      modal.classList.toggle('modal_hide');
-      headerBtnSignIn.classList.toggle('btn_hide');
-      logoutBtn.classList.toggle('btn_hide');
-      modal.remove();
-      document.body.style.overflow = '';
-      this.setUserToLocalStorage(response);
-      this.createProgressStorage();
-    } else {
-      this.messagesObserver(response);
+  private async authentication(type: string): Promise<void> {
+    const dataFromInputs = this.getDataFromInputs(type);
+    let responseSignUp: SignUpResponse;
+    let responseSignIn: SignInResponse;
+    switch (type) {
+      case 'signin':
+        responseSignIn = await this.api.signIn(dataFromInputs);
+        if (responseSignIn.message.includes('Authenticated')) {
+          this.changeStateAfterAuthentication();
+          this.setUserToLocalStorage(responseSignIn);
+          this.createProgressStorage();
+        } else {
+          this.messagesObserver(responseSignIn);
+        }
+        break;
+      case 'signup':
+        responseSignUp = await this.api.createUser(dataFromInputs);
+        responseSignIn = await this.api.signIn(dataFromInputs);
+        if (!Object.prototype.hasOwnProperty.call(responseSignUp, 'message') && responseSignIn.message.includes('Authenticated')) {
+          this.changeStateAfterAuthentication();
+          this.setUserToLocalStorage(responseSignIn);
+          this.createProgressStorage();
+        } else {
+          this.messagesObserver(responseSignUp);
+        }
+        break;
+      default:
+        break;
     }
   }
 
-  private async signUp(): Promise<void> {
-    const email: HTMLInputElement = document.querySelector('[data-input="email-signup"]');
-    const name: HTMLInputElement = document.querySelector('[data-input="name-signup"]');
-    const password: HTMLInputElement = document.querySelector('[data-input="password-signup"]');
-    const newUser: NewUser = {
-      name: name.value,
-      email: email.value,
-      password: password.value,
-    };
-    const responseSignUp: SignUpResponse = await this.api.createUser(newUser);
-    const responseSignIn: SignInResponse = await this.api.signIn(newUser);
+  private changeStateAfterAuthentication(): void {
     const modal: HTMLDivElement = document.querySelector('.modal')!;
     const headerBtnSignIn: HTMLButtonElement = document.querySelector('.btn_login');
     const logoutBtn: HTMLButtonElement = document.querySelector('.btn_logout');
-    if (!Object.prototype.hasOwnProperty.call(responseSignUp, 'message') && responseSignIn.message.includes('Authenticated')) {
-      modal.classList.toggle('modal_hide');
-      headerBtnSignIn.classList.toggle('btn_hide');
-      logoutBtn.classList.toggle('btn_hide');
-      modal.remove();
-      document.body.style.overflow = '';
-      this.setUserToLocalStorage(responseSignIn);
-      this.createProgressStorage();
-    } else {
-      this.messagesObserver(responseSignUp);
+    modal.classList.toggle('modal_hide');
+    headerBtnSignIn.classList.toggle('btn_hide');
+    logoutBtn.classList.toggle('btn_hide');
+    modal.remove();
+    document.body.style.overflow = '';
+  }
+
+  private getDataFromInputs(type: string): User | undefined {
+    let name: HTMLInputElement;
+    const email: HTMLInputElement = document.querySelector(`[data-input="email-${type}"]`);
+    const password: HTMLInputElement = document.querySelector(`[data-input="password-${type}"]`);
+    if (type === 'signin') {
+      return {
+        email: email.value,
+        password: password.value,
+      };
     }
+    if (type === 'signup') {
+      name = document.querySelector(`[data-input="name-${type}"]`);
+      return {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+      };
+    }
+    return undefined;
   }
 
   private setUserToLocalStorage(user: SignInResponse): void {
@@ -182,19 +194,19 @@ export default class AuthorizationControllers {
   }
 
   private clearModalMessages(): void {
-    const modalMessages = document.querySelector('.modal__messages');
+    const modalMessages: HTMLDivElement = document.querySelector('.modal__messages');
     if (modalMessages) {
       modalMessages.remove();
     }
   }
 
   private messagesObserver(response: SignInResponse | SignUpResponse): void {
-    const modalFluid = document.querySelector('.modal__fluid');
-    const modalMessagesExists = document.querySelector('.modal__messages');
+    const modalFluid: HTMLDivElement = document.querySelector('.modal__fluid');
+    const modalMessagesExists: HTMLDivElement = document.querySelector('.modal__messages');
     if (modalMessagesExists) {
       modalMessagesExists.remove();
     }
-    const modalMessages = document.createElement('div');
+    const modalMessages: HTMLDivElement = document.createElement('div');
     modalMessages.classList.add('modal__messages');
     if (typeof response.message === 'string') {
       modalMessages.innerHTML = `${response.message}<br>`;
