@@ -1,4 +1,4 @@
-import { Word, CheckLearnedWord, UserWord } from '../../types/types';
+import { Word, UserLearnedWordsCheck, UserWord } from '../../types/types';
 import Api from '../models/Api';
 import Card from '../views/Card';
 import soundImage from '../../assets/img/icons/sound.svg';
@@ -346,7 +346,7 @@ export default class TutorialControllers {
       targetElement.parentNode.querySelector('.btn_disable').classList.remove('btn_disable');
       targetElement.textContent = 'Я знаю это слово';
       cardContainer.classList.remove('card_learned');
-      api.deleteUserLearnedWordByID(userId, wordId);
+      api.deleteUserLearnedWordById(userId, wordId);
     } else {
       targetElement.classList.add('btn_learned');
       cardContainer.classList.add('card_learned');
@@ -373,14 +373,14 @@ export default class TutorialControllers {
     tutorialController.checkPage();
   }
 
-  checkLearnedWords(data: Word[]): Promise<CheckLearnedWord[]> {
+  checkLearnedWords(data: Word[]): Promise<UserLearnedWordsCheck[]> {
     const api = new Api();
     const dataValues = Object.values(data);
     const userId = localStorage.getItem('userId');
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
-      (wordId) => new Promise((resolve: (value: Promise<CheckLearnedWord>) => void) => {
-        resolve(api.checkLearnWord(userId, wordId));
+      (wordId) => new Promise((resolve: (value: Promise<UserLearnedWordsCheck>) => void) => {
+        resolve(api.isWordLearned(userId, wordId));
       }),
     );
     return Promise.all(promisses).then((values) => values);

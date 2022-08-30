@@ -30,7 +30,9 @@ export interface UserWord {
 }
 export interface UserStatistics {
   learnedWords: number;
-  optional?: {};
+  optional?: {
+    [key: string] : UserDayStatistic
+  };
 }
 export interface Settings {
   userId: string;
@@ -44,10 +46,20 @@ export interface SignInResponse {
   userId: string;
   name: string;
 }
-export interface CheckLearnedWord {
-  userLearnedWordsExists: boolean;
+
+export interface UserLearnedWords {
+  userId: string,
+  learnedWords: string[]
 }
-export interface AllUserLearnedWords {
-  userId: string;
-  learnedWords: string[];
+
+export interface UserLearnedWordsCheck {
+  userLearnedWordsExists: boolean
+}
+
+export interface UserDayStatistic {
+  sprintRow: number,
+  sprintAccuracy: number,
+  audioRow: number,
+  audioAccuracy: number,
+  learnedWords: number
 }

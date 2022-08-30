@@ -3,6 +3,7 @@ import listenIcon from '../../assets/img/sprint/listen_icon.png';
 import MelodyImage from '../../assets/img/icons/melody.svg';
 import WindowImage from '../../assets/img/icons/window.svg';
 import AudioImage from '../../assets/img/icons/audio.svg';
+import { Word } from '../../types/types';
 
 export default class Games {
   renderSprintGame():void {
@@ -24,10 +25,10 @@ export default class Games {
         <div class='game__wrapper'>
           <div class='sprint__interface'>
             <div class='sprint__points'>
-              <div class='points__current'>10</div>
+              <div class='points__current'>0</div>
               <div class='points__category'>+ 10 баллов</div>
               <div class='points__row'>
-                <div class='row__cube_active'></div>
+                <div class='row__cube'></div>
                 <div class='row__cube'></div>
                 <div class='row__cube'></div>
               </div>
@@ -52,6 +53,7 @@ export default class Games {
         <div>
       </div>
     `;
+    (<HTMLElement>document.querySelector('main')).innerHTML = '';
     (<HTMLElement>document.querySelector('main')).append(sprintPage);
     this.addSprintTimer();
   }
@@ -128,7 +130,8 @@ export default class Games {
     timer!.insertAdjacentHTML('afterbegin', timerHTML);
   }
 
-  renderGameResults(game: string, mistakes: any[], correct: any[]):void {
+  renderGameResults(game: string, mistakes: Word[], correct: Word[], points: number, maxRow: number)
+    :void {
     const main = document.querySelector('main');
     const gameResult: HTMLElement = document.createElement('section');
     gameResult.classList.add('game-result');
@@ -137,32 +140,32 @@ export default class Games {
         <h2 class='title title_corner'>${game}</h2>
         <div class='result__wrapper'>
           <div class='result__console'>
-            <h5 class='result__points'>Вы набрали 60 баллов!</h5>
-            <h5 class='result__row'>Длина серии: 4</h5>
+            <h5 class='result__points'>Вы набрали ${points} баллов!</h5>
+            <h5 class='result__row'>Длина серии: ${maxRow}</h5>
             <div class='result__details'>
               <div class='result__mistakes'>
-                <h6 class='title_mistakes'>Ошибки: 1</h6>
+                <h6 class='title_mistakes'>Ошибки: ${mistakes.length}</h6>
                 ${mistakes.map((mistake) => `
                   <div class='mistakes__item'>
                     <div class='item__listen'>
-                      <audio src='${mistake.sound}'></audio>
-                      <img src='${listenIcon}' alt='listen_icon'>
+                      <audio src='http://localhost:4000/${mistake.audio}'></audio>
+                      <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
-                    <div class='item__english'>${mistake.english}</div>
-                    <div class='item__russian'>${mistake.russian}</div>
+                    <div class='item__english'>${mistake.word}</div>
+                    <div class='item__russian'>${mistake.wordTranslate}</div>
                   </div>
                 `).join('')}
               </div>
               <div class='result__correct'>
-                <h6 class='title_correct'>Изученные слова: 4</h6>
+                <h6 class='title_correct'>Изученные слова: ${correct.length}</h6>
                 ${correct.map((word) => `
                   <div class='correct__item'>
                     <div class='item__listen'>
-                      <audio src='${word.sound}'></audio>
-                      <img src='${listenIcon}' alt='listen_icon'>
+                      <audio src='http://localhost:4000/${word.audio}'></audio>
+                      <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
-                    <div class='item__english'>${word.english}</div>
-                    <div class='item__russian'>${word.russian}</div>
+                    <div class='item__english'>${word.word}</div>
+                    <div class='item__russian'>${word.wordTranslate}</div>
                   </div>
                 `).join('')}
               </div>
@@ -175,6 +178,7 @@ export default class Games {
         </div>
       </div>
     `;
+    main.innerHTML = '';
     main!.append(gameResult);
   }
 

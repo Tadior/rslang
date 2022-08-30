@@ -5,9 +5,9 @@ import {
   UserWord,
   UserStatistics,
   Settings,
+  UserLearnedWords,
+  UserLearnedWordsCheck,
   SignInResponse,
-  CheckLearnedWord,
-  AllUserLearnedWords,
 } from '../../types/types';
 import url from './variables';
 
@@ -23,7 +23,7 @@ export default class Api {
     return request.json();
   }
 
-  async getWordsById(wordId: string): Promise<Word[]> {
+  async getWordById(wordId: string): Promise<Word> {
     const request = await fetch(`${this.baseUrl}words?id=${wordId}`);
     return request.json();
   }
@@ -135,28 +135,17 @@ export default class Api {
     return request.json();
   }
 
-  async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
-    const request = await fetch(`${this.baseUrl}signin`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8',
-      },
-      body: JSON.stringify(bodyObj),
-    });
-    return request.json();
-  }
-
-  async checkLearnWord(userId: string, wordId: string): Promise<CheckLearnedWord> {
-    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`);
-    return request.json();
-  }
-
-  async getUserLearnWords(userId: string): Promise<AllUserLearnedWords> {
+  async getAllLearnedWords(userId: string): Promise<UserLearnedWords> {
     const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords`);
     return request.json();
   }
 
-  async updateUserLearnedWords(userId: string, wordId: string): Promise<AllUserLearnedWords> {
+  async isWordLearned(userId: string, wordId: string): Promise<UserLearnedWordsCheck> {
+    const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`);
+    return request.json();
+  }
+
+  async updateUserLearnedWords(userId: string, wordId: string): Promise<UserLearnedWords> {
     const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
       method: 'PUT',
       headers: {
@@ -166,12 +155,27 @@ export default class Api {
     return request.json();
   }
 
-  async deleteUserLearnedWordByID(userId: string, wordId: string) {
-    await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
-      method: 'DELETE',
+  async deleteUserLearnedWordById(userId: string, wordId: string): Promise<void> {
+    try {
+      await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8',
+        },
+      });
+    } catch (e: any) {
+      throw new Error(e);
+    }
+  }
+
+  async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
+    const request = await fetch(`${this.baseUrl}signin`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=utf-8',
       },
+      body: JSON.stringify(bodyObj),
     });
+    return request.json();
   }
 }
