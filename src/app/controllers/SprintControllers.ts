@@ -7,6 +7,7 @@ import WrongSound from '../../assets/sounds/wrong_answer.mp3';
 import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
 import ResultsControllers from './ResultsControllers';
+import StatisticModel from '../models/StatisticModel';
 
 export default class SprintControllers {
   api: Api;
@@ -45,6 +46,10 @@ export default class SprintControllers {
 
   resultControllers: ResultsControllers;
 
+  statistic: StatisticModel;
+
+  userId: string;
+
   constructor() {
     this.api = new Api();
     this.games = new Games();
@@ -62,12 +67,14 @@ export default class SprintControllers {
     this.mistakes = [];
     this.correct = [];
     this.timer = setTimeout(() => {
-      this.finishSprintGame();
+      this.finishSprintGame(this.userId);
     }, 62000);
     this.resultControllers = new ResultsControllers();
+    this.statistic = new StatisticModel();
+    this.userId = localStorage.getItem('userId');
   }
 
-  async startSprintPage(group: string, page: string, userId?: string): Promise<NodeJS.Timeout> {
+  async startSprintPage(group: string, page: string, userId: string): Promise<NodeJS.Timeout> {
     if (userId) {
       this.words = await this.api.getWords(group, page);
       this.words = await this.checkIfLearned(userId, this.words);
@@ -85,7 +92,7 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion();
+    this.newSprintQuestion(this.userId);
     return this.timer;
   }
 
@@ -102,7 +109,7 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion();
+    this.newSprintQuestion(this.userId);
     return this.timer;
   }
 
@@ -121,14 +128,14 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion();
+    this.newSprintQuestion(this.userId);
     return this.timer;
   }
 
   startSprintRandom(): void {
     const group = (Math.floor(Math.random() * (6 - 1)) + 1).toString();
     const page = (Math.floor(Math.random() * (30 - 1)) + 1).toString();
-    this.startSprintPage(group, page);
+    this.startSprintPage(group, page, this.userId);
   }
 
   listenWrongBtn(): void {
@@ -139,7 +146,7 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion();
+      this.newSprintQuestion(this.userId);
     });
 
     document.addEventListener('keydown', (event) => {
@@ -157,7 +164,7 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion();
+      this.newSprintQuestion(this.userId);
     });
     document.addEventListener('keydown', (event) => {
       if (event.code === 'ArrowRight') {
@@ -196,7 +203,7 @@ export default class SprintControllers {
     });
   }
 
-  newSprintQuestion(): void {
+  newSprintQuestion(userId: string): void {
     const english = document.querySelector('.console__english');
     const russian = document.querySelector('.console__russian');
     if (this.wordCounter < this.questions.length) {
@@ -205,7 +212,7 @@ export default class SprintControllers {
       this.wordCounter += 1;
     } else {
       this.wordCounter = 0;
-      this.finishSprintGame();
+      this.finishSprintGame(userId);
       clearTimeout(this.timer);
     }
   }
@@ -281,7 +288,9 @@ export default class SprintControllers {
   }
 
   checkRow(): void {
-    this.maxRow = this.maxRow < this.rowCounter ? this.rowCounter : this.maxRow;
+    if (this.maxRow < this.rowCounter) {
+      this.maxRow = this.rowCounter;
+    }
   }
 
   resetCubes(): void {
@@ -336,9 +345,13 @@ export default class SprintControllers {
     });
   }
 
-  finishSprintGame(): void {
+  finishSprintGame(userId: string): void {
     this.finishSound.play();
+    this.checkRow();
     this.games.renderGameResults('Cпринт', this.mistakes, this.correct, this.points, this.maxRow);
+    if (userId) {
+      this.statistic.getFullGameStatistic('s', userId, this.maxRow, this.mistakes, this.correct);
+    }
 
     this.resultControllers.listenHomeBtn();
     this.resultControllers.listenAudioBtn();

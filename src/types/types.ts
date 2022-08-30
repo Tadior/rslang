@@ -57,9 +57,14 @@ export interface UserLearnedWordsCheck {
 }
 
 export interface UserDayStatistic {
-    sprintRow: number,
-    sprintAccuracy: number,
-    audioRow: number,
-    audioAccuracy: number,
-    learnedWords: number
+    sprintRow?: number,
+    sprintAccuracy?: number,
+    sprintNewWords?: number,
+    audioRow?: number,
+    audioAccuracy?: number,
+    audioNewWords?: number,
+    learnedWords?: number
 }
+
+export type StatisicProperty = 'sprintRow' | 'sprintAccuracy' | 'sprintNewWords' | 'audioRow' | 'audioAccuracy' | 'audioNewWords';
+

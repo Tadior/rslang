@@ -5,6 +5,11 @@
   }
 }
 
+.title_message {
+  font-size: 30px;
+  text-align: center;
+}
+
 .title_today,
 .title_all-time {
   text-align: center;
@@ -19,7 +24,7 @@
 .today__common {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 10px;
 }
 
 .today__words,
@@ -32,7 +37,8 @@
 .today__accuracy,
 .today__minigame,
 .chart__days,
-.chart__words {
+.chart__words,
+.today__new-words {
   background: #FAFAFA;
   box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
   border-radius: 40px;
@@ -46,14 +52,14 @@
 }
 
 .today__words {
-  height: 170px;
+  height: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 30px;
 
   .words__number {
-    font-size: 100px;
+    font-size: 72px;
     color: $light-blue;
     font-family: 'Jost-Bold', serif;
   }
@@ -70,20 +76,45 @@
   }
 }
 
+.today__new-words {
+  height: 130px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+
+  .new-words__number {
+    font-size: 72px;
+    color: $light-blue;
+    font-family: 'Jost-Bold', serif;
+  }
+
+  .new-words__text {
+    font-size: 32px;
+    font-family: 'Jost-Medium', serif;
+    line-height: 43.2px;
+
+    span {
+      font-style: italic;
+      color: $grey;
+    }
+  }
+}
+
 .today__accuracy {
-  height: 380px;
+  height: 300px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 40px;
+  gap: 20px;
 
   .title_accuracy {
     text-align: center;
   }
 
   .accuracy__chart {
-    width: 220px;
-    height: 220px;
+    width: 180px;
+    height: 180px;
   }
 }
 
