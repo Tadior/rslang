@@ -1,41 +1,45 @@
 .header {
-    margin: 20px 0;
-    font-family: "Jost-Medium",serif;
-    &__wrapper {
-        display: flex;
-        align-items: center;
+  margin: 20px 0;
+  font-family: 'Jost-Medium', serif;
+  &__wrapper {
+    display: flex;
+    align-items: center;
+    .btn_logout:hover {
+      background: $dark-red;
+      color: #fff;
     }
+  }
 }
 
 .logo {
-    &__img {
-        margin-right: 10px;
-    }
-    &__link {
-        color: $dark-blue;
-        display: flex;
-        align-items: center;
-        font-size: 48px;
-    }
+  &__img {
+    margin-right: 10px;
+  }
+  &__link {
+    color: $dark-blue;
+    display: flex;
+    align-items: center;
+    font-size: 48px;
+  }
 }
 .navigation {
-    flex: 1 1 100%;
+  flex: 1 1 100%;
+  display: flex;
+  justify-content: center;
+  &__container {
     display: flex;
-    justify-content: center;
-		&__container {
-            display: flex;
-		}
-		&__item {
-            margin-right: 35px;
-            &:last-child {
-                margin-right: 0;
-            }
-		}
-		&__link {
-            color: $gray;
-            transition: all ease .5s;
-            &:hover {
-                color: $light-blue;
-            }
-		}
+  }
+  &__item {
+    margin-right: 35px;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+  &__link {
+    color: $gray;
+    transition: all ease 0.5s;
+    &:hover {
+      color: $light-blue;
+    }
+  }
 }

@@ -1,6 +1,6 @@
 import {
   Word, User, UpdateUser, UserWord, UserStatistics, Settings,
-  UserLearnedWords, UserLearnedWordsCheck, SignInResponse
+  UserLearnedWords, UserLearnedWordsCheck, SignInResponse, NewUser, SignUpResponse,
 } from '../../types/types';
 
 export default class Api {
@@ -20,7 +20,7 @@ export default class Api {
     return request.json();
   }
 
-  async createUser(bodyObj: User): Promise<User> {
+  async createUser(bodyObj: NewUser): Promise<SignUpResponse> {
     const request = await fetch(`${this.baseUrl}users`, {
       method: 'POST',
       headers: {
@@ -158,7 +158,7 @@ export default class Api {
       throw new Error(e);
     }
   }
-  
+
   async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',
