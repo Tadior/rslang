@@ -80,6 +80,7 @@ export default class AuthorizationControllers {
     const modal: HTMLDivElement = document.querySelector('.modal')!;
     crossBtn.addEventListener('click', (): void => {
       modal.classList.toggle('modal_hide');
+      document.body.style.overflow = '';
     });
   }
 
