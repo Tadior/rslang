@@ -13,14 +13,14 @@ export default class AuthorizationControllers {
     this.api = new Api();
   }
 
-  enableAuthorization() {
+  public enableAuthorization(): void {
     this.listenSignInBtn();
     this.listenSignUpHeaderBtn();
   }
 
-  listenSignInBtn() {
+  private listenSignInBtn(): void {
     const signInBtn: HTMLButtonElement = document.querySelector('.btn_login')!;
-    signInBtn.addEventListener('click', () => {
+    signInBtn.addEventListener('click', (): void => {
       const modal: HTMLDivElement = document.querySelector('.modal');
       if (!modal) {
         this.authorization.renderSignIn();
@@ -44,21 +44,22 @@ export default class AuthorizationControllers {
     });
   }
 
-  listenSignUpHeaderBtn() {
-    const signUpHeaderBtn: HTMLButtonElement = document.querySelector('.btn_logout')!;
-    const headerBtnSignIn = document.querySelector('.btn_login');
-    const logoutBtn = document.querySelector('.btn_logout');
-    signUpHeaderBtn.addEventListener('click', () => {
+  private listenSignUpHeaderBtn(): void {
+    const signUpHeaderBtn: HTMLButtonElement = document.querySelector('.btn_logout');
+    const headerBtnSignIn: HTMLButtonElement = document.querySelector('.btn_login');
+    const logoutBtn: HTMLButtonElement = document.querySelector('.btn_logout');
+    signUpHeaderBtn.addEventListener('click', (): void => {
       headerBtnSignIn.classList.toggle('btn_hide');
       logoutBtn.classList.toggle('btn_hide');
       this.clearUserInLocalStorage();
+      this.clearProgressInLocalStorage();
     });
   }
 
-  listenModalSwitchToSignUpBtn() {
+  private listenModalSwitchToSignUpBtn(): void {
     const signUpBtn: HTMLButtonElement = document.querySelector("[data-authorization='signup']")!;
     const modal: HTMLDivElement = document.querySelector('.modal')!;
-    signUpBtn.addEventListener('click', () => {
+    signUpBtn.addEventListener('click', (): void => {
       modal.remove();
       this.authorization.renderSignUp();
       this.listenCloseModalBtn();
@@ -67,24 +68,24 @@ export default class AuthorizationControllers {
     });
   }
 
-  listenModalSignUpBtn() {
+  private listenModalSignUpBtn(): void {
     const signUpBtn: HTMLButtonElement = document.querySelector("[data-authorization='create-account']")!;
-    signUpBtn.addEventListener('click', () => {
+    signUpBtn.addEventListener('click', (): void => {
       this.signUp();
     });
   }
 
-  listenCloseModalBtn() {
+  private listenCloseModalBtn(): void {
     const crossBtn: HTMLButtonElement = document.querySelector('.modal__exit')!;
     const modal: HTMLDivElement = document.querySelector('.modal')!;
-    crossBtn.addEventListener('click', () => {
+    crossBtn.addEventListener('click', (): void => {
       modal.classList.toggle('modal_hide');
     });
   }
 
-  listenModal() {
+  private listenModal(): void {
     const modal: HTMLDivElement = document.querySelector('.modal')!;
-    modal.addEventListener('click', (event) => {
+    modal.addEventListener('click', (event: Event): void => {
       if (event.target === event.currentTarget) {
         modal.classList.toggle('modal_hide');
         document.body.style.overflow = '';
@@ -92,14 +93,14 @@ export default class AuthorizationControllers {
     });
   }
 
-  async listenModalSignInBtn() {
+  private listenModalSignInBtn(): void {
     const signInBtn: HTMLButtonElement = document.querySelector("[data-authorization='signin']")!;
     signInBtn.addEventListener('click', () => {
       this.signIn();
     });
   }
 
-  async signIn() {
+  private async signIn(): Promise<void> {
     const email: HTMLInputElement = document.querySelector('[data-input="email-signin"]');
     const password: HTMLInputElement = document.querySelector('[data-input="password-signin"]');
     const user: User = {
@@ -108,8 +109,8 @@ export default class AuthorizationControllers {
     };
     const response: SignInResponse = await this.api.signIn(user);
     const modal: HTMLDivElement = document.querySelector('.modal')!;
-    const headerBtnSignIn = document.querySelector('.btn_login');
-    const logoutBtn = document.querySelector('.btn_logout');
+    const headerBtnSignIn: HTMLButtonElement = document.querySelector('.btn_login');
+    const logoutBtn: HTMLButtonElement = document.querySelector('.btn_logout');
     if (response.message.includes('Authenticated')) {
       modal.classList.toggle('modal_hide');
       headerBtnSignIn.classList.toggle('btn_hide');
@@ -117,12 +118,13 @@ export default class AuthorizationControllers {
       modal.remove();
       document.body.style.overflow = '';
       this.setUserToLocalStorage(response);
+      this.createProgressStorage();
     } else {
       this.messagesObserver(response);
     }
   }
 
-  async signUp() {
+  private async signUp(): Promise<void> {
     const email: HTMLInputElement = document.querySelector('[data-input="email-signup"]');
     const name: HTMLInputElement = document.querySelector('[data-input="name-signup"]');
     const password: HTMLInputElement = document.querySelector('[data-input="password-signup"]');
@@ -134,8 +136,8 @@ export default class AuthorizationControllers {
     const responseSignUp: SignUpResponse = await this.api.createUser(newUser);
     const responseSignIn: SignInResponse = await this.api.signIn(newUser);
     const modal: HTMLDivElement = document.querySelector('.modal')!;
-    const headerBtnSignIn = document.querySelector('.btn_login');
-    const logoutBtn = document.querySelector('.btn_logout');
+    const headerBtnSignIn: HTMLButtonElement = document.querySelector('.btn_login');
+    const logoutBtn: HTMLButtonElement = document.querySelector('.btn_logout');
     if (!Object.prototype.hasOwnProperty.call(responseSignUp, 'message') && responseSignIn.message.includes('Authenticated')) {
       modal.classList.toggle('modal_hide');
       headerBtnSignIn.classList.toggle('btn_hide');
@@ -143,39 +145,49 @@ export default class AuthorizationControllers {
       modal.remove();
       document.body.style.overflow = '';
       this.setUserToLocalStorage(responseSignIn);
+      this.createProgressStorage();
     } else {
       this.messagesObserver(responseSignUp);
     }
   }
 
-  setUserToLocalStorage(user: SignInResponse) {
+  private setUserToLocalStorage(user: SignInResponse): void {
     localStorage.setItem('rslang-user', JSON.stringify(user));
   }
 
-  checkUserInLocalStorage(): boolean {
+  public checkUserInLocalStorage(): boolean {
     const user = localStorage.getItem('rslang-user');
     return !!user;
   }
 
-  clearUserInLocalStorage() {
+  private createProgressStorage(): void {
+    const progress = {};
+    localStorage.setItem('progress', JSON.stringify(progress));
+  }
+
+  private clearUserInLocalStorage(): void {
     localStorage.removeItem('rslang-user');
   }
 
-  public clearModalInputs(datasets: string[]): void {
+  private clearProgressInLocalStorage(): void {
+    localStorage.removeItem('progress');
+  }
+
+  private clearModalInputs(datasets: string[]): void {
     datasets.forEach((dataset) => {
       const input: HTMLInputElement = document.querySelector(`[data-input='${dataset}`);
       input.value = '';
     });
   }
 
-  public clearModalMessages(): void {
+  private clearModalMessages(): void {
     const modalMessages = document.querySelector('.modal__messages');
     if (modalMessages) {
       modalMessages.remove();
     }
   }
 
-  public messagesObserver(response: SignInResponse | SignUpResponse) {
+  private messagesObserver(response: SignInResponse | SignUpResponse): void {
     const modalFluid = document.querySelector('.modal__fluid');
     const modalMessagesExists = document.querySelector('.modal__messages');
     if (modalMessagesExists) {
