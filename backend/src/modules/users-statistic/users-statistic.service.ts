@@ -20,7 +20,14 @@ export class UsersStatisticService {
         const userStatistics: UserStatisticEntity[] = await this.userStatisticRepository.find({
             where: { userId: userId },
         });
-        return userStatistics.map((user) => user.toResponse());
+        return userStatistics.length
+            ? userStatistics.map((user) => user.toResponse())
+            : [
+                  {
+                      learnedWords: 0,
+                      optional: {},
+                  },
+              ];
     }
 
     async getUserStatisticsById(userId: string, fullData?: boolean): Promise<IUserStatistics> {
