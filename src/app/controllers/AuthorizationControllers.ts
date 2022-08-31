@@ -219,7 +219,7 @@ export default class AuthorizationControllers {
     modalFluid.append(modalMessages);
   }
 
-  public getUserFromLocalStorage(): boolean {
+  public getUserFromLocalStorage(): void {
     const user = JSON.parse(localStorage.getItem('rslang-user'));
     return user;
   }
