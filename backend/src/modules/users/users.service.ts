@@ -17,7 +17,7 @@ export class UsersService {
 
     async getUsers(): Promise<IUser[]> {
         const users: UserEntity[] = await this.userRepository.find();
-        return users.map((user: UserEntity) => user.toResponse());
+        return users.map((user: UserEntity) => user);
     }
 
     async getUserById(id: string): Promise<IUser> {

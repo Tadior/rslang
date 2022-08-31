@@ -26,7 +26,7 @@ export class AuthService {
             userId: result.id,
         };
         return {
-            message: "Authenticated",
+            message: ["Authenticated"],
             token: this.jwtService.sign(payload),
             userId: result.id,
             name: result.name,
