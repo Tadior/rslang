@@ -8,6 +8,7 @@ import {
   UserLearnedWords,
   UserLearnedWordsCheck,
   SignInResponse,
+  SignUpResponse,
 } from '../../types/types';
 import url from './variables';
 
@@ -28,7 +29,7 @@ export default class Api {
     return request.json();
   }
 
-  async createUser(bodyObj: User): Promise<User> {
+  async createUser(bodyObj: User): Promise<SignUpResponse> {
     const request = await fetch(`${this.baseUrl}users`, {
       method: 'POST',
       headers: {

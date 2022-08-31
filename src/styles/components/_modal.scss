@@ -1,81 +1,99 @@
 .modal {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background: rgba(#000000, 0.7);
+
+  &__wrapper {
+    flex: 0 1 550px;
+    padding: 30px;
+    box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
+    border-radius: 20px;
+    background: #fff;
+    position: relative;
+  }
+
+  &__fluid {
+    max-width: 330px;
+    text-align: center;
+    margin: 0 auto;
+    width: 100%;
+  }
+
+  &__title {
+    margin: 0 auto;
+    font-family: 'Jost-Medium', serif;
+    font-size: 24px;
+    line-height: 25px;
+    color: $dark-blue;
+  }
+
+  &__paragraph {
+    margin-top: 15px;
+    font-size: 14px;
+  }
+
+  &__inputs {
+    margin-top: 15px;
     display: flex;
-    justify-content: center;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
-    background: rgba(#000000, .7);
+  }
 
-    &__wrapper {
-        flex: 0 1 550px;
-        padding: 30px;
-        box-shadow: 4px 4px 4px rgba(0, 0, 0, 0.3);
-        border-radius: 20px;
-        background: #fff;
-        position: relative;
+  &__input {
+    margin-top: 15px;
+    width: 100%;
+    font-size: 16px;
+    color: $dark-blue;
+    padding: 14px 30px;
+    border: 1px solid rgba($gray, 0.5);
+    border-radius: 10px;
+
+    &::placeholder {
+      color: rgba($gray, 0.5);
     }
+  }
 
-    &__fluid {
-        max-width: 330px;
-        text-align: center;
-        margin: 0 auto;
-        width: 100%;
-    }
+  &__buttons {
+    width: 100%;
+  }
 
-    &__title {
-        margin: 0 auto;
-        font-family: 'Jost-Medium', serif;
-        font-size: 24px;
-        line-height: 25px;
-        color: $dark-blue;
-    }
+  &__btn {
+    width: 100%;
+    margin-top: 15px;
+    padding: 10px;
+  }
 
-    &__paragraph {
-        margin-top: 15px;
-        font-size: 14px;
-    }
+  &__exit {
+    position: absolute;
+    content: '';
+    top: 10px;
+    right: 10px;
+    width: 20px;
+    background: transparent;
+  }
 
-    &__inputs {
-        margin-top: 15px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-    }
+  &_hide {
+    display: none;
+  }
 
-    &__input {
-        margin-top: 15px;
-        width: 100%;
-        font-size: 16px;
-        color: $dark-blue;
-        padding: 14px 30px;
-        border: 1px solid rgba($gray, .5);
-        border-radius: 10px;
-
-        &::placeholder {
-            color: rgba($gray, .5);
-        }
-    }
-
-    &__buttons {
-        width: 100%;
-    }
-
-    &__btn {
-        width: 100%;
-        margin-top: 15px;
-        padding: 10px;
-    }
-
-    &__exit {
-        position: absolute;
-        content: '';
-        top: 10px;
-        right: 10px;
-        width: 20px;
-        background: transparent;
-    }
+  &__messages {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
+    padding: 14px 20px;
+    color: #5685ff;
+    background: transparent;
+    border: 1px solid rgba(0, 16, 73, 0.2);
+    border-radius: 10px;
+    transition: all ease 0.5s;
+    font-family: 'Jost-Medium', serif;
+  }
 }

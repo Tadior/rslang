@@ -21,6 +21,15 @@
         padding: 9px 36px;
         color: $dark-blue;
     }
+    &_logout {
+      padding: 9px 36px;
+      color: $red;
+      border: 1px solid $dark-red;
+      &:hover {
+        background: $dark-red;
+        color: #fff;
+      }
+    }
     &_difficulty {
         padding: 17px 33px;
         margin: 0 25px;
@@ -44,5 +53,9 @@
     &:hover {
         background: $button-hover;
         box-shadow: 0px 8px 24px rgba(86, 133, 255, 0.25);
+    }
+    
+    &_hide {
+      display: none;
     }
 }

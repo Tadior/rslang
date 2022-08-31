@@ -15,7 +15,8 @@ export interface Word {
   textExampleTranslate: string;
 }
 export interface User {
-  name: string;
+  id?: string;
+  name?: string;
   email: string;
   password: string;
 }
@@ -45,6 +46,12 @@ export interface SignInResponse {
   refreshToken?: string;
   userId: string;
   name: string;
+  error?: string;
+  statusCode?: string;
+}
+
+export interface SignUpResponse {
+  message?: string[];
   error?: string;
   statusCode?: string;
 }
