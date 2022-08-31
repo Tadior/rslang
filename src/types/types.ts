@@ -15,7 +15,8 @@ export interface Word {
   textExampleTranslate: string;
 }
 export interface User {
-  name: string;
+  id?: string;
+  name?: string;
   email: string;
   password: string;
 }
@@ -31,7 +32,7 @@ export interface UserWord {
 export interface UserStatistics {
   learnedWords: number;
   optional?: {
-    [key: string] : UserDayStatistic
+    [key: string]: UserDayStatistic;
   };
 }
 export interface Settings {
@@ -40,20 +41,28 @@ export interface Settings {
   optional?: {};
 }
 export interface SignInResponse {
-  message: string;
+  message: string[];
   token: string;
   refreshToken?: string;
   userId: string;
   name: string;
+  error?: string;
+  statusCode?: string;
+}
+
+export interface SignUpResponse {
+  message?: string[];
+  error?: string;
+  statusCode?: string;
 }
 
 export interface UserLearnedWords {
-  userId: string,
-  learnedWords: string[]
+  userId: string;
+  learnedWords: string[];
 }
 
 export interface UserLearnedWordsCheck {
-  userLearnedWordsExists: boolean
+  userLearnedWordsExists: boolean;
 }
 
 export interface UserDayStatistic {

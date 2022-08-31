@@ -11,11 +11,6 @@ export default class StatisticModel {
     this.api = new Api();
   }
 
-  createProgressStorage() {
-    const progress = {};
-    localStorage.setItem('progress', JSON.stringify(progress));
-  }
-
   getFullGameStatistic(
     game:string,
     userId: string,
@@ -156,17 +151,20 @@ export default class StatisticModel {
 
   async getCommonDayAccuracy(userId: string): Promise<number> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
-    const { sprintAccuracy } = userStatistics.optional[this.today];
-    const { audioAccuracy } = userStatistics.optional[this.today];
-    let commonAccuracy: number;
-    if (!sprintAccuracy) {
-      commonAccuracy = audioAccuracy;
-    } else if (!audioAccuracy) {
-      commonAccuracy = sprintAccuracy;
-    } else {
-      commonAccuracy = Math.round((sprintAccuracy + audioAccuracy) / 2);
+    if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
+      const { sprintAccuracy } = userStatistics.optional[this.today];
+      const { audioAccuracy } = userStatistics.optional[this.today];
+      let commonAccuracy: number;
+      if (!sprintAccuracy) {
+        commonAccuracy = audioAccuracy;
+      } else if (!audioAccuracy) {
+        commonAccuracy = sprintAccuracy;
+      } else {
+        commonAccuracy = Math.round((sprintAccuracy + audioAccuracy) / 2);
+      }
+      return commonAccuracy;
     }
-    return commonAccuracy;
+    return 0;
   }
 
   updateProgress(game: string, userId: string, mistakes: Word[], correct: Word[]) {

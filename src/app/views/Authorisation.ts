@@ -4,6 +4,7 @@ export default class Authorization {
   renderSignIn(): void {
     const modal = document.createElement('div');
     modal.classList.add('modal');
+    modal.dataset.modal = 'sigin';
     const modalWrapper = document.createElement('div');
     modalWrapper.classList.add('modal__wrapper');
     const modalFluid = document.createElement('div');
@@ -17,15 +18,17 @@ export default class Authorization {
     const modalInputs = document.createElement('div');
     modalInputs.classList.add('modal__inputs');
     modalInputs.innerHTML = `
-    <input type="text" class="modal__input" placeholder="Введите email">
-    <input type="text" class="modal__input" placeholder="Введите пароль">
+    <input type="email" class="modal__input" data-input="email-signin" placeholder="Введите email" required>
+    <input type="text" class="modal__input" data-input="password-signin" placeholder="Введите пароль" required>
     `;
     const modalButtons = document.createElement('div');
     modalButtons.classList.add('modal__buttons');
     const modalSignIn = document.createElement('button');
     modalSignIn.classList.add('btn', 'modal__btn');
     modalSignIn.textContent = 'Войти';
+    modalSignIn.dataset.authorization = 'signin';
     const modalSignUp = document.createElement('button');
+    modalSignIn.type = 'submit';
     const crossButton = document.createElement('button');
     crossButton.classList.add('modal__exit');
     crossButton.innerHTML = `
@@ -33,6 +36,7 @@ export default class Authorization {
     `;
     modalSignUp.classList.add('btn', 'modal__btn', 'btn_bordered');
     modalSignUp.textContent = 'Регистрация';
+    modalSignUp.dataset.authorization = 'signup';
     modalButtons.append(modalSignIn, modalSignUp);
     modalFluid.append(modalTitle, modalInputs, modalButtons);
     modalWrapper.append(modalFluid, crossButton);
@@ -44,6 +48,7 @@ export default class Authorization {
   renderSignUp(): void {
     const modal = document.createElement('div');
     modal.classList.add('modal');
+    modal.dataset.modal = 'signup';
     const modalWrapper = document.createElement('div');
     modalWrapper.classList.add('modal__wrapper');
     const modalFluid = document.createElement('div');
@@ -63,15 +68,16 @@ export default class Authorization {
     const modalInputs = document.createElement('div');
     modalInputs.classList.add('modal__inputs');
     modalInputs.innerHTML = `
-    <input type="text" class="modal__input" placeholder="Введите имя">
-    <input type="text" class="modal__input" placeholder="Введите email">
-    <input type="text" class="modal__input" placeholder="Введите пароль">
+    <input type="text" class="modal__input" data-input="name-signup" placeholder="Введите имя">
+    <input type="text" class="modal__input" data-input="email-signup" placeholder="Введите email">
+    <input type="text" class="modal__input" data-input="password-signup" placeholder="Введите пароль">
     `;
     const modalButtons = document.createElement('div');
     modalButtons.classList.add('modal__buttons');
     const modalCreate = document.createElement('button');
     modalCreate.classList.add('btn', 'modal__btn');
     modalCreate.textContent = 'Создать аккаунт';
+    modalCreate.dataset.authorization = 'create-account';
     const crossButton = document.createElement('button');
     crossButton.classList.add('modal__exit');
     crossButton.innerHTML = `
