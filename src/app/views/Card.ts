@@ -1,7 +1,18 @@
+import { User } from '../../types/types';
 import bell from '../../assets/img/icons/sound.svg';
+import AuthorizationControllers from '../controllers/AuthorizationControllers';
 
 export default class Card {
-  renderCard(positionToPlace: HTMLElement): HTMLDivElement {
+  userInfo: User;
+
+  userId: string;
+
+  constructor() {
+    this.userInfo = new AuthorizationControllers().getUserFromLocalStorage();
+    this.userId = this.userInfo.userId;
+  }
+
+  public renderCard(positionToPlace: HTMLElement): HTMLDivElement {
     const card = document.createElement('div');
     card.classList.add('card');
     const cardImageFluid = document.createElement('div');
@@ -47,7 +58,7 @@ export default class Card {
         <img src="${bell}" alt="Произнести слово">
     `;
     // Проверка авторизован ли пользователь
-    if (localStorage.getItem('userId')) {
+    if (this.userId) {
       const buttonDictionary = document.createElement('button');
       buttonDictionary.classList.add('btn', 'btn_bordered', 'btn_card', 'btn_bold', 'btn_add');
       buttonDictionary.textContent = 'Добавить в словарь';

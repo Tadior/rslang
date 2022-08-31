@@ -1,16 +1,31 @@
-import { Word, UserLearnedWordsCheck, UserWord } from '../../types/types';
+import {
+  Word,
+  UserLearnedWordsCheck,
+  UserWord,
+  User,
+} from '../../types/types';
 import Api from '../models/Api';
 import Card from '../views/Card';
+import AuthorizationControllers from './AuthorizationControllers';
 import soundImage from '../../assets/img/icons/sound.svg';
 import url from '../models/variables';
 
 export default class TutorialControllers {
   api: Api;
 
+  userInfo: User;
+
+  userId: string;
+
   hardWordCallback: (event: Event) => void;
+
+  card: Card;
 
   constructor() {
     this.api = new Api();
+    this.userInfo = new AuthorizationControllers().getUserFromLocalStorage();
+    this.userId = this.userInfo.userId;
+    this.card = new Card();
     this.hardWordCallback = (event: Event) => {
       const target = event.target as HTMLElement;
       this.addWordToMyDictionary(target);
@@ -18,7 +33,12 @@ export default class TutorialControllers {
     };
   }
 
-  addListenners() {
+  public enableTutorial(): void {
+    this.listenTutorialNavigation();
+    this.listenPagination();
+  }
+
+  private listenTutorialNavigation(): void {
     const tutorialNavigation = document.querySelector('.tutorial__navigation');
     tutorialNavigation.addEventListener('click', (event) => {
       const eventInfo = {
@@ -37,7 +57,7 @@ export default class TutorialControllers {
         // Обновляем значение предыдущей категории
         this.updateStorage(prevNavGroup, prevPaginationValue);
         // Обновляем текущую категорию
-        this.updateStorage('lastNav', group);
+        this.updateStorage('lastGroup', group);
         // Если в local storage есть страница на которой пользователь остановился - загрузить эту страницу
         const localStoragePage = this.checkStorage(group);
         if (localStoragePage !== -1) {
@@ -54,6 +74,9 @@ export default class TutorialControllers {
         }
       }
     });
+  }
+
+  private listenPagination(): void {
     const paginationWrapper = document.querySelector('.pagination');
     paginationWrapper.addEventListener('click', (event): boolean => {
       const eventInfo = {
@@ -74,7 +97,6 @@ export default class TutorialControllers {
       }
 
       const currentGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
-      const api = new Api();
       // Обновляем localStorage при переключении страницы
       this.updateStorage(currentGroup, page.toString());
       // Отнимаем единицу так как считаем страницы от 0 до 29
@@ -82,7 +104,7 @@ export default class TutorialControllers {
       if (page < 0) {
         return false;
       }
-      const response = api.getWords(currentGroup, page.toString());
+      const response = this.api.getWords(currentGroup, page.toString());
       response.then((data) => {
         this.updateCards(data).then(() => this.checkPage());
       });
@@ -90,7 +112,7 @@ export default class TutorialControllers {
     });
   }
 
-  changeCategory(group: string, target: HTMLElement, page: string): void | boolean {
+  public changeCategory(group: string, target: HTMLElement, page: string): void | boolean {
     const prevNavActive = document.querySelector('.tutorial__link_active');
     if (prevNavActive) {
       prevNavActive.classList.remove('tutorial__link_active');
@@ -135,23 +157,24 @@ export default class TutorialControllers {
     return true;
   }
 
-  renderCards(renderContainer: HTMLElement, cardsValue: number) {
+  public renderCards(renderContainer: HTMLElement, cardsValue: number): void {
     for (let i = 0; i < cardsValue; i += 1) {
-      const card = new Card();
-      const cardContainer = card.renderCard(renderContainer);
+      const cardContainer = this.card.renderCard(renderContainer);
       const hardBtn = cardContainer.querySelector('.btn_add');
       const learnBtn = cardContainer.querySelector('.btn-learned');
-
-      hardBtn.addEventListener('click', this.hardWordCallback);
-
-      learnBtn.addEventListener('click', (event: Event) => {
-        const target = event.target as HTMLElement;
-        this.markWordAsLearned(target);
-      });
+      this.listenCardButtons(hardBtn, learnBtn);
     }
   }
 
-  createPagination(totalPages: number, page: number) {
+  private listenCardButtons(hardBtn: Element, learnBtn: Element) {
+    hardBtn.addEventListener('click', this.hardWordCallback);
+    learnBtn.addEventListener('click', (event: Event) => {
+      const target = event.target as HTMLElement;
+      this.markWordAsLearned(target);
+    });
+  }
+
+  public createPagination(totalPages: number, page: number): boolean | string {
     const activeGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
     let learnedPages;
     if (localStorage.getItem('pagination') !== null) {
@@ -274,9 +297,9 @@ export default class TutorialControllers {
           learnedBtn.classList.add('btn_none');
           addBtn.removeEventListener('click', this.hardWordCallback);
           addBtn.addEventListener('click', () => {
-            const userId = localStorage.getItem('userId');
+            // const userId = localStorage.getItem('userId');
             const wordId = card.id;
-            this.api.deleteUserWordById(userId, wordId);
+            this.api.deleteUserWordById(this.userId, wordId);
             const message = document.querySelector('.tabs__block_message');
             card.remove();
             const cards = Array.from(activeTab.querySelectorAll('.card'));
@@ -351,7 +374,7 @@ export default class TutorialControllers {
     });
   }
 
-  private playAudio(wordPath: string, wordMeaningPath: string, wordExamplePath: string) {
+  private playAudio(wordPath: string, wordMeaningPath: string, wordExamplePath: string): void {
     const audioWord = new Audio(url + wordPath);
     audioWord.addEventListener('ended', () => {
       const audioMeaning = new Audio(url + wordMeaningPath);
@@ -364,11 +387,11 @@ export default class TutorialControllers {
     audioWord.play();
   }
 
-  updateStorage(key: string, value: string) {
+  public updateStorage(key: string, value: string): void {
     localStorage.setItem(key, value);
   }
 
-  checkStorage(key: string): number {
+  public checkStorage(key: string): number {
     const out = localStorage.getItem(key);
     if (out !== null) {
       return Number(out);
@@ -376,10 +399,8 @@ export default class TutorialControllers {
     return -1;
   }
 
-  markWordAsLearned(target: HTMLElement) {
+  private markWordAsLearned(target: HTMLElement): void {
     const targetElement = target;
-    const api = new Api();
-    const userId = localStorage.getItem('userId');
     const cardContainer = targetElement.parentNode.parentNode.parentElement;
     const wordId = cardContainer.id;
     if (targetElement.classList.contains('btn_learned')) {
@@ -387,58 +408,53 @@ export default class TutorialControllers {
       targetElement.parentNode.querySelector('.btn_disable').classList.remove('btn_disable');
       targetElement.textContent = 'Я знаю это слово';
       cardContainer.classList.remove('card_learned');
-      api.deleteUserLearnedWordById(userId, wordId);
+      this.api.deleteUserLearnedWordById(this.userId, wordId);
     } else {
       targetElement.classList.add('btn_learned');
       cardContainer.classList.add('card_learned');
       targetElement.textContent = 'Я не знаю это слово';
       const addButton = cardContainer.querySelector('.btn_add');
       addButton.classList.add('btn_disable');
-      api.updateUserLearnedWords(userId, wordId);
+      this.api.updateUserLearnedWords(this.userId, wordId);
     }
     const tutorialController = new TutorialControllers();
     tutorialController.checkPage();
   }
 
-  addWordToMyDictionary(target: HTMLElement) {
+  private addWordToMyDictionary(target: HTMLElement): void {
     const targetElement = target;
-    const userId = localStorage.getItem('userId');
     const cardContainer = targetElement.parentNode.parentNode.parentElement;
     const wordId = cardContainer.id;
     cardContainer.classList.add('card_hard');
     cardContainer.querySelector('.btn_add').classList.add('btn_disable');
     cardContainer.querySelector('.btn-learned').classList.add('btn_disable');
-    const response = this.api.createUserWord({ difficulty: 'easy', id: userId, wordId });
+    const response = this.api.createUserWord({ difficulty: 'easy', id: this.userId, wordId });
     response.then(() => this.checkPage());
   }
 
-  checkLearnedWords(data: Word[]): Promise<UserLearnedWordsCheck[]> {
-    const api = new Api();
+  private checkLearnedWords(data: Word[]): Promise<UserLearnedWordsCheck[]> {
     const dataValues = Object.values(data);
-    const userId = localStorage.getItem('userId');
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserLearnedWordsCheck>) => void) => {
-        resolve(api.isWordLearned(userId, wordId));
+        resolve(this.api.isWordLearned(this.userId, wordId));
       }),
     );
     return Promise.all(promisses).then((values) => values);
   }
 
-  checkUserWords(data: Word[]): Promise<UserWord[]> {
-    const api = new Api();
+  private checkUserWords(data: Word[]): Promise<UserWord[]> {
     const dataValues = Object.values(data);
-    const userId = localStorage.getItem('userId');
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserWord>) => void) => {
-        resolve(api.getUserWordById(userId, wordId));
+        resolve(this.api.getUserWordById(this.userId, wordId));
       }),
     );
     return Promise.all(promisses).then((values) => values);
   }
 
-  toggleGamesButtons(status: boolean): void {
+  private toggleGamesButtons(status: boolean): void {
     const games = document.querySelectorAll('.tutorial-game');
     if (status) {
       games.forEach((button) => button.classList.add('tutorial-game_disabled'));
@@ -447,7 +463,7 @@ export default class TutorialControllers {
     }
   }
 
-  checkPage() {
+  public checkPage(): void {
     const activeTab = document.querySelector('.tabs__block_active');
     const allCardsOnPage = activeTab.querySelectorAll('.card').length;
     const checkedLearnedWordsCounter = activeTab.querySelectorAll('.card_learned').length;
@@ -496,7 +512,7 @@ export default class TutorialControllers {
     }
   }
 
-  renderVocabulary() {
+  public renderVocabulary(): void {
     const pagination = document.querySelector('.pagination');
     if (!pagination.classList.contains('pagination_disable')) {
       pagination.classList.add('pagination_disable');
@@ -505,8 +521,8 @@ export default class TutorialControllers {
     if (buttonsDisabled) {
       buttonsDisabled.forEach((button) => button.classList.remove('tutorial-game_disabled'));
     }
-    const userId = localStorage.getItem('userId');
-    const response = this.api.getUserWords(userId);
+    // const userId = localStorage.getItem('userId');
+    const response = this.api.getUserWords(this.userId);
     const vocabularyTab = document.getElementById('tab_6');
     const messageItem = vocabularyTab.querySelector('.tabs__block_message');
     response.then(async (data) => {

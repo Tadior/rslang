@@ -4,9 +4,19 @@ import arrowImage from '../../assets/img/icons/arrow.svg';
 import Pagination from './Pagination';
 import TutorialControllers from '../controllers/TutorialControllers';
 import Api from '../models/Api';
+import AuthorizationControllers from '../controllers/AuthorizationControllers';
 
 export default class Tutorial {
-  renderTutorialPage() {
+  api: Api;
+
+  isAuthorizated: boolean;
+
+  constructor() {
+    this.api = new Api();
+    this.isAuthorizated = new AuthorizationControllers().checkUserInLocalStorage();
+  }
+
+  public renderTutorialPage(): void {
     const tutorialSection = document.createElement('section');
     tutorialSection.classList.add('tutorial');
     tutorialSection.id = 'tutorial';
@@ -24,28 +34,31 @@ export default class Tutorial {
     document.querySelector('.main').append(tutorialSection);
     const pagination = new Pagination();
     pagination.renderPagination();
-    const firstTabContainer = document.getElementById('tab_0');
+    this.checkAndLoadPage();
+  }
+
+  private checkAndLoadPage() {
     // При перезагрузке страницы загрузить ту же страницу
+    const firstTabContainer = document.getElementById('tab_0');
     const tutorialControllers = new TutorialControllers();
-    const lastNavValue = tutorialControllers.checkStorage('lastNav');
-    if (lastNavValue !== -1) {
+    const lastGroupValue = tutorialControllers.checkStorage('lastGroup');
+    if (lastGroupValue !== -1) {
       document.querySelector('.tutorial__link_active').classList.remove('tutorial__link_active');
       const tutorialLinks = document.querySelectorAll('.tutorial__link');
       let target;
       tutorialLinks.forEach((element) => {
-        if (element.getAttribute('data-group') === lastNavValue.toString()) {
+        if (element.getAttribute('data-group') === lastGroupValue.toString()) {
           target = element;
         }
       });
-      if (lastNavValue === 6) {
+      if (lastGroupValue === 6) {
         tutorialControllers.renderVocabulary();
       }
-      const page = tutorialControllers.checkStorage(lastNavValue.toString());
-      tutorialControllers.changeCategory(`${lastNavValue}`, target, `${page - 1}`);
+      const page = tutorialControllers.checkStorage(lastGroupValue.toString());
+      tutorialControllers.changeCategory(`${lastGroupValue}`, target, `${page - 1}`);
       tutorialControllers.createPagination(30, page);
     } else {
-      const api = new Api();
-      const response = api.getWords(`${lastNavValue + 1}`, '0');
+      const response = this.api.getWords(`${lastGroupValue + 1}`, '0');
       response.then((data) => {
         tutorialControllers.renderCards(firstTabContainer, data.length);
         tutorialControllers.updateCards(data).then(() => tutorialControllers.checkPage());
@@ -96,9 +109,9 @@ export default class Tutorial {
       <img class="tutorial-game__image tutorial-game__image_audio" src="${gamepadImage}" alt="Спринт">
     `;
     const itemsToAppend = [tutorialLinks, tutorialGames];
-    localStorage.setItem('userId', '622552a0-0732-41ce-9815-9d173e8b7649');
+    // localStorage.setItem('userId', '622552a0-0732-41ce-9815-9d173e8b7649');
     // Проверка авторизован ли пользователь
-    if (localStorage.getItem('userId')) {
+    if (this.isAuthorizated) {
       const tutorialDictionary = document.createElement('div');
       tutorialDictionary.classList.add('tutorial__dictionary');
       tutorialDictionary.append(
