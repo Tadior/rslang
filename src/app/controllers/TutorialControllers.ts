@@ -5,6 +5,19 @@ import soundImage from '../../assets/img/icons/sound.svg';
 import url from '../models/variables';
 
 export default class TutorialControllers {
+  api: Api;
+
+  hardWordCallback: (event: Event) => void;
+
+  constructor() {
+    this.api = new Api();
+    this.hardWordCallback = (event: Event) => {
+      const target = event.target as HTMLElement;
+      this.addWordToMyDictionary(target);
+      this.checkPage();
+    };
+  }
+
   addListenners() {
     const tutorialNavigation = document.querySelector('.tutorial__navigation');
     tutorialNavigation.addEventListener('click', (event) => {
@@ -17,6 +30,10 @@ export default class TutorialControllers {
         const prevNav = document.querySelector('.tutorial__link_active');
         const prevNavGroup = prevNav.getAttribute('data-group');
         const prevPaginationValue = document.querySelector('.pagination__btn_active').textContent;
+        const pagination = document.querySelector('.pagination');
+        if (pagination.classList.contains('pagination_disable')) {
+          pagination.classList.remove('pagination_disable');
+        }
         // Обновляем значение предыдущей категории
         this.updateStorage(prevNavGroup, prevPaginationValue);
         // Обновляем текущую категорию
@@ -25,17 +42,16 @@ export default class TutorialControllers {
         const localStoragePage = this.checkStorage(group);
         if (localStoragePage !== -1) {
           this.changeCategory(group, eventInfo.target, String(localStoragePage - 1));
-          this.createPagination(30, localStoragePage);
-          // this.toggleGamesButtons(true);
-          // this.checkPage();
+          if (Number(group) === 6) {
+            this.renderVocabulary();
+          } else {
+            this.createPagination(30, localStoragePage);
+          }
         } else {
           this.updateStorage(group, '1');
           this.changeCategory(group, eventInfo.target, '0');
           this.createPagination(30, 1);
-          // this.toggleGamesButtons(false);
-          // this.checkPage();
         }
-        // this.checkPage();
       }
     });
     const paginationWrapper = document.querySelector('.pagination');
@@ -68,68 +84,71 @@ export default class TutorialControllers {
       }
       const response = api.getWords(currentGroup, page.toString());
       response.then((data) => {
-        this.updateCards(data);
+        this.updateCards(data).then(() => this.checkPage());
       });
       return true;
     });
   }
 
-  changeCategory(group: string, target: HTMLElement | string, page: string): void | boolean {
+  changeCategory(group: string, target: HTMLElement, page: string): void | boolean {
     const prevNavActive = document.querySelector('.tutorial__link_active');
     if (prevNavActive) {
       prevNavActive.classList.remove('tutorial__link_active');
     }
     const prevTabActive = document.querySelector('.tabs__block_active');
     prevTabActive.classList.remove('tabs__block_active');
-    if (typeof target === 'string') {
-      document.querySelector(target).classList.add('tutorial__link_active');
-    } else {
-      target.classList.add('tutorial__link_active');
-    }
+    const groupValue = group.toString();
+
+    const targetItem = target;
+    targetItem.classList.add('tutorial__link_active');
+
     const tabActive = document.getElementById(`tab_${group}`);
     tabActive.classList.add('tabs__block_active');
-    // Если на странице есть карточки то не добавлять новые
+
     const categoryWrapper = document.getElementById(`tab_${group}`);
 
     if (categoryWrapper.querySelector('.card')) {
-      this.checkPage();
+      const response = this.api.getWords(`${groupValue}`, page);
+      response.then((data) => {
+        if (data.length === 0) {
+          return false;
+        }
+        this.updateCards(data).then(() => this.checkPage());
+        return true;
+      });
       return false;
     }
-    // Если открыт словарь
-    if (group === 'myVocabulary') {
-      console.log('Словарь');
-      return false;
-    }
-    //---------------------------------------
-    const groupValue = group.toString();
-    this.renderCards(`${groupValue[groupValue.length - 1]}`, categoryWrapper, page);
+
+    const response = this.api.getWords(`${groupValue}`, page);
+    response.then((data) => {
+      this.renderCards(categoryWrapper, data.length);
+      this.updateCards(data).then(() => {
+        if (data.length === 0) {
+          return false;
+        }
+        if (group !== '6') {
+          this.checkPage();
+        }
+        return true;
+      });
+    });
     return true;
   }
 
-  renderCards(group: string, renderContainer: HTMLElement, page: string) {
-    const api = new Api();
-    const response = api.getWords(group, page);
-    // const userId = localStorage.getItem('userID');
-    response.then((data) => {
-      for (let i = 0; i < data.length; i += 1) {
-        // api.checkLearnWord(userId)
-        const card = new Card();
-        const cardContainer = card.renderCard(renderContainer);
-        const hardBtn = cardContainer.querySelector('.btn_add');
-        const learnBtn = cardContainer.querySelector('.btn-learned');
-        hardBtn.addEventListener('click', (event) => {
-          const target = event.target as HTMLElement;
-          this.addWordToMyDictionary(target);
-        });
+  renderCards(renderContainer: HTMLElement, cardsValue: number) {
+    for (let i = 0; i < cardsValue; i += 1) {
+      const card = new Card();
+      const cardContainer = card.renderCard(renderContainer);
+      const hardBtn = cardContainer.querySelector('.btn_add');
+      const learnBtn = cardContainer.querySelector('.btn-learned');
 
-        learnBtn.addEventListener('click', (event) => {
-          const target = event.target as HTMLElement;
-          this.markWordAsLearned(target);
-          this.checkPage();
-        });
-      }
-      this.updateCards(data);
-    });
+      hardBtn.addEventListener('click', this.hardWordCallback);
+
+      learnBtn.addEventListener('click', (event: Event) => {
+        const target = event.target as HTMLElement;
+        this.markWordAsLearned(target);
+      });
+    }
   }
 
   createPagination(totalPages: number, page: number) {
@@ -220,16 +239,21 @@ export default class TutorialControllers {
     return pagination;
   }
 
-  async updateCards(data: Word[]) {
-    const checkedWordsArray = await this.checkLearnedWords(data);
-    const checkedUserWordsArray = await this.checkUserWords(data);
+  async updateCards(data: Word[], isVocubulary: boolean = false) {
+    let checkedWordsArray: UserLearnedWordsCheck[];
+    let checkedUserWordsArray: UserWord[];
+    if (!isVocubulary) {
+      checkedWordsArray = await this.checkLearnedWords(data);
+      checkedUserWordsArray = await this.checkUserWords(data);
+    }
     const activeTab = document.querySelector('.tabs__block_active');
     const cardsOnPage = Array.from(activeTab.querySelectorAll('.card'));
     cardsOnPage.map((card, index) => {
       if (card.classList.contains('card_learned')) {
         card.classList.remove('card_learned');
       }
-      if (checkedWordsArray[index].userLearnedWordsExists === true) {
+      if (!isVocubulary
+        && checkedWordsArray[index] && checkedWordsArray[index].userLearnedWordsExists) {
         card.classList.add('card_learned');
         const dictionaryBtn = card.querySelector('.btn_add');
         dictionaryBtn.classList.add('btn_disable');
@@ -237,15 +261,32 @@ export default class TutorialControllers {
         learnedBtn.classList.add('btn_learned');
         learnedBtn.textContent = 'Я не знаю это слово';
       } else {
-        const disableBtn = card.querySelector('.btn_add');
-        if (disableBtn.classList.contains('btn_disable')) {
-          disableBtn.classList.remove('btn_disable');
+        const addBtn = card.querySelector('.btn_add');
+        if (addBtn.classList.contains('btn_disable')) {
+          addBtn.classList.remove('btn_disable');
         }
         const learnedBtn = card.querySelector('.btn-learned');
-        learnedBtn.classList.remove('btn_learned');
-        learnedBtn.textContent = 'Я знаю это слово';
+        if (!isVocubulary) {
+          learnedBtn.classList.remove('btn_learned');
+          learnedBtn.textContent = 'Я знаю это слово';
+        } else {
+          addBtn.textContent = 'Удалить из словаря';
+          learnedBtn.classList.add('btn_none');
+          addBtn.removeEventListener('click', this.hardWordCallback);
+          addBtn.addEventListener('click', () => {
+            const userId = localStorage.getItem('userId');
+            const wordId = card.id;
+            this.api.deleteUserWordById(userId, wordId);
+            const message = document.querySelector('.tabs__block_message');
+            card.remove();
+            const cards = Array.from(activeTab.querySelectorAll('.card'));
+            if (message && cards.length === 0) {
+              message.classList.remove('tabs__block_none');
+            }
+          });
+        }
       }
-      if (checkedUserWordsArray[index].id) {
+      if (!isVocubulary && checkedUserWordsArray[index] && checkedUserWordsArray[index].id) {
         card.classList.add('card_hard');
         card.querySelector('.btn_add').classList.add('btn_disable');
         card.querySelector('.btn-learned').classList.add('btn_disable');
@@ -270,6 +311,7 @@ export default class TutorialControllers {
       const cardMeaningEnglish = cardMeaningContainer.querySelector('.card-sentence__original');
       const cardMeaningRussian = cardMeaningContainer.querySelector('.card-sentence__translate');
       const cardItem = card;
+
       cardItem.id = data[index].id;
       const cardInfo = card.querySelector('.card__info');
       cardImageContainer.innerHTML = `
@@ -307,7 +349,6 @@ export default class TutorialControllers {
       });
       return card;
     });
-    this.checkPage();
   }
 
   private playAudio(wordPath: string, wordMeaningPath: string, wordExamplePath: string) {
@@ -361,16 +402,14 @@ export default class TutorialControllers {
 
   addWordToMyDictionary(target: HTMLElement) {
     const targetElement = target;
-    const api = new Api();
     const userId = localStorage.getItem('userId');
     const cardContainer = targetElement.parentNode.parentNode.parentElement;
     const wordId = cardContainer.id;
     cardContainer.classList.add('card_hard');
     cardContainer.querySelector('.btn_add').classList.add('btn_disable');
     cardContainer.querySelector('.btn-learned').classList.add('btn_disable');
-    api.createUserWord({ difficulty: 'easy', id: userId, wordId });
-    const tutorialController = new TutorialControllers();
-    tutorialController.checkPage();
+    const response = this.api.createUserWord({ difficulty: 'easy', id: userId, wordId });
+    response.then(() => this.checkPage());
   }
 
   checkLearnedWords(data: Word[]): Promise<UserLearnedWordsCheck[]> {
@@ -455,5 +494,42 @@ export default class TutorialControllers {
     } else {
       this.toggleGamesButtons(false);
     }
+  }
+
+  renderVocabulary() {
+    const pagination = document.querySelector('.pagination');
+    if (!pagination.classList.contains('pagination_disable')) {
+      pagination.classList.add('pagination_disable');
+    }
+    const buttonsDisabled = document.querySelectorAll('.tutorial-game_disabled');
+    if (buttonsDisabled) {
+      buttonsDisabled.forEach((button) => button.classList.remove('tutorial-game_disabled'));
+    }
+    const userId = localStorage.getItem('userId');
+    const response = this.api.getUserWords(userId);
+    const vocabularyTab = document.getElementById('tab_6');
+    const messageItem = vocabularyTab.querySelector('.tabs__block_message');
+    response.then(async (data) => {
+      const cards = vocabularyTab.querySelectorAll('.card');
+      const wordsId = data.map((word) => word.wordId);
+      const allWords = await Promise.all(
+        wordsId.map((wordId) => this.api.getWordById(wordId)),
+      );
+      if (data.length === 0) {
+        messageItem.classList.remove('tabs__block_none');
+      } else {
+        messageItem.classList.add('tabs__block_none');
+      }
+
+      if (cards.length <= data.length) {
+        const gap = data.length - cards.length;
+        this.renderCards(vocabularyTab, gap);
+      } else {
+        for (let i = cards.length; i > data.length; i -= 1) {
+          cards[i].remove();
+        }
+      }
+      this.updateCards(allWords, true);
+    });
   }
 }

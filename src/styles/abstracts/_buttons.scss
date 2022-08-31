@@ -36,6 +36,10 @@
         background-color: rgb(117, 113, 113);
         color: #fff;
     }
+
+    &_none {
+        display: none;
+    }
         
     &:hover {
         background: $button-hover;

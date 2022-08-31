@@ -1,5 +1,4 @@
 import bell from '../../assets/img/icons/sound.svg';
-// import CardController from '../controllers/TutorialControllers';
 
 export default class Card {
   renderCard(positionToPlace: HTMLElement): HTMLDivElement {
@@ -55,15 +54,6 @@ export default class Card {
       const buttonLearned = document.createElement('button');
       buttonLearned.classList.add('btn', 'btn_card', 'btn-learned');
       buttonLearned.textContent = 'Я знаю это слово';
-      // const cardController = new CardController();
-      // buttonLearned.addEventListener('click', (event: MouseEvent) => {
-      //   const target = event.target as HTMLElement;
-      //   cardController.markWordAsLearned(target);
-      // });
-      // buttonDictionary.addEventListener('click', (event: MouseEvent) => {
-      //   const target = event.target as HTMLElement;
-      //   cardController.addWordToMyDictionary(target);
-      // });
       cardButtons.append(buttonDictionary, buttonLearned);
     }
     cardInfo.append(cardName, cardTranscription, cardSentences, cardButtons, buttonAudio);

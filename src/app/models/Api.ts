@@ -24,7 +24,7 @@ export default class Api {
   }
 
   async getWordById(wordId: string): Promise<Word> {
-    const request = await fetch(`${this.baseUrl}words?id=${wordId}`);
+    const request = await fetch(`${this.baseUrl}words/${wordId}`);
     return request.json();
   }
 

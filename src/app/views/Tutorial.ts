@@ -3,6 +3,7 @@ import gamepadImage from '../../assets/img/main-page/gamepad.png';
 import arrowImage from '../../assets/img/icons/arrow.svg';
 import Pagination from './Pagination';
 import TutorialControllers from '../controllers/TutorialControllers';
+import Api from '../models/Api';
 
 export default class Tutorial {
   renderTutorialPage() {
@@ -36,11 +37,19 @@ export default class Tutorial {
           target = element;
         }
       });
+      if (lastNavValue === 6) {
+        tutorialControllers.renderVocabulary();
+      }
       const page = tutorialControllers.checkStorage(lastNavValue.toString());
       tutorialControllers.changeCategory(`${lastNavValue}`, target, `${page - 1}`);
       tutorialControllers.createPagination(30, page);
     } else {
-      tutorialControllers.renderCards('0', firstTabContainer, '0');
+      const api = new Api();
+      const response = api.getWords(`${lastNavValue + 1}`, '0');
+      response.then((data) => {
+        tutorialControllers.renderCards(firstTabContainer, data.length);
+        tutorialControllers.updateCards(data).then(() => tutorialControllers.checkPage());
+      });
     }
   }
 
@@ -93,15 +102,12 @@ export default class Tutorial {
       const tutorialDictionary = document.createElement('div');
       tutorialDictionary.classList.add('tutorial__dictionary');
       tutorialDictionary.append(
-        createLink('Мой словарь', 'nav_myVocabulary', 'myVocabulary', 'tutorial_green'),
+        createLink('Мой словарь', 'nav_myVocabulary', '6', 'tutorial_green'),
       );
       itemsToAppend.splice(1, 0, tutorialDictionary);
     }
     tutorialGames.append(tutorialGameAudio, tutorialGameSprint);
     tutorialNavigation.append(
-      // tutorialLinks,
-      // tutorialDictionary,
-      // tutorialGames,
       ...itemsToAppend,
     );
     return tutorialNavigation;
@@ -117,7 +123,7 @@ export default class Tutorial {
       this.createTab('tab_3', 'tutorial_light-purpule'),
       this.createTab('tab_4', 'tutorial_aquamarine'),
       this.createTab('tab_5', 'tutorial_purple'),
-      this.createTab('myVocabulary', 'tutorial_green'),
+      this.createTab('tab_6', 'tutorial_green'),
     );
     return tutorialBody;
   }
@@ -131,6 +137,9 @@ export default class Tutorial {
     tab.classList.add('tabs__block', classModificator);
     if (isActive) {
       tab.classList.add('tabs__block_active');
+    }
+    if (id === 'tab_6') {
+      tab.innerHTML = '<div class="tabs__block_message">В вашем словаре нет слов</div>';
     }
     tab.id = id;
     return tab;
