@@ -219,8 +219,8 @@ export default class AuthorizationControllers {
     modalFluid.append(modalMessages);
   }
 
-  public getUserFromLocalStorage(): void {
-    const user = JSON.parse(localStorage.getItem('rslang-user'));
+  public getUserFromLocalStorage(): User {
+    const user: User = JSON.parse(localStorage.getItem('rslang-user'));
     return user;
   }
 }
