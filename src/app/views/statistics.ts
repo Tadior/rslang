@@ -3,9 +3,15 @@ import { ChartType } from 'chart.js';
 import sprintImage from '../../assets/img/main-page/gamepad.png';
 import audioImage from '../../assets/img/main-page/audio.png';
 import StatisticModel from '../models/StatisticModel';
+import AuthorizationControllers from '../controllers/AuthorizationControllers';
+import { User } from '../../types/types';
 
 export default class StatisticPage {
   statisticModel: StatisticModel;
+
+  authorization: AuthorizationControllers;
+
+  userInfo: User;
 
   userId: string;
 
@@ -34,8 +40,10 @@ export default class StatisticPage {
   fullTimeLearned: Promise<number[]>;
 
   constructor() {
+    this.authorization = new AuthorizationControllers();
+    this.userInfo = this.authorization.getUserFromLocalStorage();
     this.statisticModel = new StatisticModel();
-    this.userId = localStorage.getItem('userId');
+    this.userId = this.userInfo.userId;
     this.todayLearnedWords = this.statisticModel.getLearnedWords(this.userId);
     this.todayNewWords = this.statisticModel.getNewWords(this.userId);
     this.todayAccuracy = this.statisticModel.getCommonDayAccuracy(this.userId);
@@ -50,7 +58,7 @@ export default class StatisticPage {
     this.fullTimeLearned = this.statisticModel.getFullTimeDynimicLearned(this.userId);
   }
 
-  renderNoStatistic() {
+  public renderNoStatistic(): void {
     const statistic: HTMLElement = document.createElement('section');
     statistic.classList.add('statistic');
     statistic.innerHTML = `
@@ -64,7 +72,7 @@ export default class StatisticPage {
     document.querySelector('main')!.append(statistic);
   }
 
-  async renderStatistic(): Promise<void> {
+  public async renderStatistic(): Promise<void> {
     const statistic: HTMLElement = document.createElement('section');
     statistic.classList.add('statistic');
     statistic.innerHTML = `
@@ -150,7 +158,7 @@ export default class StatisticPage {
     this.createLineChart();
   }
 
-  async createDoughnutChart(): Promise<void> {
+  private async createDoughnutChart(): Promise<void> {
     const number = await this.todayAccuracy;
     const datapointsDoughnut = [number, (100 - number)];
     const counter = {
@@ -212,7 +220,7 @@ export default class StatisticPage {
     );
   }
 
-  async createBarChart(): Promise<void> {
+  private async createBarChart(): Promise<void> {
     const labels = await this.fullTimeEndpoints;
     const dataBar = {
       labels,
@@ -252,7 +260,7 @@ export default class StatisticPage {
     );
   }
 
-  async createLineChart(): Promise<void> {
+  private async createLineChart(): Promise<void> {
     const labels = await this.fullTimeEndpoints;
     const dataLine = {
       labels,

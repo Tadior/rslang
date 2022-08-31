@@ -1,4 +1,6 @@
-import { StatisicProperty, UserStatistics, Word } from '../../types/types';
+import {
+  Progress, StatisicProperty, UserStatistics, Word,
+} from '../../types/types';
 import Api from './Api';
 
 export default class StatisticModel {
@@ -11,7 +13,7 @@ export default class StatisticModel {
     this.api = new Api();
   }
 
-  getFullGameStatistic(
+  public getFullGameStatistic(
     game:string,
     userId: string,
     gameMaxRow: number,
@@ -23,7 +25,7 @@ export default class StatisticModel {
     this.updateProgress(game, userId, mistakes, correct);
   }
 
-  async checkGameRow(game: string, userId: string, gameMaxRow: number): Promise<void> {
+  private async checkGameRow(game: string, userId: string, gameMaxRow: number): Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
     if (game === 's') {
@@ -75,7 +77,7 @@ export default class StatisticModel {
     }
   }
 
-  async checkGameAccuracy(game: string, userId: string, mistakes: Word[], correct: Word[])
+  private async checkGameAccuracy(game: string, userId: string, mistakes: Word[], correct: Word[])
     : Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
@@ -149,7 +151,7 @@ export default class StatisticModel {
     }
   }
 
-  async getCommonDayAccuracy(userId: string): Promise<number> {
+  public async getCommonDayAccuracy(userId: string): Promise<number> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
       const { sprintAccuracy } = userStatistics.optional[this.today];
@@ -167,15 +169,16 @@ export default class StatisticModel {
     return 0;
   }
 
-  updateProgress(game: string, userId: string, mistakes: Word[], correct: Word[]) {
-    const progress = JSON.parse(localStorage.getItem('progress'));
+  private async updateProgress(game: string, userId: string, mistakes: Word[], correct: Word[])
+    : Promise<void> {
+    const progress: Progress = JSON.parse(localStorage.getItem('progress'));
     let newWordsCounter = 0;
     for (let i = 0; i < mistakes.length; i += 1) {
       const wordId = mistakes[i].id;
       if (Object.prototype.hasOwnProperty.call(progress, wordId)) {
-        progress[wordId].push(false);
+        progress[wordId] = [];
       } else {
-        progress[wordId] = [false];
+        progress[wordId] = [];
         newWordsCounter += 1;
         this.checkIfLearnedWord(userId, wordId);
       }
@@ -184,17 +187,20 @@ export default class StatisticModel {
       const wordId = correct[i].id;
       if (Object.prototype.hasOwnProperty.call(progress, wordId)) {
         progress[wordId].push(true);
+        if (progress[wordId].length === 3 || progress[wordId].length === 5) {
+          progress[wordId] = await this.checkProgress(userId, wordId, progress); // eslint-disable-line 
+        }
       } else {
         progress[wordId] = [true];
         newWordsCounter += 1;
       }
     }
-    localStorage.setItem('progress', JSON.stringify(progress));
     this.checkGameNewWords(game, userId, newWordsCounter);
-    this.checkProgress(userId);
+    localStorage.removeItem('progress');
+    localStorage.setItem('progress', JSON.stringify(progress));
   }
 
-  async checkGameNewWords(game: string, userId: string, newWords: number) {
+  private async checkGameNewWords(game: string, userId: string, newWords: number): Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
     if (game === 's') {
@@ -242,7 +248,7 @@ export default class StatisticModel {
     }
   }
 
-  async checkIfLearnedWord(userId:string, wordId: string) {
+  private async checkIfLearnedWord(userId:string, wordId: string): Promise<void> {
     const wordCheck = await this.api.isWordLearned(userId, wordId);
     if (wordCheck.userLearnedWordsExists) {
       this.api.deleteUserLearnedWordById(userId, wordId);
@@ -250,50 +256,24 @@ export default class StatisticModel {
     }
   }
 
-  checkProgress(userId: string) {
-    const progress = JSON.parse(localStorage.getItem('progress'));
-    const words = Object.keys(progress);
-    words.forEach(async (word) => {
-      const userWord = await this.api.getUserWordById(userId, word);
-      if (userWord.wordId) {
-        this.checkDifficultWords(userId, word, progress[word]);
-      } else {
-        this.checkNormalWords(userId, word, progress[word]);
-      }
-    });
-  }
-
-  checkDifficultWords(userId:string, wordId: string, chances: boolean[]) {
-    const check = chances.every((chance) => chance === true);
-    if (chances.length === 5) {
-      if (check) {
+  private async checkProgress(userId: string, wordId: string, progress: Progress)
+    :Promise <boolean[]> {
+    const userWord = await this.api.getUserWordById(userId, wordId);
+    const result: boolean[] = [];
+    if (userWord.wordId) {
+      if (progress[wordId].length === 5) {
         this.api.deleteUserWordById(userId, wordId);
         this.api.updateUserLearnedWords(userId, wordId);
         this.addWordToLearned(userId);
       }
-      chances.splice(0, 5);
+    } else if (progress[wordId].length === 3) {
+      this.api.updateUserLearnedWords(userId, wordId);
+      this.addWordToLearned(userId);
     }
-    if (chances.length && !check) {
-      chances.splice(0, chances.length);
-    }
+    return result;
   }
 
-  checkNormalWords(userId:string, wordId: string, chances: boolean[]) {
-    const check = chances.every((chance) => chance === true);
-    if (chances.length === 3) {
-      if (check) {
-        this.api.deleteUserWordById(userId, wordId);
-        this.api.updateUserLearnedWords(userId, wordId);
-        this.addWordToLearned(userId);
-      }
-      chances.splice(0, 3);
-    }
-    if (chances.length && !check) {
-      chances.splice(0, chances.length);
-    }
-  }
-
-  async getLearnedWords(userId: string): Promise<number> {
+  public async getLearnedWords(userId: string): Promise<number> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { optional } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
@@ -313,7 +293,7 @@ export default class StatisticModel {
     return learnedWords;
   }
 
-  async getNewWords(userId: string): Promise<number> {
+  public async getNewWords(userId: string): Promise<number> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
       const { sprintNewWords } = userStatistics.optional[this.today];
@@ -323,7 +303,7 @@ export default class StatisticModel {
     return 0;
   }
 
-  async getTodayProperty(userId: string, property: StatisicProperty) {
+  public async getTodayProperty(userId: string, property: StatisicProperty): Promise<number> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
       const propertyInfo = userStatistics.optional[this.today][property];
@@ -332,13 +312,13 @@ export default class StatisticModel {
     return 0;
   }
 
-  async getFullTimeDates(userId: string): Promise<string[]> {
+  public async getFullTimeDates(userId: string): Promise<string[]> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const endpoints = Object.keys(userStatistics.optional);
     return endpoints;
   }
 
-  async getFullTimeNewWords(userId: string):Promise<number[]> {
+  public async getFullTimeNewWords(userId: string):Promise<number[]> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const dates = Object.keys(userStatistics.optional);
     const endpoints: number[] = [];
@@ -351,7 +331,7 @@ export default class StatisticModel {
     return endpoints;
   }
 
-  async getFullTimeDynimicLearned(userId: string):Promise<number[]> {
+  public async getFullTimeDynimicLearned(userId: string):Promise<number[]> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const dates = Object.keys(userStatistics.optional);
     const endpoints: number[] = [];
@@ -364,7 +344,7 @@ export default class StatisticModel {
     return endpoints;
   }
 
-  async addWordToLearned(userId: string): Promise<void> {
+  private async addWordToLearned(userId: string): Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {

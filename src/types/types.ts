@@ -15,7 +15,7 @@ export interface Word {
   textExampleTranslate: string;
 }
 export interface User {
-  id?: string;
+  userId?: string;
   name?: string;
   email: string;
   password: string;
@@ -77,3 +77,6 @@ export interface UserDayStatistic {
 
 export type StatisicProperty = 'sprintRow' | 'sprintAccuracy' | 'sprintNewWords' | 'audioRow' | 'audioAccuracy' | 'audioNewWords';
 
+export type Progress = {
+  [key: string]: boolean[];
+}
