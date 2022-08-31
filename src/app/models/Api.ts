@@ -1,6 +1,14 @@
 import {
-  Word, User, UpdateUser, UserWord, UserStatistics, Settings,
-  UserLearnedWords, UserLearnedWordsCheck, SignInResponse
+  Word,
+  User,
+  UpdateUser,
+  UserWord,
+  UserStatistics,
+  Settings,
+  UserLearnedWords,
+  UserLearnedWordsCheck,
+  SignInResponse,
+  SignUpResponse,
 } from '../../types/types';
 
 export default class Api {
@@ -20,7 +28,7 @@ export default class Api {
     return request.json();
   }
 
-  async createUser(bodyObj: User): Promise<User> {
+  async createUser(bodyObj: User): Promise<SignUpResponse> {
     const request = await fetch(`${this.baseUrl}users`, {
       method: 'POST',
       headers: {
@@ -114,8 +122,7 @@ export default class Api {
     return request.json();
   }
 
-  async updateSettingsById(bodyObj: Settings)
-    : Promise<Settings> {
+  async updateSettingsById(bodyObj: Settings): Promise<Settings> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.userId}/settings`, {
       method: 'PUT',
       headers: {
@@ -158,7 +165,7 @@ export default class Api {
       throw new Error(e);
     }
   }
-  
+
   async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',
