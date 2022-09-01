@@ -24,7 +24,7 @@ export default class Api {
   }
 
   async getWordById(wordId: string): Promise<Word> {
-    const request = await fetch(`${this.baseUrl}words?id=${wordId}`);
+    const request = await fetch(`${this.baseUrl}words/${wordId}`);
     return request.json();
   }
 
@@ -100,7 +100,7 @@ export default class Api {
     }
   }
 
-  async getUserStatisticsById(userId: string): Promise<UserStatistics> {
+  async getUserStatisticsById(userId: string): Promise<UserStatistics[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/statistics`);
     return request.json();
   }
