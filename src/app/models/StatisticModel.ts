@@ -278,7 +278,6 @@ export default class StatisticModel {
     const { optional } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
       const currentLearnedWords = userStatistics.optional[this.today].learnedWords;
-      console.log(currentLearnedWords);
       this.api.updateUserStatisticsById(userId, {
         learnedWords: currentLearnedWords,
         optional,

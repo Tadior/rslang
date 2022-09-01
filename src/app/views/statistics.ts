@@ -101,7 +101,7 @@ export default class StatisticPage {
                   <h4 class='title title_minigame'>Cпринт</h4>
                   <div class='minigame__words'>
                     <div class='minigame__number'>${await this.sprintNewWords}</div>
-                    <div class='minigame__text'>новых слов изучено</div>
+                    <div class='minigame__text'>новых слов</div>
                   </div>
                   <div class='minigame__accuracy'>
                     <div class='minigame__number'>${await this.sprintAccuracy}%</div>
@@ -119,7 +119,7 @@ export default class StatisticPage {
                 <h4 class='title title_minigame'>Аудиовызов</h4>
                 <div class='minigame__words'>
                   <div class='minigame__number'>${await this.audioNewWords}</div>
-                  <div class='minigame__text'>новых слов изучено</div>
+                  <div class='minigame__text'>новых слов</div>
                 </div>
                 <div class='minigame__accuracy'>
                   <div class='minigame__number'>${await this.audioAccuracy}%</div>
