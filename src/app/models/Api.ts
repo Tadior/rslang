@@ -101,7 +101,7 @@ export default class Api {
     }
   }
 
-  async getUserStatisticsById(userId: string): Promise<UserStatistics> {
+  async getUserStatisticsById(userId: string): Promise<UserStatistics[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/statistics`);
     return request.json();
   }
