@@ -9,7 +9,6 @@ export default class Card {
 
   constructor() {
     this.userInfo = new AuthorizationControllers().getUserFromLocalStorage();
-    this.userId = this.userInfo.userId;
   }
 
   public renderCard(positionToPlace: HTMLElement): HTMLDivElement {
@@ -62,7 +61,7 @@ export default class Card {
         <img src="${bell}" alt="Произнести слово">
     `;
     // Проверка авторизован ли пользователь
-    if (this.userId) {
+    if (this.userInfo) {
       const buttonDictionary = document.createElement('button');
       buttonDictionary.classList.add('btn', 'btn_bordered', 'btn_card', 'btn_bold', 'btn_add');
       buttonDictionary.textContent = 'Добавить в словарь';

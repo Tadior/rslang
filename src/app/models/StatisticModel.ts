@@ -259,16 +259,21 @@ export default class StatisticModel {
   private async checkProgress(userId: string, wordId: string, progress: Progress)
     :Promise <boolean[]> {
     const userWord = await this.api.getUserWordById(userId, wordId);
-    const result: boolean[] = [];
-    if (userWord.wordId) {
-      if (progress[wordId].length === 5) {
-        this.api.deleteUserWordById(userId, wordId);
-        this.api.updateUserLearnedWords(userId, wordId);
-        this.addWordToLearned(userId);
+    let result: boolean[] = [];
+    if (!userWord.wordId) {
+      console.log(progress[wordId].length);
+      if (progress[wordId].length === 3) {
+        await this.api.updateUserLearnedWords(userId, wordId);
+        await this.addWordToLearned(userId);
+        result = [];
       }
-    } else if (progress[wordId].length === 3) {
+    } else if (progress[wordId].length === 5) {
+      this.api.deleteUserWordById(userId, wordId);
       this.api.updateUserLearnedWords(userId, wordId);
       this.addWordToLearned(userId);
+      result = [];
+    } else {
+      result = progress[wordId];
     }
     return result;
   }
@@ -343,7 +348,7 @@ export default class StatisticModel {
     return endpoints;
   }
 
-  private async addWordToLearned(userId: string): Promise<void> {
+  public async addWordToLearned(userId: string): Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
@@ -368,7 +373,7 @@ export default class StatisticModel {
     }
   }
 
-  async deleteWordFromLearned(userId: string): Promise<void> {
+  public async deleteWordFromLearned(userId: string): Promise<void> {
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { learnedWords } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {

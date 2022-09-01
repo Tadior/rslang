@@ -3,13 +3,16 @@ import {
   UserLearnedWordsCheck,
   UserWord,
   User,
+  Progress,
 } from '../../types/types';
 import Api from '../models/Api';
 import Card from '../views/Card';
 import AuthorizationControllers from './AuthorizationControllers';
 import soundImage from '../../assets/img/icons/sound.svg';
+import progressImage from '../../assets/img/icons/progress.svg';
 import url from '../models/variables';
 import SprintControllers from './SprintControllers';
+import StatisticModel from '../models/StatisticModel';
 
 export default class TutorialControllers {
   api: Api;
@@ -22,14 +25,19 @@ export default class TutorialControllers {
 
   card: Card;
 
+  userProgress: Progress;
+
   sprintController: SprintControllers;
+
+  statisticModel: StatisticModel;
 
   constructor() {
     this.api = new Api();
     this.userInfo = new AuthorizationControllers().getUserFromLocalStorage();
-    this.userId = this.userInfo.userId;
+    this.userProgress = JSON.parse(localStorage.getItem('progress'));
     this.card = new Card();
     this.sprintController = new SprintControllers();
+    this.statisticModel = new StatisticModel();
     this.hardWordCallback = (event: Event) => {
       const target = event.target as HTMLElement;
       this.addWordToMyDictionary(target);
@@ -122,8 +130,11 @@ export default class TutorialControllers {
       const groupValue = document.querySelector('.tutorial__link_active').getAttribute('data-group');
       console.log(groupValue);
       const page = document.querySelector('.pagination__btn_active').textContent;
-      console.log(page);
-      this.sprintController.startSprintPage(groupValue, `${Number(page) - 1}`);
+      if (groupValue === '6') {
+        this.sprintController.startSprintDictionary(this.userInfo.userId);
+      } else {
+        this.sprintController.startSprintPage(groupValue, `${Number(page) - 1}`);
+      }
     });
   }
 
@@ -175,9 +186,11 @@ export default class TutorialControllers {
   public renderCards(renderContainer: HTMLElement, cardsValue: number): void {
     for (let i = 0; i < cardsValue; i += 1) {
       const cardContainer = this.card.renderCard(renderContainer);
-      const hardBtn = cardContainer.querySelector('.btn_add');
-      const learnBtn = cardContainer.querySelector('.btn-learned');
-      this.listenCardButtons(hardBtn, learnBtn);
+      if (this.userInfo) {
+        const hardBtn = cardContainer.querySelector('.btn_add');
+        const learnBtn = cardContainer.querySelector('.btn-learned');
+        this.listenCardButtons(hardBtn, learnBtn);
+      }
     }
   }
 
@@ -192,7 +205,7 @@ export default class TutorialControllers {
   public createPagination(totalPages: number, page: number): boolean | string {
     const activeGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
     let learnedPages;
-    if (localStorage.getItem('pagination') !== null) {
+    if (this.userInfo && localStorage.getItem('pagination') !== null) {
       learnedPages = JSON.parse(localStorage.getItem('pagination'));
     }
     let pagination = '';
@@ -280,7 +293,7 @@ export default class TutorialControllers {
   async updateCards(data: Word[], isVocubulary: boolean = false) {
     let checkedWordsArray: UserLearnedWordsCheck[];
     let checkedUserWordsArray: UserWord[];
-    if (!isVocubulary) {
+    if (!isVocubulary && this.userInfo) {
       checkedWordsArray = await this.checkLearnedWords(data);
       checkedUserWordsArray = await this.checkUserWords(data);
     }
@@ -290,7 +303,7 @@ export default class TutorialControllers {
       if (card.classList.contains('card_learned')) {
         card.classList.remove('card_learned');
       }
-      if (!isVocubulary
+      if (this.userInfo && !isVocubulary
         && checkedWordsArray[index] && checkedWordsArray[index].userLearnedWordsExists) {
         card.classList.add('card_learned');
         const dictionaryBtn = card.querySelector('.btn_add');
@@ -298,7 +311,7 @@ export default class TutorialControllers {
         const learnedBtn = card.querySelector('.btn-learned');
         learnedBtn.classList.add('btn_learned');
         learnedBtn.textContent = 'Я не знаю это слово';
-      } else {
+      } else if (this.userInfo) {
         const addBtn = card.querySelector('.btn_add');
         if (addBtn.classList.contains('btn_disable')) {
           addBtn.classList.remove('btn_disable');
@@ -312,9 +325,8 @@ export default class TutorialControllers {
           learnedBtn.classList.add('btn_none');
           addBtn.removeEventListener('click', this.hardWordCallback);
           addBtn.addEventListener('click', () => {
-            // const userId = localStorage.getItem('userId');
             const wordId = card.id;
-            this.api.deleteUserWordById(this.userId, wordId);
+            this.api.deleteUserWordById(this.userInfo.userId, wordId);
             const message = document.querySelector('.tabs__block_message');
             card.remove();
             const cards = Array.from(activeTab.querySelectorAll('.card'));
@@ -324,11 +336,12 @@ export default class TutorialControllers {
           });
         }
       }
-      if (!isVocubulary && checkedUserWordsArray[index] && checkedUserWordsArray[index].id) {
+      if (this.userInfo
+        && !isVocubulary && checkedUserWordsArray[index] && checkedUserWordsArray[index].id) {
         card.classList.add('card_hard');
         card.querySelector('.btn_add').classList.add('btn_disable');
         card.querySelector('.btn-learned').classList.add('btn_disable');
-      } else {
+      } else if (this.userInfo) {
         card.classList.remove('card_hard');
         const disableBtn = card.querySelector('.btn_add');
         const learnedBtn = card.querySelector('.btn-learned');
@@ -351,6 +364,10 @@ export default class TutorialControllers {
       const cardItem = card;
 
       cardItem.id = data[index].id;
+
+      if (this.userInfo && this.userProgress) {
+        this.setProgress(cardItem, cardItem.id);
+      }
       const cardInfo = card.querySelector('.card__info');
       cardImageContainer.innerHTML = `
         <img class="card__img" src="${url}${data[index].image}"
@@ -389,6 +406,21 @@ export default class TutorialControllers {
     });
   }
 
+  private setProgress(cardContainer: Element, cardId: string) {
+    const progressWrapper = cardContainer.querySelector('.card__progress');
+    let progressInner = '';
+    const progressKeys = Object.keys(this.userProgress);
+    for (let i = 0; i < progressKeys.length; i += 1) {
+      const progressLength = this.userProgress[progressKeys[i]].length;
+      if (progressKeys[i] === cardId) {
+        for (let j = 0; j < progressLength; j += 1) {
+          progressInner += `<img class = 'card__progress-image' src = '${progressImage}'>`;
+        }
+      }
+    }
+    progressWrapper.innerHTML = progressInner;
+  }
+
   private playAudio(wordPath: string, wordMeaningPath: string, wordExamplePath: string): void {
     const audioWord = new Audio(url + wordPath);
     audioWord.addEventListener('ended', () => {
@@ -423,17 +455,27 @@ export default class TutorialControllers {
       targetElement.parentNode.querySelector('.btn_disable').classList.remove('btn_disable');
       targetElement.textContent = 'Я знаю это слово';
       cardContainer.classList.remove('card_learned');
-      this.api.deleteUserLearnedWordById(this.userId, wordId);
+      this.statisticModel.deleteWordFromLearned(this.userInfo.userId);
+      this.api.deleteUserLearnedWordById(this.userInfo.userId, wordId);
     } else {
       targetElement.classList.add('btn_learned');
       cardContainer.classList.add('card_learned');
       targetElement.textContent = 'Я не знаю это слово';
       const addButton = cardContainer.querySelector('.btn_add');
       addButton.classList.add('btn_disable');
-      this.api.updateUserLearnedWords(this.userId, wordId);
+      this.statisticModel.addWordToLearned(this.userInfo.userId);
+      this.api.updateUserLearnedWords(this.userInfo.userId, wordId);
+      this.updateWordProgress(wordId);
     }
     const tutorialController = new TutorialControllers();
     tutorialController.checkPage();
+  }
+
+  private updateWordProgress(wordId: string): void {
+    if (this.userProgress[wordId]) {
+      this.userProgress[wordId] = [];
+    }
+    localStorage.setItem('progress', JSON.stringify(this.userProgress));
   }
 
   private addWordToMyDictionary(target: HTMLElement): void {
@@ -443,7 +485,7 @@ export default class TutorialControllers {
     cardContainer.classList.add('card_hard');
     cardContainer.querySelector('.btn_add').classList.add('btn_disable');
     cardContainer.querySelector('.btn-learned').classList.add('btn_disable');
-    const response = this.api.createUserWord({ difficulty: 'easy', id: this.userId, wordId });
+    const response = this.api.createUserWord({ difficulty: 'easy', id: this.userInfo.userId, wordId });
     response.then(() => this.checkPage());
   }
 
@@ -452,7 +494,7 @@ export default class TutorialControllers {
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserLearnedWordsCheck>) => void) => {
-        resolve(this.api.isWordLearned(this.userId, wordId));
+        resolve(this.api.isWordLearned(this.userInfo.userId, wordId));
       }),
     );
     return Promise.all(promisses).then((values) => values);
@@ -463,7 +505,7 @@ export default class TutorialControllers {
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserWord>) => void) => {
-        resolve(this.api.getUserWordById(this.userId, wordId));
+        resolve(this.api.getUserWordById(this.userInfo.userId, wordId));
       }),
     );
     return Promise.all(promisses).then((values) => values);
@@ -537,7 +579,7 @@ export default class TutorialControllers {
       buttonsDisabled.forEach((button) => button.classList.remove('tutorial-game_disabled'));
     }
     // const userId = localStorage.getItem('userId');
-    const response = this.api.getUserWords(this.userId);
+    const response = this.api.getUserWords(this.userInfo.userId);
     const vocabularyTab = document.getElementById('tab_6');
     const messageItem = vocabularyTab.querySelector('.tabs__block_message');
     response.then(async (data) => {
