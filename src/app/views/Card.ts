@@ -15,6 +15,10 @@ export default class Card {
   public renderCard(positionToPlace: HTMLElement): HTMLDivElement {
     const card = document.createElement('div');
     card.classList.add('card');
+    const cardFluid = document.createElement('div');
+    cardFluid.classList.add('card__fluid');
+    const cardProgress = document.createElement('div');
+    cardProgress.classList.add('card__progress');
     const cardImageFluid = document.createElement('div');
     cardImageFluid.classList.add('card__image-fluid');
     cardImageFluid.innerHTML = `
@@ -68,7 +72,8 @@ export default class Card {
       cardButtons.append(buttonDictionary, buttonLearned);
     }
     cardInfo.append(cardName, cardTranscription, cardSentences, cardButtons, buttonAudio);
-    card.append(cardImageFluid, cardInfo);
+    cardFluid.append(cardImageFluid, cardProgress);
+    card.append(cardFluid, cardInfo);
     positionToPlace.append(card);
     return card;
   }

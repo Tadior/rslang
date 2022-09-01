@@ -9,6 +9,7 @@ import Card from '../views/Card';
 import AuthorizationControllers from './AuthorizationControllers';
 import soundImage from '../../assets/img/icons/sound.svg';
 import url from '../models/variables';
+import SprintControllers from './SprintControllers';
 
 export default class TutorialControllers {
   api: Api;
@@ -21,11 +22,14 @@ export default class TutorialControllers {
 
   card: Card;
 
+  sprintController: SprintControllers;
+
   constructor() {
     this.api = new Api();
     this.userInfo = new AuthorizationControllers().getUserFromLocalStorage();
     this.userId = this.userInfo.userId;
     this.card = new Card();
+    this.sprintController = new SprintControllers();
     this.hardWordCallback = (event: Event) => {
       const target = event.target as HTMLElement;
       this.addWordToMyDictionary(target);
@@ -36,6 +40,7 @@ export default class TutorialControllers {
   public enableTutorial(): void {
     this.listenTutorialNavigation();
     this.listenPagination();
+    this.listenSprint();
   }
 
   private listenTutorialNavigation(): void {
@@ -109,6 +114,16 @@ export default class TutorialControllers {
         this.updateCards(data).then(() => this.checkPage());
       });
       return true;
+    });
+  }
+
+  private listenSprint() {
+    document.querySelector('#sprint').addEventListener('click', () => {
+      const groupValue = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+      console.log(groupValue);
+      const page = document.querySelector('.pagination__btn_active').textContent;
+      console.log(page);
+      this.sprintController.startSprintPage(groupValue, `${Number(page) - 1}`);
     });
   }
 

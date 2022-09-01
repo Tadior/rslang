@@ -41,7 +41,7 @@ export default class SprintControllers {
 
   correct: Word[];
 
-  timer: ReturnType<typeof setTimeout>;
+  timer: any;
 
   resultControllers: ResultsControllers;
 
@@ -61,13 +61,15 @@ export default class SprintControllers {
     this.maxRow = 0;
     this.mistakes = [];
     this.correct = [];
-    this.timer = setTimeout(() => {
-      this.finishSprintGame();
-    }, 62000);
     this.resultControllers = new ResultsControllers();
   }
 
-  async startSprintPage(group: string, page: string, userId?: string): Promise<NodeJS.Timeout> {
+  async startSprintPage(group: string, page: string, userId?: string): Promise<void> {
+    this.timer = () => {
+      setTimeout(() => {
+        this.finishSprintGame();
+      }, 62000);
+    };
     if (userId) {
       this.words = await this.api.getWords(group, page);
       this.words = await this.checkIfLearned(userId, this.words);
@@ -85,7 +87,7 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion(this.questions, this.answers);
-    return this.timer;
+    this.timer();
   }
 
   async startSprintMenu(group: string): Promise<NodeJS.Timeout> {

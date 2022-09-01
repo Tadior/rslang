@@ -100,11 +100,13 @@ export default class Tutorial {
     tutorialGames.classList.add('tutorial__games');
     const tutorialGameAudio = document.createElement('button');
     tutorialGameAudio.classList.add('tutorial-game');
+    tutorialGameAudio.id = 'audio-call';
     tutorialGameAudio.innerHTML = `
       <img class="tutorial-game__image tutorial-game__image_audio" src="${audioImage}" alt="Аудиовызов">
     `;
     const tutorialGameSprint = document.createElement('button');
     tutorialGameSprint.classList.add('tutorial-game');
+    tutorialGameSprint.id = 'sprint';
     tutorialGameSprint.innerHTML = `
       <img class="tutorial-game__image tutorial-game__image_audio" src="${gamepadImage}" alt="Спринт">
     `;
