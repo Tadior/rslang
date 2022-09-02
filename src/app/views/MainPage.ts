@@ -10,8 +10,15 @@ import aboutAppImage from '../../assets/img/main-page/about-app.png';
 import IlonaImage from '../../assets/img/main-page/ilona.png';
 import DmitryImage from '../../assets/img/main-page/dmitriy.png';
 import IvanImage from '../../assets/img/main-page/ivan.png';
+import MainControllers from '../controllers/MainControllers';
 
 export default class MainPage {
+  mainControllers: MainControllers;
+
+  constructor() {
+    this.mainControllers = new MainControllers();
+  }
+
   renderMainPage() {
     document.querySelector('main').append(
       this.createProjectSection(),
@@ -19,6 +26,7 @@ export default class MainPage {
       this.createAboutAppSection(),
       this.createDevelopersSection(),
     );
+    this.mainControllers.listenMain();
   }
 
   private createProjectSection() {
@@ -37,9 +45,6 @@ export default class MainPage {
           <img class="cetegory__img" src="${path}" alt=${category_name}">
           <div class="pad ${class_hoverIdentificator}">${category_name}</div>
         `;
-      button.addEventListener('click', () => {
-        console.log('Тут должно быть переключение страницы');
-      });
       return button;
     }
     //------------------------------------------
@@ -181,7 +186,7 @@ export default class MainPage {
                 Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/ilonmakh" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/ilonmakh" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>
@@ -198,7 +203,7 @@ export default class MainPage {
                 Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/tadior" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/tadior" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>
@@ -215,7 +220,7 @@ export default class MainPage {
                 Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/ivanpratasevich" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/ivanpratasevich" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>

@@ -21,12 +21,16 @@
         padding: 9px 36px;
         color: $dark-blue;
     }
+    &_login {
+        font-size: 22px;
+    }
     &_logout {
       padding: 9px 36px;
-      color: $red;
-      border: 1px solid $dark-red;
+      color: $pink;
+      border: 1px solid $pink;
+      font-size: 22px;
       &:hover {
-        background: $dark-red;
+        background: $pink;
         color: #fff;
       }
     }

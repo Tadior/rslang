@@ -1,11 +1,15 @@
 import logoImage from '../../assets/img/header/logo.svg';
 import AuthorizationControllers from '../controllers/AuthorizationControllers';
+import HeaderControllers from '../controllers/HeaderControllers';
 
 export default class Header {
   authorization: AuthorizationControllers;
 
+  headerControllers: HeaderControllers;
+
   constructor() {
     this.authorization = new AuthorizationControllers();
+    this.headerControllers = new HeaderControllers();
   }
 
   renderHeader() {
@@ -16,8 +20,8 @@ export default class Header {
     const headerWrapper = document.createElement('div');
     headerWrapper.classList.add('header__wrapper');
     const logo = `
-    <div class="logo">
-        <a href="" class="logo__link">
+    <div class="logo logo_header">
+        <a href="#" class="logo__link">
             <img class="logo__img" src="${logoImage}" alt="RSLang">
             RSLang
         </a>
@@ -26,22 +30,22 @@ export default class Header {
     const navigation = `
     <nav class="navigation">
     <ul class="navigation__container">
-        <li class="navigation__item">
+        <li class="navigation__item nav_about">
             <a href="#about-app" class="navigation__link">
                 О приложении
             </a>
         </li>
-        <li class="navigation__item">
+        <li class="navigation__item nav_developers">
             <a href="#developers" class="navigation__link">
                 Команда
             </a>
         </li>
-        <li class="navigation__item">
+        <li class="navigation__item nav_book">
             <a href="#" class="navigation__link">
                 Учебник
             </a>
         </li>
-        <li class="navigation__item">
+        <li class="navigation__item nav_statistic">
             <a href="#" class="navigation__link">
                 Статистика
             </a>
@@ -66,5 +70,7 @@ export default class Header {
     container.append(headerWrapper);
     header.append(container);
     document.querySelector('.wrapper').prepend(header);
+
+    this.headerControllers.listenHeader();
   }
 }

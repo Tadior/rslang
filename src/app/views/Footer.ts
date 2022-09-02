@@ -17,13 +17,13 @@ export default class Footer {
             </a>
             </div>
             <div class="rs-logo">
-                <a href="https://rs.school/" class="rs-logo__link">
+                <a target="_blank" href="https://rs.school/" class="rs-logo__link">
                     <img src="${RSLogoImage}" alt="RS school">
                 </a>
             </div>
             <div class="github">
             ${githubNames.map((name) => `
-                <a href="https://github.com/${name}" class="github__link">
+                <a href="https://github.com/${name}" target="_blank" class="github__link">
                     <img src="${githubImage}" alt="github ${name}">
                     <div class="github__name">
                         @${name}
