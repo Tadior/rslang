@@ -69,6 +69,7 @@ export default class SprintControllers {
     this.finishSound = new Audio(`${FinishSound}`);
     this.rowCounter = 0;
     this.maxRow = 0;
+    this.words = [];
     this.mistakes = [];
     this.correct = [];
     this.resultControllers = new ResultsControllers();
@@ -76,11 +77,9 @@ export default class SprintControllers {
   }
 
   public async startSprintPage(group: string, page: string): Promise<void> {
-    this.timer = () => {
-      setTimeout(() => {
-        this.finishSprintGame();
-      }, 62000);
-    };
+    this.timer = setTimeout(() => {
+      this.finishSprintGame();
+    }, 62000);
     if (this.userInfo) {
       this.words = await this.api.getWords(group, page);
       this.words = await this.checkIfLearned(this.userInfo.userId, this.words);
@@ -99,15 +98,12 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
-    this.timer();
   }
 
   public async startSprintMenu(group: string): Promise<void> {
-    this.timer = () => {
-      setTimeout(() => {
-        this.finishSprintGame();
-      }, 62000);
-    };
+    this.timer = setTimeout(() => {
+      this.finishSprintGame();
+    }, 62000);
     const page = (Math.floor(Math.random() * 29)).toString();
     this.words = await this.api.getWords(group, page);
     this.words = await this.checkWordsPage(group, page, this.words);
@@ -121,20 +117,18 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
-    this.timer();
   }
 
   public async startSprintDictionary(userId:string): Promise<void> {
-    this.timer = () => {
-      setTimeout(() => {
-        this.finishSprintGame();
-      }, 62000);
-    };
+    this.timer = setTimeout(() => {
+      this.finishSprintGame();
+    }, 62000);
     const userWords = await this.api.getUserWords(userId);
-    userWords.map(async (uWord) => {
+    const dictionary = userWords.map(async (uWord) => {
       const word = await this.api.getWordById(uWord.wordId);
       this.words.push(word);
     });
+    await Promise.all(dictionary);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
@@ -145,7 +139,6 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
-    this.timer();
   }
 
   public startSprintRandom(): void {
@@ -255,7 +248,7 @@ export default class SprintControllers {
   private async checkWordsPage(group: string, page: string, words: Word[], userId?: string)
     : Promise<Word[]> {
     let allWords: Word[];
-    if (Number(page) > 1) {
+    if (Number(page) > 0) {
       let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
       if (userId) {
         concatWords = await this.checkIfLearned(userId, concatWords);
