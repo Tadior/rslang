@@ -29,6 +29,8 @@ export default class TutorialControllers {
 
   sprintController: SprintControllers;
 
+  vocabularyInfo : string[];
+
   statisticModel: StatisticModel;
 
   constructor() {
@@ -38,6 +40,7 @@ export default class TutorialControllers {
     this.card = new Card();
     this.sprintController = new SprintControllers();
     this.statisticModel = new StatisticModel();
+    this.vocabularyInfo = [];
     this.hardWordCallback = (event: Event) => {
       const target = event.target as HTMLElement;
       this.addWordToMyDictionary(target);
@@ -57,7 +60,7 @@ export default class TutorialControllers {
       const eventInfo = {
         target: event.target as HTMLElement,
       };
-      // Если клик совершен по одной из вкладок
+
       if (eventInfo.target.hasAttribute('data-group')) {
         const group = eventInfo.target.getAttribute('data-group');
         const prevNav = document.querySelector('.tutorial__link_active');
@@ -67,20 +70,30 @@ export default class TutorialControllers {
         if (pagination.classList.contains('pagination_disable')) {
           pagination.classList.remove('pagination_disable');
         }
-        // Обновляем значение предыдущей категории
+
+        if (!this.vocabularyInfo) {
+          this.vocabularyInfo[Number(prevNavGroup)] = prevPaginationValue;
+          localStorage.setItem('vocabularyInfo', JSON.stringify(this.vocabularyInfo));
+          this.vocabularyInfo = JSON.parse(localStorage.getItem('vocabularyInfo'));
+        } else {
+          this.vocabularyInfo[Number(prevNavGroup)] = prevPaginationValue;
+          localStorage.setItem('vocabularyInfo', JSON.stringify(this.vocabularyInfo));
+        }
         this.updateStorage(prevNavGroup, prevPaginationValue);
-        // Обновляем текущую категорию
-        this.updateStorage('lastGroup', group);
-        // Если в local storage есть страница на которой пользователь остановился - загрузить эту страницу
-        const localStoragePage = this.checkStorage(group);
-        if (localStoragePage !== -1) {
-          this.changeCategory(group, eventInfo.target, String(localStoragePage - 1));
+
+        localStorage.setItem('lastGroup', group);
+
+        const localStoragePage = this.vocabularyInfo[Number(group)];
+        if (localStoragePage) {
+          this.changeCategory(group, eventInfo.target, String(Number(localStoragePage) - 1));
           if (Number(group) === 6) {
             this.renderVocabulary();
           } else {
-            this.createPagination(30, localStoragePage);
+            this.createPagination(30, Number(localStoragePage));
           }
         } else {
+          this.vocabularyInfo[Number(group)] = '1';
+          localStorage.setItem('vocabularyInfo', JSON.stringify(this.vocabularyInfo));
           this.updateStorage(group, '1');
           this.changeCategory(group, eventInfo.target, '0');
           this.createPagination(30, 1);
@@ -110,9 +123,15 @@ export default class TutorialControllers {
       }
 
       const currentGroup = document.querySelector('.tutorial__link_active').getAttribute('data-group');
-      // Обновляем localStorage при переключении страницы
+
+      if (!this.vocabularyInfo) {
+        localStorage.setItem('vocabularyInfo', '[]');
+      } else {
+        this.vocabularyInfo[Number(currentGroup)] = page.toString();
+        localStorage.setItem('vocabularyInfo', JSON.stringify(this.vocabularyInfo));
+      }
       this.updateStorage(currentGroup, page.toString());
-      // Отнимаем единицу так как считаем страницы от 0 до 29
+
       page -= 1;
       if (page < 0) {
         return false;
@@ -125,10 +144,9 @@ export default class TutorialControllers {
     });
   }
 
-  private listenSprint() {
+  private listenSprint(): void {
     document.querySelector('#sprint').addEventListener('click', () => {
       const groupValue = document.querySelector('.tutorial__link_active').getAttribute('data-group');
-      console.log(groupValue);
       const page = document.querySelector('.pagination__btn_active').textContent;
       if (groupValue === '6') {
         this.sprintController.startSprintDictionary(this.userInfo.userId);
@@ -194,7 +212,7 @@ export default class TutorialControllers {
     }
   }
 
-  private listenCardButtons(hardBtn: Element, learnBtn: Element) {
+  private listenCardButtons(hardBtn: Element, learnBtn: Element): void {
     hardBtn.addEventListener('click', this.hardWordCallback);
     learnBtn.addEventListener('click', (event: Event) => {
       const target = event.target as HTMLElement;
@@ -217,37 +235,37 @@ export default class TutorialControllers {
     if (page === 0 || page === totalPages + 1) {
       return false;
     }
-    // Если страница больше 1 то делаем кнопку юзабельной
+
     if (page === 1) {
       pagination += '<button class="pagination__btn pagination__btn_prev pagination__btn_disabled ">Prev</button>';
     } else if (page > 1) {
       pagination += '<button class="pagination__btn pagination__btn_prev">Prev</button>';
     }
-    // Если страница больше 2 то добавляем первую страницу
+
     if (page > 2) {
       if (learnedPages && learnedPages[activeGroup] && learnedPages[activeGroup].includes('1')) {
         pagination += '<button class="pagination__btn pagination__btn-learned">1</button>';
       } else {
         pagination += '<button class="pagination__btn">1</button>';
       }
-      // Если страница больше 3 то добавляем точки
+
       if (page > 3) {
         pagination += '<div class="pagination__points">...</div>';
       }
     }
-    // Сколько страниц отображается до текущей
+
     if (page === totalPages) {
       beforePage -= 2;
     } else if (page === totalPages - 1) {
       beforePage -= 1;
     }
-    // Сколько страниц отображается после текущей
+
     if (page === 1) {
       afterPage += 2;
     } else if (page === 2) {
       afterPage += 1;
     }
-    // Создаем соседние кнопки
+
     for (let plength = beforePage; plength <= afterPage; plength += 1) {
       if (plength > totalPages) {
         break;
@@ -280,7 +298,7 @@ export default class TutorialControllers {
         pagination += `<button class="pagination__btn">${totalPages}</button>`;
       }
     }
-    // Если страница не последняя то делаем кнопку юзабельной
+
     if (page === totalPages) {
       pagination += '<button class="pagination__btn pagination__btn_next pagination__btn_disabled">Next</button>';
     } else if (page < totalPages) {
@@ -290,7 +308,7 @@ export default class TutorialControllers {
     return pagination;
   }
 
-  async updateCards(data: Word[], isVocubulary: boolean = false) {
+  async updateCards(data: Word[], isVocubulary: boolean = false): Promise<void> {
     let checkedWordsArray: UserLearnedWordsCheck[];
     let checkedUserWordsArray: UserWord[];
     if (!isVocubulary && this.userInfo) {
@@ -406,12 +424,16 @@ export default class TutorialControllers {
     });
   }
 
-  private setProgress(cardContainer: Element, cardId: string) {
-    const progressWrapper = cardContainer.querySelector('.card__progress');
+  private setProgress(cardContainer: Element, cardId: string): void {
+    const progressWrapper = cardContainer.querySelector('.card__progress-values');
+    const progressTitle = cardContainer.querySelector('.card__progress-title');
     let progressInner = '';
     const progressKeys = Object.keys(this.userProgress);
     for (let i = 0; i < progressKeys.length; i += 1) {
       const progressLength = this.userProgress[progressKeys[i]].length;
+      if (progressKeys[i] === cardId && progressTitle.classList.contains('card__progress-title_none') && progressLength > 0) {
+        progressTitle.classList.remove('card__progress-title_none');
+      }
       if (progressKeys[i] === cardId) {
         for (let j = 0; j < progressLength; j += 1) {
           progressInner += `<img class = 'card__progress-image' src = '${progressImage}'>`;
@@ -463,6 +485,8 @@ export default class TutorialControllers {
       targetElement.textContent = 'Я не знаю это слово';
       const addButton = cardContainer.querySelector('.btn_add');
       addButton.classList.add('btn_disable');
+      cardContainer.querySelector('.card__progress-title').classList.add('card__progress-title_none');
+      cardContainer.querySelector('.card__progress-values').innerHTML = '';
       this.statisticModel.addWordToLearned(this.userInfo.userId);
       this.api.updateUserLearnedWords(this.userInfo.userId, wordId);
       this.updateWordProgress(wordId);
@@ -535,11 +559,10 @@ export default class TutorialControllers {
       const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
       if (currentLearnedPagination) {
         const paginationInfo = JSON.parse(currentLearnedPagination);
-        // Если такой группы нет то создаём
+
         if (!paginationInfo[Number(groupActive)]) {
           paginationInfo[groupActive] = [paginationActiveValue];
           localStorage.setItem('pagination', JSON.stringify(paginationInfo));
-          // Если группа есть
         } else if (!paginationInfo[Number(groupActive)].includes(paginationActiveValue)) {
           const value = {
             [groupActive]: paginationInfo[Number(groupActive)].concat(paginationActiveValue),
@@ -578,7 +601,7 @@ export default class TutorialControllers {
     if (buttonsDisabled) {
       buttonsDisabled.forEach((button) => button.classList.remove('tutorial-game_disabled'));
     }
-    // const userId = localStorage.getItem('userId');
+
     const response = this.api.getUserWords(this.userInfo.userId);
     const vocabularyTab = document.getElementById('tab_6');
     const messageItem = vocabularyTab.querySelector('.tabs__block_message');

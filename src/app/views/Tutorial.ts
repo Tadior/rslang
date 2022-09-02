@@ -11,9 +11,12 @@ export default class Tutorial {
 
   isAuthorizated: boolean;
 
+  tutorialController: TutorialControllers;
+
   constructor() {
     this.api = new Api();
     this.isAuthorizated = new AuthorizationControllers().checkUserInLocalStorage();
+    this.tutorialController = new TutorialControllers();
   }
 
   public renderTutorialPage(): void {
@@ -35,14 +38,15 @@ export default class Tutorial {
     const pagination = new Pagination();
     pagination.renderPagination();
     this.checkAndLoadPage();
+    this.tutorialController.enableTutorial();
   }
 
-  private checkAndLoadPage() {
-    // При перезагрузке страницы загрузить ту же страницу
+  private checkAndLoadPage(): void {
     const firstTabContainer = document.getElementById('tab_0');
     const tutorialControllers = new TutorialControllers();
+    const vocabularyInfo = JSON.parse(localStorage.getItem('vocabularyInfo'));
     const lastGroupValue = tutorialControllers.checkStorage('lastGroup');
-    if (lastGroupValue !== -1) {
+    if (lastGroupValue !== -1 && vocabularyInfo) {
       document.querySelector('.tutorial__link_active').classList.remove('tutorial__link_active');
       const tutorialLinks = document.querySelectorAll('.tutorial__link');
       let target;
@@ -54,7 +58,7 @@ export default class Tutorial {
       if (lastGroupValue === 6) {
         tutorialControllers.renderVocabulary();
       }
-      const page = tutorialControllers.checkStorage(lastGroupValue.toString());
+      const page = Number(vocabularyInfo[lastGroupValue]);
       tutorialControllers.changeCategory(`${lastGroupValue}`, target, `${page - 1}`);
       tutorialControllers.createPagination(30, page);
     } else {
@@ -111,8 +115,6 @@ export default class Tutorial {
       <img class="tutorial-game__image tutorial-game__image_audio" src="${gamepadImage}" alt="Спринт">
     `;
     const itemsToAppend = [tutorialLinks, tutorialGames];
-    // localStorage.setItem('userId', '622552a0-0732-41ce-9815-9d173e8b7649');
-    // Проверка авторизован ли пользователь
     if (this.isAuthorizated) {
       const tutorialDictionary = document.createElement('div');
       tutorialDictionary.classList.add('tutorial__dictionary');

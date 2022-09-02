@@ -18,6 +18,11 @@ export default class Card {
     cardFluid.classList.add('card__fluid');
     const cardProgress = document.createElement('div');
     cardProgress.classList.add('card__progress');
+    const cardProgressTitle = document.createElement('div');
+    cardProgressTitle.classList.add('card__progress-title', 'card__progress-title_none');
+    cardProgressTitle.textContent = 'Прогресс изучения';
+    const cardProgressValues = document.createElement('div');
+    cardProgressValues.classList.add('card__progress-values');
     const cardImageFluid = document.createElement('div');
     cardImageFluid.classList.add('card__image-fluid');
     cardImageFluid.innerHTML = `
@@ -71,6 +76,7 @@ export default class Card {
       cardButtons.append(buttonDictionary, buttonLearned);
     }
     cardInfo.append(cardName, cardTranscription, cardSentences, cardButtons, buttonAudio);
+    cardProgress.append(cardProgressTitle, cardProgressValues);
     cardFluid.append(cardImageFluid, cardProgress);
     card.append(cardFluid, cardInfo);
     positionToPlace.append(card);

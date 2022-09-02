@@ -1,18 +1,13 @@
 import Header from './views/Header';
 import Footer from './views/Footer';
-import Tutorial from './views/Tutorial';
-import TutorialControllers from './controllers/TutorialControllers';
 import AuthorizationControllers from './controllers/AuthorizationControllers';
-// import MainPage from './views/MainPage';
+import MainPage from './views/MainPage';
+
 const header = new Header();
 header.renderHeader();
-// const mainPage = new MainPage();
-// mainPage.renderMainPage();
-const tutorial = new Tutorial();
-tutorial.renderTutorialPage();
-const tutorialControllers = new TutorialControllers();
-tutorialControllers.enableTutorial();
+const authorizationControllers = new AuthorizationControllers();
+authorizationControllers.enableAuthorization();
+const mainPage = new MainPage();
+mainPage.renderMainPage();
 const footer = new Footer();
 footer.renderFooter();
-const auth = new AuthorizationControllers();
-auth.enableAuthorization();
