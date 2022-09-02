@@ -8,6 +8,7 @@
 }
 .pagination__btn {
     padding: 8px;
+    height: 60px;
     width: 60px;
     background: transparent;
     transition: all ease .5s;
@@ -18,9 +19,25 @@
         border: 1px solid $button-hover;
     }
 }
+.pagination__btn-learned {
+    background-color: #c5ffc5;
+}
 .pagination__btn_active {
     border: 1px solid $button-hover;
 }
+.pagination__btn.pagination__btn_disabled {
+  pointer-events: none;
+  background-color: rgba($gray, .5);
+}
 .pagination__points {
     margin: 0 5px;
+}
+.pagination__btn_prev, .pagination__btn_next {
+    width: auto;
+    background: $light-blue;
+    border-radius: 10px;
+    color: #fff;
+}
+.pagination_disable {
+    display: none;
 }

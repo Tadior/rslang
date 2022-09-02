@@ -43,7 +43,6 @@ const optimization = () => {
                 },
               ],
             ],
-
           },
         },
       }),
@@ -164,10 +163,7 @@ module.exports = {
         exclude: /node_modules/, // Убираем папку node__modules из поиска для компиляциии
         loader: 'babel-loader',
         options: {
-          presets: [
-            '@babel/preset-env',
-            '@babel/preset-typescript',
-          ],
+          presets: ['@babel/preset-env', '@babel/preset-typescript'],
         },
       },
     ],

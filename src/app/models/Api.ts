@@ -10,12 +10,13 @@ import {
   SignInResponse,
   SignUpResponse,
 } from '../../types/types';
+import url from './variables';
 
 export default class Api {
   baseUrl: string;
 
   constructor() {
-    this.baseUrl = 'http://localhost:4000/';
+    this.baseUrl = url;
   }
 
   async getWords(group: string, page: string): Promise<Word[]> {
@@ -87,7 +88,7 @@ export default class Api {
     return request.json();
   }
 
-  async deleteUserWordById(userId: string, wordId: string): Promise<void> {
+  async deleteUserWordById(userId: string, wordId: string) {
     try {
       await fetch(`${this.baseUrl}users/${userId}/words/${wordId}`, {
         method: 'DELETE',
@@ -105,8 +106,10 @@ export default class Api {
     return request.json();
   }
 
-  async updateUserStatisticsById(userId: string, bodyObj: UserStatistics)
-    : Promise<UserStatistics[]> {
+  async updateUserStatisticsById(
+    userId: string,
+    bodyObj: UserStatistics,
+  ): Promise<UserStatistics[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/statistics`, {
       method: 'PUT',
       headers: {
