@@ -53,6 +53,10 @@ export default class SprintControllers {
 
   mainControllers: MainControllers;
 
+  wrongClick: (event:KeyboardEvent) => void;
+
+  rightClick: (event:KeyboardEvent) => void;
+
   constructor() {
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
@@ -168,11 +172,14 @@ export default class SprintControllers {
       this.newSprintQuestion();
     });
 
-    document.addEventListener('keyup', (event) => {
+    this.wrongClick = (event: KeyboardEvent) => {
       if (event.code === 'ArrowLeft') {
-        wrongBtn.click();
+        if (!document.querySelector('.result__console')) {
+          wrongBtn.click();
+        }
       }
-    });
+    };
+    document.addEventListener('keyup', this.wrongClick);
   }
 
   private listenRightBtn(): void {
@@ -185,11 +192,14 @@ export default class SprintControllers {
       }
       this.newSprintQuestion();
     });
-    document.addEventListener('keyup', (event) => {
+    this.rightClick = (event: KeyboardEvent) => {
       if (event.code === 'ArrowRight') {
-        rightBtn.click();
+        if (!document.querySelector('.result__console')) {
+          rightBtn.click();
+        }
       }
-    });
+    };
+    document.addEventListener('keyup', this.rightClick);
   }
 
   private listenSoundBtn(): void {
@@ -237,7 +247,7 @@ export default class SprintControllers {
   }
 
   private getRandomIndex(rightIndex: number): number {
-    if (this.answers.length <= 4) {
+    if (this.answers.length <= 5) {
       return rightIndex;
     }
     if (rightIndex === this.answers.length - 1 || rightIndex + 4 > this.answers.length - 1) {
@@ -377,11 +387,27 @@ export default class SprintControllers {
     this.listenNewGameBtn();
   }
 
+  private resetGame(): void {
+    this.wordCounter = 0;
+    this.questions = [];
+    this.answers = [];
+    this.categoryCounter = 0;
+    this.category = 10;
+    this.points = 0;
+    this.rowCounter = 0;
+    this.maxRow = 0;
+    this.words = [];
+    this.mistakes = [];
+    this.correct = [];
+    document.removeEventListener('keyup', this.rightClick);
+    document.removeEventListener('keyup', this.wrongClick);
+  }
+
   private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
     newGameBtn.addEventListener('click', () => {
-      const newGame = new SprintControllers();
-      newGame.startSprintRandom();
+      this.resetGame();
+      this.startSprintRandom();
     });
   }
 
