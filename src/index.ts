@@ -1,3 +1,8 @@
 // Подключение основного файла стилей
 import './styles/main.scss';
-import './app/app';
+import App from './app/app';
+
+const app = new App();
+app.start();
+
+export default app;

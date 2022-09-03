@@ -1,5 +1,8 @@
 import Footer from '../views/Footer';
 import MainPage from '../views/MainPage';
+import Pagination from '../views/Pagination';
+import Tutorial from '../views/Tutorial';
+import MainControllers from './MainControllers';
 import SprintControllers from './SprintControllers';
 
 export default class GameMenuControllers {
@@ -11,17 +14,29 @@ export default class GameMenuControllers {
 
   group: string;
 
+  menu: GameMenuControllers;
+
+  mainControllers: MainControllers;
+
+  listenGameMenu: () => void;
+
+  tutorial: Tutorial;
+
+  pagination: Pagination;
+
   constructor() {
     this.sprintControllers = new SprintControllers();
-    this.mainPage = new MainPage();
+    this.pagination = new Pagination();
+    this.tutorial = new Tutorial(this.pagination);
+    this.mainControllers = new MainControllers(this.tutorial, this);
+    this.mainPage = new MainPage(this.mainControllers);
     this.footer = new Footer();
     this.group = '0';
-  }
-
-  listenGameMenu() {
-    this.listenCancelBtn();
-    this.listenLevelsBtns();
-    this.listenStartBtn();
+    this.listenGameMenu = () => {
+      this.listenCancelBtn();
+      this.listenLevelsBtns();
+      this.listenStartBtn();
+    };
   }
 
   listenCancelBtn() {

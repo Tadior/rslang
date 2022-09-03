@@ -6,9 +6,10 @@ import BlockMelodyIcon from '../../assets/img/icons/melody_block.png';
 import WrongSound from '../../assets/sounds/wrong_answer.mp3';
 import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
-import ResultsControllers from './ResultsControllers';
+// import ResultsControllers from './ResultsControllers';
 import StatisticModel from '../models/StatisticModel';
 import AuthorizationControllers from './AuthorizationControllers';
+import MainControllers from './MainControllers';
 
 export default class SprintControllers {
   api: Api;
@@ -45,7 +46,7 @@ export default class SprintControllers {
 
   timer: any;
 
-  resultControllers: ResultsControllers;
+  // resultControllers: ResultsControllers;
 
   statistic: StatisticModel;
 
@@ -53,11 +54,14 @@ export default class SprintControllers {
 
   userInfo: User;
 
+  mainControllers: MainControllers;
+
   constructor() {
+    // this.mainControllers = new MainControllers(tutorial, gameMenu);
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
     this.api = new Api();
-    this.games = new Games();
+    this.games = new Games(this.mainControllers);
     this.wordCounter = 0;
     this.questions = [];
     this.answers = [];
@@ -72,7 +76,7 @@ export default class SprintControllers {
     this.words = [];
     this.mistakes = [];
     this.correct = [];
-    this.resultControllers = new ResultsControllers();
+    // this.resultControllers = new ResultsControllers();
     this.statistic = new StatisticModel();
   }
 
@@ -98,6 +102,10 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
+    if (document.querySelector('footer')) {
+      const footer = document.querySelector('footer');
+      footer.parentNode.removeChild(footer);
+    }
   }
 
   public async startSprintMenu(group: string): Promise<void> {
@@ -139,6 +147,10 @@ export default class SprintControllers {
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
+    if (document.querySelector('footer')) {
+      const footer = document.querySelector('footer');
+      footer.parentNode.removeChild(footer);
+    }
   }
 
   public startSprintRandom(): void {
@@ -364,17 +376,14 @@ export default class SprintControllers {
     if (this.userInfo) {
       this.statistic.getFullGameStatistic('s', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
     }
-
-    this.resultControllers.listenHomeBtn();
-    this.resultControllers.listenAudioBtn();
-    this.listenNewGameBtn();
+    // this.listenNewGameBtn();
   }
 
-  private listenNewGameBtn(): void {
+  /* private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
     newGameBtn.addEventListener('click', () => {
       const newGame = new SprintControllers();
       newGame.startSprintRandom();
     });
-  }
+  } */
 }

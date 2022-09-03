@@ -4,6 +4,9 @@ import StatisticPage from '../views/statistics';
 import AuthorizationControllers from './AuthorizationControllers';
 import { User } from '../../types/types';
 import Footer from '../views/Footer';
+import MainControllers from './MainControllers';
+import Pagination from '../views/Pagination';
+import GameMenuControllers from './GameMenuControllers';
 
 export default class HeaderControllers {
   mainPage: MainPage;
@@ -18,9 +21,18 @@ export default class HeaderControllers {
 
   footer: Footer;
 
+  mainControllers: MainControllers;
+
+  pagination: Pagination;
+
+  gameMenu: GameMenuControllers;
+
   constructor() {
-    this.mainPage = new MainPage();
-    this.book = new Tutorial();
+    this.pagination = new Pagination();
+    this.book = new Tutorial(this.pagination);
+    this.gameMenu = new GameMenuControllers();
+    this.mainControllers = new MainControllers(this.book, this.gameMenu);
+    this.mainPage = new MainPage(this.mainControllers);
     this.statistic = new StatisticPage();
     this.authorization = new AuthorizationControllers();
     this.footer = new Footer();

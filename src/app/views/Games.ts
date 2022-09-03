@@ -4,8 +4,19 @@ import MelodyImage from '../../assets/img/icons/melody.svg';
 import WindowImage from '../../assets/img/icons/window.svg';
 import AudioImage from '../../assets/img/icons/audio.svg';
 import { Word } from '../../types/types';
+import ResultsControllers from '../controllers/ResultsControllers';
+import MainPage from './MainPage';
 
 export default class Games {
+  resultsControllers: ResultsControllers;
+
+  mainPage: MainPage;
+
+  constructor(mainControllers: any) {
+    this.mainPage = new MainPage(mainControllers);
+    this.resultsControllers = new ResultsControllers();
+  }
+
   renderSprintGame():void {
     const sprintPage = document.createElement('section');
     sprintPage.classList.add('game');
@@ -180,6 +191,8 @@ export default class Games {
     `;
     main.innerHTML = '';
     main!.append(gameResult);
+    this.resultsControllers.listenHomeBtn();
+    this.resultsControllers.listenAudioBtn();
   }
 
   renderDifficultMenu(game: string):void {

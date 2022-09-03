@@ -1,11 +1,10 @@
-import Tutorial from '../views/Tutorial';
 import StatisticPage from '../views/statistics';
 import AuthorizationControllers from './AuthorizationControllers';
 import { User } from '../../types/types';
 import Games from '../views/Games';
 
 export default class MainControllers {
-  book: Tutorial;
+  book: any;
 
   statistic: StatisticPage;
 
@@ -15,25 +14,30 @@ export default class MainControllers {
 
   games: Games;
 
-  constructor() {
-    this.book = new Tutorial();
+  gameMenu: any;
+
+  listenMain: () => void;
+
+  constructor(tutorial: any, gameMenu: any) {
+    this.book = tutorial;
     this.statistic = new StatisticPage();
     this.authorization = new AuthorizationControllers();
-    this.games = new Games();
-  }
-
-  public listenMain(): void {
-    this.listenStartLearningBtn();
-    this.listenBookBtn();
-    this.listenStatisticBtn();
-    this.listenAudioCall();
-    this.listenSprint();
+    this.games = new Games(this);
+    this.gameMenu = gameMenu;
+    this.listenMain = () => {
+      this.listenStartLearningBtn();
+      this.listenBookBtn();
+      this.listenStatisticBtn();
+      this.listenAudioCall();
+      this.listenSprint();
+    };
   }
 
   private listenStartLearningBtn(): void {
     const startBtn = document.querySelector('.project__btn');
     startBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
+      console.log(this.book);
       this.book.renderTutorialPage();
     });
   }
@@ -51,6 +55,7 @@ export default class MainControllers {
     sprintBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
       this.games.renderDifficultMenu('Спринт');
+      this.gameMenu.listenGameMenu();
       if (document.querySelector('footer')) {
         const footer = document.querySelector('footer');
         footer.parentNode.removeChild(footer);
@@ -63,6 +68,7 @@ export default class MainControllers {
     audioBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
       this.games.renderDifficultMenu('Аудиовызов');
+      this.gameMenu.listenGameMenu();
       if (document.querySelector('footer')) {
         const footer = document.querySelector('footer');
         footer.parentNode.removeChild(footer);

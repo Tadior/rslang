@@ -10,23 +10,24 @@ import aboutAppImage from '../../assets/img/main-page/about-app.png';
 import IlonaImage from '../../assets/img/main-page/ilona.png';
 import DmitryImage from '../../assets/img/main-page/dmitriy.png';
 import IvanImage from '../../assets/img/main-page/ivan.png';
-import MainControllers from '../controllers/MainControllers';
+// import MainControllers from '../controllers/MainControllers';
 
 export default class MainPage {
-  mainControllers: MainControllers;
+  mainControllers: any;
 
-  constructor() {
-    this.mainControllers = new MainControllers();
-  }
+  renderMainPage: () => void;
 
-  renderMainPage() {
-    document.querySelector('main').append(
-      this.createProjectSection(),
-      this.createAdvantagesSection(),
-      this.createAboutAppSection(),
-      this.createDevelopersSection(),
-    );
-    this.mainControllers.listenMain();
+  constructor(controllers: any) {
+    this.mainControllers = controllers;
+    this.renderMainPage = () => {
+      document.querySelector('main').append(
+        this.createProjectSection(),
+        this.createAdvantagesSection(),
+        this.createAboutAppSection(),
+        this.createDevelopersSection(),
+      );
+      this.mainControllers.listenMain();
+    };
   }
 
   private createProjectSection() {
@@ -77,9 +78,6 @@ export default class MainPage {
     const startLearnButton = document.createElement('button');
     startLearnButton.classList.add('btn', 'project__btn');
     startLearnButton.textContent = 'Начать обучение';
-    startLearnButton.addEventListener('click', () => {
-      console.log('Что то должно происходить');
-    });
     projectInfo.append(startLearnButton);
     projectCategories.append(projectButtons);
     projectWrapper.append(projectInfo, projectCategories);

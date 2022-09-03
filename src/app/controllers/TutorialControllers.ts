@@ -1,9 +1,5 @@
 import {
-  Word,
-  UserLearnedWordsCheck,
-  UserWord,
-  User,
-  Progress,
+  Word, UserLearnedWordsCheck, UserWord, User, Progress,
 } from '../../types/types';
 import Api from '../models/Api';
 import Card from '../views/Card';
@@ -29,7 +25,7 @@ export default class TutorialControllers {
 
   sprintController: SprintControllers;
 
-  vocabularyInfo : string[];
+  vocabularyInfo: string[];
 
   statisticModel: StatisticModel;
 
@@ -278,8 +274,7 @@ export default class TutorialControllers {
       } else {
         active = '';
       }
-      if (learnedPages
-        && learnedPages[activeGroup]
+      if (learnedPages && learnedPages[activeGroup]
         && learnedPages[activeGroup].includes(plength.toString())) {
         learned = 'pagination__btn-learned';
       }
@@ -290,8 +285,7 @@ export default class TutorialControllers {
       if (page < totalPages - 2) {
         pagination += '<div class="pagination__points">...</div>';
       }
-      if (learnedPages
-        && learnedPages[activeGroup]
+      if (learnedPages && learnedPages[activeGroup]
         && learnedPages[activeGroup].includes(totalPages.toString())) {
         pagination += `<button class="pagination__btn pagination__btn-learned">${totalPages}</button>`;
       } else {
@@ -316,112 +310,112 @@ export default class TutorialControllers {
       checkedUserWordsArray = await this.checkUserWords(data);
     }
     const activeTab = document.querySelector('.tabs__block_active');
-    const cardsOnPage = Array.from(activeTab.querySelectorAll('.card'));
-    cardsOnPage.map((card, index) => {
-      if (card.classList.contains('card_learned')) {
-        card.classList.remove('card_learned');
-      }
-      if (this.userInfo && !isVocubulary
-        && checkedWordsArray[index] && checkedWordsArray[index].userLearnedWordsExists) {
-        card.classList.add('card_learned');
-        const dictionaryBtn = card.querySelector('.btn_add');
-        dictionaryBtn.classList.add('btn_disable');
-        const learnedBtn = card.querySelector('.btn-learned');
-        learnedBtn.classList.add('btn_learned');
-        learnedBtn.textContent = 'Я не знаю это слово';
-      } else if (this.userInfo) {
-        const addBtn = card.querySelector('.btn_add');
-        if (addBtn.classList.contains('btn_disable')) {
-          addBtn.classList.remove('btn_disable');
+    if (activeTab) {
+      const cardsOnPage = Array.from(activeTab.querySelectorAll('.card'));
+      cardsOnPage.map((card, index) => {
+        if (card.classList.contains('card_learned')) {
+          card.classList.remove('card_learned');
         }
-        const learnedBtn = card.querySelector('.btn-learned');
-        if (!isVocubulary) {
-          learnedBtn.classList.remove('btn_learned');
-          learnedBtn.textContent = 'Я знаю это слово';
-        } else {
-          addBtn.textContent = 'Удалить из словаря';
-          learnedBtn.classList.add('btn_none');
-          addBtn.removeEventListener('click', this.hardWordCallback);
-          addBtn.addEventListener('click', () => {
-            const wordId = card.id;
-            this.api.deleteUserWordById(this.userInfo.userId, wordId);
-            const message = document.querySelector('.tabs__block_message');
-            card.remove();
-            const cards = Array.from(activeTab.querySelectorAll('.card'));
-            if (message && cards.length === 0) {
-              message.classList.remove('tabs__block_none');
-            }
-          });
+        if (this.userInfo && !isVocubulary && checkedWordsArray[index]
+          && checkedWordsArray[index].userLearnedWordsExists) {
+          card.classList.add('card_learned');
+          const dictionaryBtn = card.querySelector('.btn_add');
+          dictionaryBtn.classList.add('btn_disable');
+          const learnedBtn = card.querySelector('.btn-learned');
+          learnedBtn.classList.add('btn_learned');
+          learnedBtn.textContent = 'Я не знаю это слово';
+        } else if (this.userInfo) {
+          const addBtn = card.querySelector('.btn_add');
+          if (addBtn.classList.contains('btn_disable')) {
+            addBtn.classList.remove('btn_disable');
+          }
+          const learnedBtn = card.querySelector('.btn-learned');
+          if (!isVocubulary) {
+            learnedBtn.classList.remove('btn_learned');
+            learnedBtn.textContent = 'Я знаю это слово';
+          } else {
+            addBtn.textContent = 'Удалить из словаря';
+            learnedBtn.classList.add('btn_none');
+            addBtn.removeEventListener('click', this.hardWordCallback);
+            addBtn.addEventListener('click', () => {
+              const wordId = card.id;
+              this.api.deleteUserWordById(this.userInfo.userId, wordId);
+              const message = document.querySelector('.tabs__block_message');
+              card.remove();
+              const cards = Array.from(activeTab.querySelectorAll('.card'));
+              if (message && cards.length === 0) {
+                message.classList.remove('tabs__block_none');
+              }
+            });
+          }
         }
-      }
-      if (this.userInfo
-        && !isVocubulary && checkedUserWordsArray[index] && checkedUserWordsArray[index].id) {
-        card.classList.add('card_hard');
-        card.querySelector('.btn_add').classList.add('btn_disable');
-        card.querySelector('.btn-learned').classList.add('btn_disable');
-      } else if (this.userInfo) {
-        card.classList.remove('card_hard');
-        const disableBtn = card.querySelector('.btn_add');
-        const learnedBtn = card.querySelector('.btn-learned');
-        disableBtn.classList.remove('btn_disable');
-        learnedBtn.classList.remove('btn_disable');
-      }
-      if (card.classList.contains('card_learned')) {
-        card.querySelector('.btn_add').classList.add('btn_disable');
-      }
-      const cardImageContainer = card.querySelector('.card__image-fluid');
-      const cardWord = card.querySelector('.card-name__original');
-      const cardWordTranslation = card.querySelector('.card-name__translation');
-      const cardWordTranscription = card.querySelector('.card-transcription');
-      const cardDefenitionContainer = card.querySelector('.card-sentence_example');
-      const cardMeaningContainer = card.querySelector('.card-sentence_meaning');
-      const cardDefenitionEnglish = cardDefenitionContainer.querySelector('.card-sentence__original');
-      const cardDefenitionRussian = cardDefenitionContainer.querySelector('.card-sentence__translate');
-      const cardMeaningEnglish = cardMeaningContainer.querySelector('.card-sentence__original');
-      const cardMeaningRussian = cardMeaningContainer.querySelector('.card-sentence__translate');
-      const cardItem = card;
-
-      cardItem.id = data[index].id;
-
-      if (this.userInfo && this.userProgress) {
-        this.setProgress(cardItem, cardItem.id);
-      }
-      const cardInfo = card.querySelector('.card__info');
-      cardImageContainer.innerHTML = `
-        <img class="card__img" src="${url}${data[index].image}"
-        alt="Картинка для слова ${data[index].word}">
-      `;
-      cardWord.innerHTML = `
-        ${data[index].word}
-      `;
-      cardWordTranslation.innerHTML = `
-        ${data[index].wordTranslate}
-      `;
-      cardWordTranscription.innerHTML = `
-        ${data[index].transcription}
-      `;
-      cardDefenitionEnglish.innerHTML = `
-        ${data[index].textExample}
-      `;
-      cardDefenitionRussian.innerHTML = `
-        ${data[index].textExampleTranslate}
-      `;
-      cardMeaningEnglish.innerHTML = `
-        ${data[index].textMeaning}
-      `;
-      cardMeaningRussian.innerHTML = `
-        ${data[index].textMeaningTranslate}
-      `;
-      card.querySelector('.card-btn__audio').remove();
-      const cardAudio = document.createElement('button');
-      cardAudio.classList.add('card-btn__audio');
-      cardAudio.innerHTML = `<img src="${soundImage}" alt="Произнести слово ${data[index].word}">`;
-      cardInfo.append(cardAudio);
-      cardAudio.addEventListener('click', () => {
-        this.playAudio(data[index].audio, data[index].audioExample, data[index].audioMeaning);
+        if (this.userInfo && !isVocubulary && checkedUserWordsArray[index]
+            && checkedUserWordsArray[index].id) {
+          card.classList.add('card_hard');
+          card.querySelector('.btn_add').classList.add('btn_disable');
+          card.querySelector('.btn-learned').classList.add('btn_disable');
+        } else if (this.userInfo) {
+          card.classList.remove('card_hard');
+          const disableBtn = card.querySelector('.btn_add');
+          const learnedBtn = card.querySelector('.btn-learned');
+          disableBtn.classList.remove('btn_disable');
+          learnedBtn.classList.remove('btn_disable');
+        }
+        if (card.classList.contains('card_learned')) {
+          card.querySelector('.btn_add').classList.add('btn_disable');
+        }
+        const cardImageContainer = card.querySelector('.card__image-fluid');
+        const cardWord = card.querySelector('.card-name__original');
+        const cardWordTranslation = card.querySelector('.card-name__translation');
+        const cardWordTranscription = card.querySelector('.card-transcription');
+        const cardDefenitionContainer = card.querySelector('.card-sentence_example');
+        const cardMeaningContainer = card.querySelector('.card-sentence_meaning');
+        const cardDefenitionEnglish = cardDefenitionContainer.querySelector('.card-sentence__original');
+        const cardDefenitionRussian = cardDefenitionContainer.querySelector('.card-sentence__translate');
+        const cardMeaningEnglish = cardMeaningContainer.querySelector('.card-sentence__original');
+        const cardMeaningRussian = cardMeaningContainer.querySelector('.card-sentence__translate');
+        const cardItem = card;
+        cardItem.id = data[index].id;
+        if (this.userInfo && this.userProgress) {
+          this.setProgress(cardItem, cardItem.id);
+        }
+        const cardInfo = card.querySelector('.card__info');
+        cardImageContainer.innerHTML = `
+          <img class="card__img" src="${url}${data[index].image}"
+          alt="Картинка для слова ${data[index].word}">
+        `;
+        cardWord.innerHTML = `
+          ${data[index].word}
+        `;
+        cardWordTranslation.innerHTML = `
+          ${data[index].wordTranslate}
+        `;
+        cardWordTranscription.innerHTML = `
+          ${data[index].transcription}
+        `;
+        cardDefenitionEnglish.innerHTML = `
+          ${data[index].textExample}
+        `;
+        cardDefenitionRussian.innerHTML = `
+          ${data[index].textExampleTranslate}
+        `;
+        cardMeaningEnglish.innerHTML = `
+          ${data[index].textMeaning}
+        `;
+        cardMeaningRussian.innerHTML = `
+          ${data[index].textMeaningTranslate}
+        `;
+        card.querySelector('.card-btn__audio').remove();
+        const cardAudio = document.createElement('button');
+        cardAudio.classList.add('card-btn__audio');
+        cardAudio.innerHTML = `<img src="${soundImage}" alt="Произнести слово ${data[index].word}">`;
+        cardInfo.append(cardAudio);
+        cardAudio.addEventListener('click', () => {
+          this.playAudio(data[index].audio, data[index].audioExample, data[index].audioMeaning);
+        });
+        return card;
       });
-      return card;
-    });
+    }
   }
 
   private setProgress(cardContainer: Element, cardId: string): void {
@@ -518,7 +512,9 @@ export default class TutorialControllers {
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserLearnedWordsCheck>) => void) => {
-        resolve(this.api.isWordLearned(this.userInfo.userId, wordId));
+        resolve(
+          this.api.isWordLearned(this.userInfo.userId, wordId),
+        );
       }),
     );
     return Promise.all(promisses).then((values) => values);
@@ -529,7 +525,9 @@ export default class TutorialControllers {
     const allWordId = dataValues.map((value) => value.id);
     const promisses = allWordId.map(
       (wordId) => new Promise((resolve: (value: Promise<UserWord>) => void) => {
-        resolve(this.api.getUserWordById(this.userInfo.userId, wordId));
+        resolve(
+          this.api.getUserWordById(this.userInfo.userId, wordId),
+        );
       }),
     );
     return Promise.all(promisses).then((values) => values);
@@ -546,49 +544,51 @@ export default class TutorialControllers {
 
   public checkPage(): void {
     const activeTab = document.querySelector('.tabs__block_active');
-    const allCardsOnPage = activeTab.querySelectorAll('.card').length;
-    const checkedLearnedWordsCounter = activeTab.querySelectorAll('.card_learned').length;
-    const checkedHardWordsCounter = activeTab.querySelectorAll('.card_hard').length;
-    if (checkedLearnedWordsCounter + checkedHardWordsCounter === allCardsOnPage) {
-      this.toggleGamesButtons(true);
-      activeTab.classList.add('tabs__block-learned');
-      const paginationActive = document.querySelector('.pagination__btn_active');
-      paginationActive.classList.add('pagination__btn-learned');
-      const currentLearnedPagination = localStorage.getItem('pagination');
-      const paginationActiveValue = paginationActive.textContent.trim();
-      const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
-      if (currentLearnedPagination) {
-        const paginationInfo = JSON.parse(currentLearnedPagination);
+    if (activeTab) {
+      const allCardsOnPage = activeTab.querySelectorAll('.card').length;
+      const checkedLearnedWordsCounter = activeTab.querySelectorAll('.card_learned').length;
+      const checkedHardWordsCounter = activeTab.querySelectorAll('.card_hard').length;
+      if (checkedLearnedWordsCounter + checkedHardWordsCounter === allCardsOnPage) {
+        this.toggleGamesButtons(true);
+        activeTab.classList.add('tabs__block-learned');
+        const paginationActive = document.querySelector('.pagination__btn_active');
+        paginationActive.classList.add('pagination__btn-learned');
+        const currentLearnedPagination = localStorage.getItem('pagination');
+        const paginationActiveValue = paginationActive.textContent.trim();
+        const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+        if (currentLearnedPagination) {
+          const paginationInfo = JSON.parse(currentLearnedPagination);
 
-        if (!paginationInfo[Number(groupActive)]) {
-          paginationInfo[groupActive] = [paginationActiveValue];
-          localStorage.setItem('pagination', JSON.stringify(paginationInfo));
-        } else if (!paginationInfo[Number(groupActive)].includes(paginationActiveValue)) {
-          const value = {
-            [groupActive]: paginationInfo[Number(groupActive)].concat(paginationActiveValue),
-          };
-          paginationInfo[groupActive] = value;
-          localStorage.setItem('pagination', JSON.stringify(paginationInfo[groupActive]));
+          if (!paginationInfo[Number(groupActive)]) {
+            paginationInfo[groupActive] = [paginationActiveValue];
+            localStorage.setItem('pagination', JSON.stringify(paginationInfo));
+          } else if (!paginationInfo[Number(groupActive)].includes(paginationActiveValue)) {
+            const value = {
+              [groupActive]: paginationInfo[Number(groupActive)].concat(paginationActiveValue),
+            };
+            paginationInfo[groupActive] = value;
+            localStorage.setItem('pagination', JSON.stringify(paginationInfo[groupActive]));
+          }
+        } else {
+          const value = { [groupActive]: [paginationActiveValue] };
+          localStorage.setItem('pagination', JSON.stringify(value));
         }
+      } else if (activeTab.classList.contains('tabs__block-learned')) {
+        activeTab.classList.remove('tabs__block-learned');
+        const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+        const page: string = document.querySelector('.pagination__btn_active').textContent;
+        const paginationData = JSON.parse(localStorage.getItem('pagination'));
+        const newArr = paginationData[groupActive];
+        if (paginationData[groupActive].indexOf(page) !== -1) {
+          paginationData[groupActive] = newArr.splice(paginationData[groupActive].indexOf(page), 1);
+          paginationData[groupActive] = newArr;
+          localStorage.setItem('pagination', JSON.stringify(paginationData));
+        }
+        this.createPagination(30, Number(page));
+        this.toggleGamesButtons(false);
       } else {
-        const value = { [groupActive]: [paginationActiveValue] };
-        localStorage.setItem('pagination', JSON.stringify(value));
+        this.toggleGamesButtons(false);
       }
-    } else if (activeTab.classList.contains('tabs__block-learned')) {
-      activeTab.classList.remove('tabs__block-learned');
-      const groupActive = document.querySelector('.tutorial__link_active').getAttribute('data-group');
-      const page: string = document.querySelector('.pagination__btn_active').textContent;
-      const paginationData = JSON.parse(localStorage.getItem('pagination'));
-      const newArr = paginationData[groupActive];
-      if (paginationData[groupActive].indexOf(page) !== -1) {
-        paginationData[groupActive] = newArr.splice(paginationData[groupActive].indexOf(page), 1);
-        paginationData[groupActive] = newArr;
-        localStorage.setItem('pagination', JSON.stringify(paginationData));
-      }
-      this.createPagination(30, Number(page));
-      this.toggleGamesButtons(false);
-    } else {
-      this.toggleGamesButtons(false);
     }
   }
 
@@ -608,9 +608,7 @@ export default class TutorialControllers {
     response.then(async (data) => {
       const cards = vocabularyTab.querySelectorAll('.card');
       const wordsId = data.map((word) => word.wordId);
-      const allWords = await Promise.all(
-        wordsId.map((wordId) => this.api.getWordById(wordId)),
-      );
+      const allWords = await Promise.all(wordsId.map((wordId) => this.api.getWordById(wordId)));
       if (data.length === 0) {
         messageItem.classList.remove('tabs__block_none');
       } else {
