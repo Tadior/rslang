@@ -6,7 +6,6 @@ import BlockMelodyIcon from '../../assets/img/icons/melody_block.png';
 import WrongSound from '../../assets/sounds/wrong_answer.mp3';
 import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
-// import ResultsControllers from './ResultsControllers';
 import StatisticModel from '../models/StatisticModel';
 import AuthorizationControllers from './AuthorizationControllers';
 import MainControllers from './MainControllers';
@@ -46,8 +45,6 @@ export default class SprintControllers {
 
   timer: any;
 
-  // resultControllers: ResultsControllers;
-
   statistic: StatisticModel;
 
   authorization: AuthorizationControllers;
@@ -57,7 +54,6 @@ export default class SprintControllers {
   mainControllers: MainControllers;
 
   constructor() {
-    // this.mainControllers = new MainControllers(tutorial, gameMenu);
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
     this.api = new Api();
@@ -76,7 +72,6 @@ export default class SprintControllers {
     this.words = [];
     this.mistakes = [];
     this.correct = [];
-    // this.resultControllers = new ResultsControllers();
     this.statistic = new StatisticModel();
   }
 
@@ -100,6 +95,7 @@ export default class SprintControllers {
     this.listenRightBtn();
     this.listenWrongBtn();
     this.listenSoundBtn();
+    this.listenStopTimer();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
     if (document.querySelector('footer')) {
@@ -123,6 +119,7 @@ export default class SprintControllers {
     this.listenRightBtn();
     this.listenWrongBtn();
     this.listenSoundBtn();
+    this.listenStopTimer();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
   }
@@ -145,6 +142,7 @@ export default class SprintControllers {
     this.listenRightBtn();
     this.listenWrongBtn();
     this.listenSoundBtn();
+    this.listenStopTimer();
     this.listenFullScreenBtn();
     this.newSprintQuestion();
     if (document.querySelector('footer')) {
@@ -376,14 +374,26 @@ export default class SprintControllers {
     if (this.userInfo) {
       this.statistic.getFullGameStatistic('s', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
     }
-    // this.listenNewGameBtn();
+    this.listenNewGameBtn();
   }
 
-  /* private listenNewGameBtn(): void {
+  private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
     newGameBtn.addEventListener('click', () => {
       const newGame = new SprintControllers();
       newGame.startSprintRandom();
     });
-  } */
+  }
+
+  private listenStopTimer(): void {
+    const header = document.querySelector('header');
+    if (document.querySelector('.sprint__interface')) {
+      header.addEventListener('click', (event: Event) => {
+        const target = event.target as HTMLElement;
+        if (target.classList.contains('navigation__link') || target.classList.contains('logo__link')) {
+          clearTimeout(this.timer);
+        }
+      });
+    }
+  }
 }

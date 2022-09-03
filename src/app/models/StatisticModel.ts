@@ -261,7 +261,6 @@ export default class StatisticModel {
     const userWord = await this.api.getUserWordById(userId, wordId);
     let result: boolean[] = [];
     if (!userWord.wordId) {
-      console.log(progress[wordId].length);
       if (progress[wordId].length === 3) {
         await this.api.updateUserLearnedWords(userId, wordId);
         await this.addWordToLearned(userId);
@@ -279,21 +278,23 @@ export default class StatisticModel {
   }
 
   public async getLearnedWords(userId: string): Promise<number> {
+    let learnedWords;
     const userStatistics: UserStatistics = (await this.api.getUserStatisticsById(userId))[0];
     const { optional } = userStatistics;
     if (Object.prototype.hasOwnProperty.call(userStatistics.optional, this.today)) {
       const currentLearnedWords = userStatistics.optional[this.today].learnedWords;
-      this.api.updateUserStatisticsById(userId, {
+      await this.api.updateUserStatisticsById(userId, {
         learnedWords: currentLearnedWords,
         optional,
       });
+      learnedWords = currentLearnedWords;
     } else {
-      this.api.updateUserStatisticsById(userId, {
+      await this.api.updateUserStatisticsById(userId, {
         learnedWords: 0,
         optional,
       });
+      learnedWords = 0;
     }
-    const { learnedWords } = userStatistics;
     return learnedWords;
   }
 

@@ -13,8 +13,6 @@ export default class HeaderControllers {
 
   book: Tutorial;
 
-  statistic: StatisticPage;
-
   authorization: AuthorizationControllers;
 
   userInfo: User;
@@ -33,7 +31,6 @@ export default class HeaderControllers {
     this.gameMenu = new GameMenuControllers();
     this.mainControllers = new MainControllers(this.book, this.gameMenu);
     this.mainPage = new MainPage(this.mainControllers);
-    this.statistic = new StatisticPage();
     this.authorization = new AuthorizationControllers();
     this.footer = new Footer();
   }
@@ -44,6 +41,7 @@ export default class HeaderControllers {
     this.listenDevelopers();
     this.listenBook();
     this.listenStatistic();
+    this.listenHomeBtn();
   }
 
   private listenLogo(): void {
@@ -101,14 +99,28 @@ export default class HeaderControllers {
   private listenStatistic(): void {
     const statisticLink = document.querySelector('.nav_statistic');
     statisticLink.addEventListener('click', () => {
+      const statistic = new StatisticPage();
       this.userInfo = this.authorization.getUserFromLocalStorage();
       if (!document.querySelector('.statistic')) {
         document.querySelector('main').innerHTML = '';
         if (this.userInfo) {
-          this.statistic.renderStatistic();
+          statistic.renderStatistic();
         } else {
-          this.statistic.renderNoStatistic();
+          statistic.renderNoStatistic();
         }
+        if (!document.querySelector('footer')) {
+          this.footer.renderFooter();
+        }
+      }
+    });
+  }
+
+  listenHomeBtn() {
+    document.body.addEventListener('click', (event: Event) => {
+      const target: HTMLElement = event.target as HTMLElement;
+      if (target.classList.contains('btn__home')) {
+        document.querySelector('main').innerHTML = '';
+        this.mainPage.renderMainPage();
         if (!document.querySelector('footer')) {
           this.footer.renderFooter();
         }
