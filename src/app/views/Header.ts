@@ -86,10 +86,21 @@ export default class Header {
     burger.classList.toggle('burger_active');
     this.toggleNavigation();
     document.querySelector('body').classList.toggle('scroll_blocked');
+    this.listenNavigation();
   }
 
   private toggleNavigation(): void {
     const navigation = document.querySelector('.navigation');
     navigation.classList.toggle('navigation_active');
+  }
+
+  listenNavigation() {
+    const navigation = document.querySelector('.navigation__container');
+    navigation.addEventListener('click', (event: Event) => {
+      const target = event.target as HTMLElement;
+      if (target.classList.contains('navigation__link')) {
+        this.toggleBurger();
+      }
+    });
   }
 }

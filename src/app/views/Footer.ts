@@ -32,6 +32,7 @@ export default class Footer {
             </div>
         </div>
     </div>
+    <div class="rs-year">2022</div>
     `;
     document.querySelector('.wrapper').append(footer);
   }
