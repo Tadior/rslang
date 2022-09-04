@@ -1,5 +1,5 @@
 .footer {
-    padding: 45px 0 52px;
+    padding: 45px 0 0;
     background: $background-light;
     &__wrapper {
         display: flex;
@@ -45,4 +45,11 @@
     @media (max-width: 777px) {
         max-width: 60px;
     }
+}
+.rs-year {
+    margin-top: 25px;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    background: $gray;
 }

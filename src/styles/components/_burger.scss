@@ -6,7 +6,7 @@
     overflow: hidden;
     z-index: 2;
     display: none;
-    @media (max-width: 865px) {
+    @media (max-width: 1000px) {
         display: block;
     }
     &_active {

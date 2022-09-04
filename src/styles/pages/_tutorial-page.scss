@@ -1,5 +1,11 @@
 .tutorial {
     margin: 58px 0 36px;
+    @media (max-width: 530px) {
+        margin: 30px 0
+    }
+    @media (max-width: 480px) {
+        margin: 15px 0
+    }
     &__wrapper {
         position: relative;
     }
@@ -38,6 +44,15 @@
         }
         @media (max-width: 530px) {
             font-size: 14px;
+        }
+        @media (max-width: 530px) {
+            padding: 2px;
+        }
+        @media (max-width: 400px) {
+            font-size: 12px;
+        }
+        @media (max-width: 351px) {
+            font-size: 10px;
         }
         &_active {
             border-color: rgba($gray, .5);
@@ -86,37 +101,23 @@
     @media (max-width: 670px) {
         margin: 0;
     }
+    @media (max-width: 610px) {
+        padding: 0;
+    }
     &__image {
         &_audio {
             max-width: 67px;
             max-height: 46px;
             @media (max-width: 865px) {
                 max-width: 35px;
-                // max-height: 46px;
             }
-            // @media (max-width: 670px) {
-                // max-width: 25px;
-                // max-height: 46px;
-            // }
             @media (max-width: 610px) {
                 max-width: 25px;
-                max-height: 46px;
             }
-            // @media (max-width: 530px) {
-            //     max-width: 67px;
-            //     max-height: 46px;
-            // }
         }
         &_sprint {
             max-width: 70px;
             max-height: 46px;
-            // @media (max-width: 610px) {
-            //     font-size: 18px;
-            //     padding: 4px;
-            // }
-            // @media (max-width: 530px) {
-            //     font-size: 14px;
-            // }
         }
     }
     &_disabled {
@@ -133,6 +134,9 @@
     }
     @media (max-width: 610px) {
         padding: 0 25px 20px;
+    }
+    @media (max-width: 430px) {
+        padding: 0 10px 20px;
     }
     &:target{
         display: block;
@@ -161,6 +165,11 @@
     bottom: 0;
     right: -10px;
     transition: all ease .5s;
+    @media (max-width: 530px) {
+        img {
+            max-width: 70px;
+        }
+    }
     &:hover {
         transform: translateY(-5px);
     }

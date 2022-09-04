@@ -25,11 +25,13 @@
         color: $dark-blue;
     }
     &_login {
-        @media (max-width: 865px) {
+        font-size: 22px;
+        @media (max-width: 1000px) {
             margin-top: 33px;
         }
     }
     &_logout {
+      font-size: 22px;
       padding: 9px 36px;
       color: $red;
       border: 1px solid $dark-red;
@@ -37,7 +39,7 @@
         background: $dark-red;
         color: #fff;
       }
-      @media (max-width: 865px) {
+      @media (max-width: 1000px) {
         margin-top: 33px;
       }
     }
@@ -52,6 +54,10 @@
         padding: 9px 30px;
         @media (max-width: 706px) {
             width: 100%;
+            margin: 20px 0 0;
+        }
+        @media (max-width: 530px) {
+            font-size: 16px;
         }
      }
     &_disable {
