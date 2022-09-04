@@ -10,7 +10,6 @@ import aboutAppImage from '../../assets/img/main-page/about-app.png';
 import IlonaImage from '../../assets/img/main-page/ilona.png';
 import DmitryImage from '../../assets/img/main-page/dmitriy.png';
 import IvanImage from '../../assets/img/main-page/ivan.png';
-// import MainControllers from '../controllers/MainControllers';
 
 export default class MainPage {
   mainControllers: any;
@@ -31,9 +30,6 @@ export default class MainPage {
   }
 
   private createProjectSection() {
-    // Создание секции Project
-
-    // Функция создания кнопок навигации
     function createButton(
       class_identificator: string,
       path: string,
@@ -48,7 +44,6 @@ export default class MainPage {
         `;
       return button;
     }
-    //------------------------------------------
 
     const projectSection = document.createElement('section');
     const container = document.createElement('div');
@@ -62,7 +57,7 @@ export default class MainPage {
     projectInfo.classList.add('project-info');
     projectInfo.innerHTML = `
       <h1>RSLang</h1>
-      <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>
+      <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка. Его можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>
       `;
     const buttons = [
       createButton('category_exercise', exerciseImage, 'Учебник', 'pad_exercise'),
@@ -87,7 +82,6 @@ export default class MainPage {
   }
 
   private createAdvantagesSection() {
-    // Создание секции advantages
     const advantagesSection = document.createElement('section');
     advantagesSection.classList.add('advantages');
     advantagesSection.innerHTML = `
@@ -127,7 +121,6 @@ export default class MainPage {
   }
 
   private createAboutAppSection() {
-    // Создание секции about-app
     const aboutAppSection = document.createElement('section');
     aboutAppSection.classList.add('about-app');
     aboutAppSection.id = 'about-app';

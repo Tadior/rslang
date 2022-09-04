@@ -191,7 +191,6 @@ export default class Games {
     `;
     main.innerHTML = '';
     main!.append(gameResult);
-    // this.resultsControllers.listenHomeBtn();
     this.resultsControllers.listenAudioBtn();
   }
 
