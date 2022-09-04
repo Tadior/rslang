@@ -247,10 +247,10 @@ export default class SprintControllers {
   }
 
   private getRandomIndex(rightIndex: number): number {
-    if (this.answers.length <= 5) {
+    if (this.answers.length <= 6) {
       return rightIndex;
     }
-    if (rightIndex === this.answers.length - 1 || rightIndex + 4 > this.answers.length - 1) {
+    if (rightIndex === this.answers.length - 1 || rightIndex + 4 >= this.answers.length - 1) {
       return Math.floor(Math.random() * (rightIndex - (rightIndex - 4))) + (rightIndex - 4);
     }
     return Math.floor(Math.random() * ((rightIndex + 4) - rightIndex)) + rightIndex;
@@ -385,6 +385,7 @@ export default class SprintControllers {
       this.statistic.getFullGameStatistic('s', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
     }
     this.listenNewGameBtn();
+    this.resetGame();
   }
 
   private resetGame(): void {

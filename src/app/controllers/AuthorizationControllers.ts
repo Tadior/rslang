@@ -127,6 +127,7 @@ export default class AuthorizationControllers {
       default:
         break;
     }
+    window.location.reload();
   }
 
   private changeStateAfterAuthentication(): void {
@@ -185,6 +186,8 @@ export default class AuthorizationControllers {
           break;
       }
     });
+    localStorage.clear();
+    window.location.reload();
   }
 
   private clearModalInputs(datasets: string[]): void {
