@@ -12,7 +12,7 @@ export default class Footer {
         <div class="footer__wrapper">
             <div class="logo">
             <a href="" class="logo__link">
-                <img src="${logoImage}" alt="RSLang">
+                <img src="${logoImage}" class="logo__img" alt="RSLang">
                 RSLang
             </a>
             </div>

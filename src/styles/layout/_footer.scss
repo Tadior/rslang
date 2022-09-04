@@ -4,13 +4,27 @@
     &__wrapper {
         display: flex;
         align-items: center;
+        @media (max-width: 777px) {
+            flex-direction: column;
+        }
+    }
+    .logo {
+        font-family: 'Jost-Medium', serif;
     }
 }
 .rs-logo {
     flex: 1 1 auto;
     text-align: center;
+    @media (max-width: 777px) {
+        margin: 39px 0 52px;
+    }
 }
 .rs-logo__link {
+    img {
+        @media (max-width: 777px) {
+            max-width: 200px;
+        }
+    }
 }
 .github {
 }
@@ -26,4 +40,9 @@
 }
 .github__name {
     margin-left: 10px;
+}
+.footer__wrapper .logo__link img {
+    @media (max-width: 777px) {
+        max-width: 60px;
+    }
 }
