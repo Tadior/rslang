@@ -1,4 +1,4 @@
-import { Word } from '../../types/types';
+import { User, Word } from '../../types/types';
 import Api from '../models/Api';
 import Games from '../views/Games';
 import MelodyIcon from '../../assets/img/icons/melody.svg';
@@ -7,6 +7,8 @@ import WrongSound from '../../assets/sounds/wrong_answer.mp3';
 import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
 import ResultsControllers from './ResultsControllers';
+import StatisticModel from '../models/StatisticModel';
+import AuthorizationControllers from './AuthorizationControllers';
 
 export default class SprintControllers {
   api: Api;
@@ -41,11 +43,19 @@ export default class SprintControllers {
 
   correct: Word[];
 
-  timer: ReturnType<typeof setTimeout>;
+  timer: any;
 
   resultControllers: ResultsControllers;
 
+  statistic: StatisticModel;
+
+  authorization: AuthorizationControllers;
+
+  userInfo: User;
+
   constructor() {
+    this.authorization = new AuthorizationControllers();
+    this.userInfo = this.authorization.getUserFromLocalStorage();
     this.api = new Api();
     this.games = new Games();
     this.wordCounter = 0;
@@ -59,21 +69,24 @@ export default class SprintControllers {
     this.finishSound = new Audio(`${FinishSound}`);
     this.rowCounter = 0;
     this.maxRow = 0;
+    this.words = [];
     this.mistakes = [];
     this.correct = [];
+    this.resultControllers = new ResultsControllers();
+    this.statistic = new StatisticModel();
+  }
+
+  public async startSprintPage(group: string, page: string): Promise<void> {
     this.timer = setTimeout(() => {
       this.finishSprintGame();
     }, 62000);
-    this.resultControllers = new ResultsControllers();
-  }
-
-  async startSprintPage(group: string, page: string, userId?: string): Promise<NodeJS.Timeout> {
-    if (userId) {
+    if (this.userInfo) {
       this.words = await this.api.getWords(group, page);
-      this.words = await this.checkIfLearned(userId, this.words);
-      this.words = await this.checkWordsLength(userId, group, page, this.words);
+      this.words = await this.checkIfLearned(this.userInfo.userId, this.words);
+      this.words = await this.checkWordsPage(group, page, this.words, this.userInfo.userId);
     } else {
       this.words = await this.api.getWords(group, page);
+      this.words = await this.checkWordsPage(group, page, this.words);
     }
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
@@ -84,13 +97,16 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
-    return this.timer;
+    this.newSprintQuestion();
   }
 
-  async startSprintMenu(group: string): Promise<NodeJS.Timeout> {
-    const page = (Math.floor(Math.random() * (30 - 1)) + 1).toString();
+  public async startSprintMenu(group: string): Promise<void> {
+    this.timer = setTimeout(() => {
+      this.finishSprintGame();
+    }, 62000);
+    const page = (Math.floor(Math.random() * 29)).toString();
     this.words = await this.api.getWords(group, page);
+    this.words = await this.checkWordsPage(group, page, this.words);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
@@ -100,16 +116,19 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
-    return this.timer;
+    this.newSprintQuestion();
   }
 
-  async startSprintDictionary(userId:string): Promise<NodeJS.Timeout> {
+  public async startSprintDictionary(userId:string): Promise<void> {
+    this.timer = setTimeout(() => {
+      this.finishSprintGame();
+    }, 62000);
     const userWords = await this.api.getUserWords(userId);
-    userWords.map(async (uWord) => {
+    const dictionary = userWords.map(async (uWord) => {
       const word = await this.api.getWordById(uWord.wordId);
       this.words.push(word);
     });
+    await Promise.all(dictionary);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
@@ -119,17 +138,16 @@ export default class SprintControllers {
     this.listenWrongBtn();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
-    return this.timer;
+    this.newSprintQuestion();
   }
 
-  startSprintRandom(): void {
-    const group = (Math.floor(Math.random() * (6 - 1)) + 1).toString();
-    const page = (Math.floor(Math.random() * (30 - 1)) + 1).toString();
+  public startSprintRandom(): void {
+    const group = (Math.floor(Math.random() * 5)).toString();
+    const page = (Math.floor(Math.random() * 29)).toString();
     this.startSprintPage(group, page);
   }
 
-  listenWrongBtn(): void {
+  private listenWrongBtn(): void {
     const wrongBtn: HTMLButtonElement = document.querySelector('.btn_wrong');
     wrongBtn?.addEventListener('click', () => {
       if (!this.checkAnswer()) {
@@ -137,17 +155,17 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion(this.questions, this.answers);
+      this.newSprintQuestion();
     });
 
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keyup', (event) => {
       if (event.code === 'ArrowLeft') {
         wrongBtn.click();
       }
     });
   }
 
-  listenRightBtn(): void {
+  private listenRightBtn(): void {
     const rightBtn: HTMLButtonElement = document.querySelector('.btn_right');
     rightBtn?.addEventListener('click', () => {
       if (this.checkAnswer()) {
@@ -155,16 +173,16 @@ export default class SprintControllers {
       } else {
         this.wrongAction();
       }
-      this.newSprintQuestion(this.questions, this.answers);
+      this.newSprintQuestion();
     });
-    document.addEventListener('keydown', (event) => {
+    document.addEventListener('keyup', (event) => {
       if (event.code === 'ArrowRight') {
         rightBtn.click();
       }
     });
   }
 
-  listenSoundBtn(): void {
+  private listenSoundBtn(): void {
     const soundBtn = document.querySelector('.btn__audio');
     soundBtn.addEventListener('click', () => {
       if (this.rightSound.muted === true && this.wrongSound.muted === true
@@ -182,7 +200,7 @@ export default class SprintControllers {
     });
   }
 
-  listenFullScreenBtn(): void {
+  private listenFullScreenBtn(): void {
     const gameScreen = document.querySelector('.game');
     const fullscreenBtn = document.querySelector('.btn__window');
     fullscreenBtn.addEventListener('click', () => {
@@ -194,12 +212,12 @@ export default class SprintControllers {
     });
   }
 
-  newSprintQuestion(questions: string[], answers: string[]): void {
+  private newSprintQuestion(): void {
     const english = document.querySelector('.console__english');
     const russian = document.querySelector('.console__russian');
-    if (this.wordCounter < questions.length) {
-      english.innerHTML = questions[this.wordCounter];
-      russian.innerHTML = answers[this.getRandomIndex(this.wordCounter)];
+    if (this.wordCounter < this.questions.length) {
+      english.innerHTML = this.questions[this.wordCounter];
+      russian.innerHTML = this.answers[this.getRandomIndex(this.wordCounter)];
       this.wordCounter += 1;
     } else {
       this.wordCounter = 0;
@@ -208,14 +226,17 @@ export default class SprintControllers {
     }
   }
 
-  getRandomIndex(rightIndex: number): number {
-    if (rightIndex === this.answers.length || rightIndex + 4 > this.answers.length) {
+  private getRandomIndex(rightIndex: number): number {
+    if (this.answers.length <= 4) {
+      return rightIndex;
+    }
+    if (rightIndex === this.answers.length - 1 || rightIndex + 4 > this.answers.length - 1) {
       return Math.floor(Math.random() * (rightIndex - (rightIndex - 4))) + (rightIndex - 4);
     }
     return Math.floor(Math.random() * ((rightIndex + 4) - rightIndex)) + rightIndex;
   }
 
-  async checkIfLearned(userId: string, words: Word[]): Promise<Word[]> {
+  private async checkIfLearned(userId: string, words: Word[]): Promise<Word[]> {
     const results = await Promise.all(words.map((word) => {
       const wordCheck = this.api.isWordLearned(userId, word.id);
       return wordCheck;
@@ -224,19 +245,24 @@ export default class SprintControllers {
     return filteredWords;
   }
 
-  async checkWordsLength(userId: string, group: string, page: string, words: Word[])
+  private async checkWordsPage(group: string, page: string, words: Word[], userId?: string)
     : Promise<Word[]> {
-    if (words.length < 20 && Number(page) > 1) {
+    let allWords: Word[];
+    if (Number(page) > 0) {
       let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
-      concatWords = await this.checkIfLearned(userId, concatWords);
-      words = words.concat(concatWords); // eslint-disable-line
-      this.checkWordsLength(userId, group, (Number(page) - 1).toString(), words);
+      if (userId) {
+        concatWords = await this.checkIfLearned(userId, concatWords);
+        allWords = words.concat(concatWords);
+      } else {
+        allWords = words.concat(concatWords);
+      }
+      return this.checkWordsPage(group, (Number(page) - 1).toString(), allWords);
     }
-    words = words.slice(0, 20); // eslint-disable-line
-    return words;
+    allWords = words;
+    return allWords;
   }
 
-  checkAnswer(): boolean {
+  private checkAnswer(): boolean {
     const english = document.querySelector('.console__english');
     const russian = document.querySelector('.console__russian');
     if (this.questions.indexOf(english.innerHTML)
@@ -244,7 +270,7 @@ export default class SprintControllers {
     return false;
   }
 
-  checkCategory(): void {
+  private checkCategory(): void {
     const category = document.querySelector('.points__category');
     if (this.categoryCounter === 4) {
       this.category += 10;
@@ -253,12 +279,12 @@ export default class SprintControllers {
     category.innerHTML = `+ ${this.category} баллов`;
   }
 
-  updatePoints(): void {
+  private updatePoints(): void {
     const points = document.querySelector('.points__current');
     points.innerHTML = this.points.toString();
   }
 
-  checkCubes(): void {
+  private checkCubes(): void {
     const cubes = document.querySelectorAll('.row__cube');
     if (!cubes.length) {
       const activeCubes = document.querySelectorAll('.row__cube_active');
@@ -273,11 +299,13 @@ export default class SprintControllers {
     }
   }
 
-  checkRow(): void {
-    this.maxRow = this.maxRow < this.rowCounter ? this.rowCounter : this.maxRow;
+  private checkRow(): void {
+    if (this.maxRow < this.rowCounter) {
+      this.maxRow = this.rowCounter;
+    }
   }
 
-  resetCubes(): void {
+  private resetCubes(): void {
     const activeCubes = document.querySelectorAll('.row__cube_active');
     if (activeCubes.length) {
       activeCubes.forEach((cube) => {
@@ -287,7 +315,7 @@ export default class SprintControllers {
     }
   }
 
-  rightAction(): void {
+  private rightAction(): void {
     this.rightSound.play();
     this.rightSound.currentTime = 0;
     this.categoryCounter += 1;
@@ -299,7 +327,7 @@ export default class SprintControllers {
     this.getCorrect();
   }
 
-  wrongAction(): void {
+  private wrongAction(): void {
     this.wrongSound.play();
     this.wrongSound.currentTime = 0;
     this.categoryCounter = 0;
@@ -311,7 +339,7 @@ export default class SprintControllers {
     this.getMistakes();
   }
 
-  getMistakes(): void {
+  private getMistakes(): void {
     const question = document.querySelector('.console__english');
     this.words.forEach((word) => {
       if (question.innerHTML === word.word) {
@@ -320,7 +348,7 @@ export default class SprintControllers {
     });
   }
 
-  getCorrect(): void {
+  private getCorrect(): void {
     const question = document.querySelector('.console__english');
     this.words.forEach((word) => {
       if (question.innerHTML === word.word) {
@@ -329,16 +357,20 @@ export default class SprintControllers {
     });
   }
 
-  finishSprintGame(): void {
+  private finishSprintGame(): void {
     this.finishSound.play();
+    this.checkRow();
     this.games.renderGameResults('Cпринт', this.mistakes, this.correct, this.points, this.maxRow);
+    if (this.userInfo) {
+      this.statistic.getFullGameStatistic('s', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
+    }
 
     this.resultControllers.listenHomeBtn();
     this.resultControllers.listenAudioBtn();
     this.listenNewGameBtn();
   }
 
-  listenNewGameBtn(): void {
+  private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
     newGameBtn.addEventListener('click', () => {
       const newGame = new SprintControllers();

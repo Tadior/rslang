@@ -6,6 +6,7 @@
     &__navigation {
         display: flex;
         align-items: flex-end;
+        justify-content: space-between;
         margin: 0 17px 0 10px;
     }
     &__dictionary {
@@ -20,7 +21,12 @@
         font-size: 25px;
         border-radius: 10px 10px 0px 0px;
         color: $dark-blue;
+        border: 3px solid rgba($gray, 0);
+        border-bottom: none;
         margin-left: 10px;
+        &_active {
+            border-color: rgba($gray, .5);
+        }
     }
     &__dictionary {
         flex: 1 1 auto;
@@ -69,6 +75,10 @@
             max-height: 46px;
         }
     }
+    &_disabled {
+        background: #757171;
+        pointer-events: none;
+    }
 }
 .tabs__block {
     padding: 40px 50px 50px;
@@ -77,9 +87,27 @@
     &:target{
         display: block;
     }
+    &_active {
+        display: block;
+    }
+    &_message {
+        color: $dark-blue;
+        font-size: 25px;
+        font-family: 'Jost-Medium', serif;
+    }
+}
+.tabs__block-learned {
+    background-color: rgb(197, 255, 197);
+}
+.tabs__block_none {
+    display: none;
 }
 .arrow-link {
-    position: absolute;
+    position: fixed;
     bottom: 0;
-    right: -70px;
+    right: -10px;
+    transition: all ease .5s;
+    &:hover {
+        transform: translateY(-5px);
+    }
 }

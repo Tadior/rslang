@@ -1,7 +1,13 @@
 import Header from './views/Header';
-import AudioCallControllers from './controllers/AudioCallControllers';
+import Footer from './views/Footer';
+import AuthorizationControllers from './controllers/AuthorizationControllers';
+import MainPage from './views/MainPage';
 
 const header = new Header();
 header.renderHeader();
-const controller = new AudioCallControllers();
-controller.startAudioCallDictionary('d796e624-8a2a-4f96-9935-ae22747e940a');
+const authorizationControllers = new AuthorizationControllers();
+authorizationControllers.enableAuthorization();
+const mainPage = new MainPage();
+mainPage.renderMainPage();
+const footer = new Footer();
+footer.renderFooter();

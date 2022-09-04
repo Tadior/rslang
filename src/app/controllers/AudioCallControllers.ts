@@ -1,4 +1,4 @@
-import { TQuestionsAnswers, UserWord, Word } from '../../types/types';
+import { TQuestionsAnswers, Word } from '../../types/types';
 import Api from '../models/Api';
 import Games from '../views/Games';
 import MelodyIcon from '../../assets/img/icons/melody.svg';
@@ -114,11 +114,9 @@ export default class AudioCallControllers {
     // eslint-disable-next-line no-restricted-syntax
     const dictionary = userWords.map(async (uWord) => {
       const word = await this.api.getWordById(uWord.wordId);
-      console.log(word);
       this.words.push(word);
     });
     await Promise.all(dictionary);
-    console.log(this.words);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
@@ -194,7 +192,6 @@ export default class AudioCallControllers {
   }
 
   resultObserver() {
-    console.log('resultObserver');
     const button: HTMLButtonElement = document.querySelector('.audio-call-button');
     button.classList.toggle('btn_hide');
     const img: HTMLElement = document.querySelector('.audio-call-img');
@@ -205,11 +202,9 @@ export default class AudioCallControllers {
     audioContainer.classList.toggle('word_hide');
     const audioContainerWord = document.querySelector('.audio-call-container__word');
     audioContainerWord.innerHTML = correct;
-    console.log(this.getWordImg(correct));
     img.style.margin = `${this.getWordImg(correct)}`;
     img.setAttribute('style', `background-image: url(${this.getWordImg(correct)});`);
     audioContainerIco.setAttribute('style', `background-image: url(${listenIcon});`);
-    console.log(img);
     img.classList.toggle('img_hide');
   }
 
@@ -322,7 +317,6 @@ export default class AudioCallControllers {
   }
 
   newSprintQuestion(questions: string[], answers: string[]): void {
-    console.log('CCC');
     const answersContainer = document.querySelector('.audio-call__answers');
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -331,8 +325,6 @@ export default class AudioCallControllers {
     const generatedArray = [this.wordCounter].concat(this.generateArray(questions.length));
     // const english = document.querySelector('.console__english');
     // const russian = document.querySelector('.console__russian');
-    console.log(this.wordCounter);
-    console.log(questions.length);
     if (this.wordCounter < questions.length) {
       this.getAndPlayWordSound(questions[this.wordCounter]);
       // english.innerHTML = questions[this.wordCounter];
@@ -502,7 +494,6 @@ export default class AudioCallControllers {
   }
 
   finishSprintGame(): void {
-    console.log('Finish');
     this.finishSound.play();
     this.games.renderGameResults('Аудиовызов', this.mistakes, this.correct, this.points, this.maxRow);
     const resultRow: HTMLElement = document.querySelector('.result__row');
