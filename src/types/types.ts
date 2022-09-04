@@ -72,3 +72,7 @@ export interface UserDayStatistic {
   audioAccuracy: number;
   learnedWords: number;
 }
+
+export type TQuestionsAnswers = {
+  [key: string]: string;
+};
