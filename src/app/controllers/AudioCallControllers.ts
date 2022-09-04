@@ -1,4 +1,10 @@
-import { TQuestionsAnswers, Word } from '../../types/types';
+// prettier-ignore
+import {
+  ICheckAnswer,
+  TQuestionsAnswers,
+  User,
+  UserWord, Word,
+} from '../../types/types';
 import Api from '../models/Api';
 import Games from '../views/Games';
 import MelodyIcon from '../../assets/img/icons/melody.svg';
@@ -8,8 +14,8 @@ import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
 import ResultsControllers from './ResultsControllers';
 import listenIcon from '../../assets/img/sprint/listen_icon.png';
-
-const url = 'http://localhost:4000/';
+import url from '../models/variables';
+import AuthorizationControllers from './AuthorizationControllers';
 
 export default class AudioCallControllers {
   api: Api;
@@ -52,7 +58,13 @@ export default class AudioCallControllers {
 
   questionsAnswers: TQuestionsAnswers;
 
+  authorization: AuthorizationControllers;
+
+  userInfo: User;
+
   constructor() {
+    this.authorization = new AuthorizationControllers();
+    this.userInfo = this.authorization.getUserFromLocalStorage();
     this.api = new Api();
     this.games = new Games();
     this.wordCounter = 0;
@@ -74,12 +86,13 @@ export default class AudioCallControllers {
     this.questionsAnswers = {};
   }
 
-  async startAudioCallPage(group: string, page: string, userId?: string): Promise<void> {
-    if (userId) {
+  async startAudioCallPage(group: string, page: string): Promise<void> {
+    if (this.userInfo) {
       this.words = await this.api.getWords(group, page);
-      this.words = await this.checkIfLearned(userId, this.words);
-      this.words = await this.checkWordsLength(userId, group, page, this.words);
+      this.words = await this.checkIfLearned(this.userInfo.userId, this.words);
+      this.words = await this.checkWordsPage(group, page, this.words, this.userInfo.userId);
     } else {
+      this.words = await this.checkWordsPage(group, page, this.words);
       this.words = await this.api.getWords(group, page);
     }
     for (let i = 0; i < this.words.length; i += 1) {
@@ -94,14 +107,16 @@ export default class AudioCallControllers {
     this.listenBtns();
   }
 
-  public async startSprintMenu(group: string): Promise<void> {
-    const page: string = (Math.floor(Math.random() * 29) + 1).toString();
+  public async startAudioCallMenu(group: string): Promise<void> {
+    const page: string = Math.floor(Math.random() * 29).toString();
     this.words = await this.api.getWords(group, page);
+    this.words = await this.checkWordsPage(group, page, this.words);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
       this.questionsAnswers[`${this.words[i].word}`] = this.words[i].wordTranslate;
     }
+    console.log(this.questions);
     this.games.renderAudioGame();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
@@ -109,10 +124,9 @@ export default class AudioCallControllers {
     this.listenBtns();
   }
 
-  async startAudioCallDictionary(userId: string) {
-    const userWords = await this.api.getUserWords(userId);
-    // eslint-disable-next-line no-restricted-syntax
-    const dictionary = userWords.map(async (uWord) => {
+  public async startAudioCallDictionary(userId: string): Promise<void> {
+    const userWords: UserWord[] = await this.api.getUserWords(userId);
+    const dictionary: Promise<void>[] = userWords.map(async (uWord) => {
       const word = await this.api.getWordById(uWord.wordId);
       this.words.push(word);
     });
@@ -129,54 +143,19 @@ export default class AudioCallControllers {
     this.listenBtns();
   }
 
-  startSprintRandom(): void {
+  public startAudioCallRandom(): void {
     const group = (Math.floor(Math.random() * 5) + 1).toString();
     const page = (Math.floor(Math.random() * 29) + 1).toString();
     this.startAudioCallPage(group, page);
   }
 
-  listenWrongBtn(): void {
-    const wrongBtn: HTMLButtonElement = document.querySelector('.btn_wrong');
-    wrongBtn?.addEventListener('click', () => {
-      if (!this.checkAnswer('2')) {
-        // this.rightAction();
-      } else {
-        // this.wrongAction();
-      }
-      this.newSprintQuestion(this.questions, this.answers);
-    });
-
-    document.addEventListener('keydown', (event) => {
-      if (event.code === 'ArrowLeft') {
-        wrongBtn.click();
-      }
-    });
-  }
-
-  listenRightBtn(): void {
-    const rightBtn: HTMLButtonElement = document.querySelector('.btn_right');
-    rightBtn?.addEventListener('click', () => {
-      // if (this.checkAnswer()) {
-      // this.rightAction();
-      // } else {
-      // this.wrongAction();
-      // }
-      this.newSprintQuestion(this.questions, this.answers);
-    });
-    document.addEventListener('keydown', (event) => {
-      if (event.code === 'ArrowRight') {
-        rightBtn.click();
-      }
-    });
-  }
-
-  listenAnswersBtns() {
-    const answersBtns = document.querySelectorAll('.audio-call__answer');
+  private listenAnswersBtns(): void {
+    const answersBtns: NodeListOf<HTMLElement> = document.querySelectorAll('.audio-call__answer');
     const audioBtnIdk: HTMLButtonElement = document.querySelector('.audio-call__btn-idk');
-    answersBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const answer = btn.innerHTML;
-        const checkedAnswer = this.checkAnswer(answer);
+    answersBtns.forEach((btn: HTMLElement) => {
+      btn.addEventListener('click', (): void => {
+        const answer: string = btn.innerHTML;
+        const checkedAnswer: ICheckAnswer = this.checkAnswer(answer);
         if (checkedAnswer.isCorrectAnswer) {
           this.rightAction();
         } else {
@@ -186,21 +165,20 @@ export default class AudioCallControllers {
         this.disableBtns();
         this.resultObserver();
         audioBtnIdk.innerHTML = '🠒';
-        // this.newSprintQuestion(this.questions, this.answers);
       });
     });
   }
 
-  resultObserver() {
+  private resultObserver(): void {
     const button: HTMLButtonElement = document.querySelector('.audio-call-button');
     button.classList.toggle('btn_hide');
     const img: HTMLElement = document.querySelector('.audio-call-img');
     const audioBtn: HTMLDivElement = document.querySelector('.audio-call-button');
-    const correct = audioBtn.getAttribute('data-word');
-    const audioContainer = document.querySelector('.audio-call-container');
-    const audioContainerIco = document.querySelector('.audio-call-container__ico');
+    const correct: string = audioBtn.getAttribute('data-word');
+    const audioContainer: HTMLElement = document.querySelector('.audio-call-container');
+    const audioContainerIco: HTMLButtonElement = document.querySelector('.audio-call-container__ico');
     audioContainer.classList.toggle('word_hide');
-    const audioContainerWord = document.querySelector('.audio-call-container__word');
+    const audioContainerWord: HTMLElement = document.querySelector('.audio-call-container__word');
     audioContainerWord.innerHTML = correct;
     img.style.margin = `${this.getWordImg(correct)}`;
     img.setAttribute('style', `background-image: url(${this.getWordImg(correct)});`);
@@ -208,15 +186,15 @@ export default class AudioCallControllers {
     img.classList.toggle('img_hide');
   }
 
-  listenBtns() {
-    const answers = document.querySelector('.audio-call__answers');
+  private listenBtns(): void {
+    const answers: HTMLElement = document.querySelector('.audio-call__answers');
     const audioListenBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
     const audioListenAnswer: HTMLButtonElement = document.querySelector('.audio-call-container__ico');
     const audioBtnIdk: HTMLButtonElement = document.querySelector('.audio-call__btn-idk');
     const audioContainer = document.querySelector('.audio-call-container');
     const img: HTMLElement = document.querySelector('.audio-call-img');
     const button: HTMLButtonElement = document.querySelector('.audio-call-button');
-    audioBtnIdk.addEventListener('click', () => {
+    audioBtnIdk.addEventListener('click', (): void => {
       switch (audioBtnIdk.innerHTML) {
         case '🠒':
           answers.innerHTML = '';
@@ -226,7 +204,6 @@ export default class AudioCallControllers {
           this.newSprintQuestion(this.questions, this.answers);
           audioBtnIdk.innerHTML = 'Я не знаю :(';
           break;
-
         default:
           this.wrongSound.play();
           this.getMistakes();
@@ -238,18 +215,16 @@ export default class AudioCallControllers {
       this.listenAnswersBtns();
     });
     this.listenAnswersBtns();
-    audioListenBtn.addEventListener('click', () => {
+    audioListenBtn.addEventListener('click', (): void => {
       audioListenBtn.disabled = true;
-      // eslint-disable-next-line no-return-assign
       setTimeout(() => {
         audioListenBtn.disabled = false;
       }, 500);
       this.getAndPlayWordSound(this.wordName);
     });
 
-    audioListenAnswer.addEventListener('click', () => {
+    audioListenAnswer.addEventListener('click', (): void => {
       audioListenAnswer.disabled = true;
-      // eslint-disable-next-line no-return-assign
       setTimeout(() => {
         audioListenAnswer.disabled = false;
       }, 500);
@@ -257,14 +232,13 @@ export default class AudioCallControllers {
     });
   }
 
-  private disableBtns() {
+  private disableBtns(): void {
     const answersBtns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.audio-call__answer');
     const audioBtn: HTMLDivElement = document.querySelector('.audio-call-button');
     const correct = audioBtn.getAttribute('data-word');
     answersBtns.forEach((btn: HTMLButtonElement) => {
       // eslint-disable-next-line no-param-reassign
       btn.disabled = true;
-      // if (btn.innerHTML === this.questionsAnswers[`${correct}`]) {
       if (btn.innerHTML === this.questionsAnswers[`${correct}`]) {
         btn.classList.toggle('audio-call__answer_right');
       }
@@ -274,21 +248,21 @@ export default class AudioCallControllers {
     });
   }
 
-  private getAndPlayWordSound(wordName: string) {
+  private getAndPlayWordSound(wordName: string): void {
     const word: Word = this.words.filter((el) => el.word === wordName)[0];
     const audio = new Audio(`${url}${word.audio}`);
     audio.play();
   }
 
-  private getWordImg(wordName: string) {
+  private getWordImg(wordName: string): string {
     const word: Word = this.words.filter((el) => el.word === wordName)[0];
     const image = `${url}${word.image}`;
     return image;
   }
 
-  listenSoundBtn(): void {
-    const soundBtn = document.querySelector('.btn__audio');
-    soundBtn.addEventListener('click', () => {
+  private listenSoundBtn(): void {
+    const soundBtn: HTMLElement = document.querySelector('.btn__audio');
+    soundBtn.addEventListener('click', (): void => {
       // eslint-disable-next-line max-len
       if (this.rightSound.muted === true && this.wrongSound.muted === true && this.finishSound.muted === true) {
         soundBtn.innerHTML = `<img src='${MelodyIcon}' alt='sound-icon'>`;
@@ -304,10 +278,10 @@ export default class AudioCallControllers {
     });
   }
 
-  listenFullScreenBtn(): void {
-    const gameScreen = document.querySelector('.game');
-    const fullscreenBtn = document.querySelector('.btn__window');
-    fullscreenBtn.addEventListener('click', () => {
+  private listenFullScreenBtn(): void {
+    const gameScreen: HTMLElement = document.querySelector('.game');
+    const fullscreenBtn: HTMLElement = document.querySelector('.btn__window');
+    fullscreenBtn.addEventListener('click', (): void => {
       if (!document.fullscreenElement) {
         gameScreen.requestFullscreen();
       } else {
@@ -316,18 +290,15 @@ export default class AudioCallControllers {
     });
   }
 
-  newSprintQuestion(questions: string[], answers: string[]): void {
+  private newSprintQuestion(questions: string[], answers: string[]): void {
     const answersContainer = document.querySelector('.audio-call__answers');
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
-    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     audioBtn.setAttribute('data-word', questions[this.wordCounter]);
     this.wordName = questions[this.wordCounter];
-    const generatedArray = [this.wordCounter].concat(this.generateArray(questions.length));
-    // const english = document.querySelector('.console__english');
-    // const russian = document.querySelector('.console__russian');
+    // eslint-disable-next-line max-len
+    const generatedArray: number[] = [this.wordCounter].concat(this.generateArray(questions.length));
     if (this.wordCounter < questions.length) {
       this.getAndPlayWordSound(questions[this.wordCounter]);
-      // english.innerHTML = questions[this.wordCounter];
       const idxArr: number[] = [];
       idxArr.push(this.wordCounter);
       for (let index = 0; index < 4; index += 1) {
@@ -335,11 +306,9 @@ export default class AudioCallControllers {
         idxArr.push(idx);
       }
       this.shuffle(idxArr).forEach((el) => {
-        // prettier-ignore;
         const word = answers[el];
         answersContainer.innerHTML += `<button class="audio-call__answer">${word}</button>`;
       });
-      // russian.innerHTML = answers[this.getRandomIndex(this.wordCounter)];
       this.wordCounter += 1;
     } else {
       this.wordCounter = 0;
@@ -347,8 +316,8 @@ export default class AudioCallControllers {
     }
   }
 
-  getRandomIndex(rightIndex: number, idxArr: number[], generatedArray: number[]): number {
-    const item = generatedArray[Math.floor(Math.random() * generatedArray.length)];
+  private getRandomIndex(rightIndex: number, idxArr: number[], generatedArray: number[]): number {
+    const item: number = generatedArray[Math.floor(Math.random() * generatedArray.length)];
     if (idxArr.includes(item)) {
       return this.getRandomIndex(rightIndex, idxArr, generatedArray);
     }
@@ -356,7 +325,7 @@ export default class AudioCallControllers {
   }
 
   // Fisher-Yates Algorithm
-  shuffle(array: number[]): number[] {
+  public shuffle(array: number[]): number[] {
     const copyArray = array.slice();
     for (let index = array.length - 1; index > 0; index -= 1) {
       const j = Math.floor(Math.random() * (index + 1));
@@ -365,40 +334,26 @@ export default class AudioCallControllers {
     return copyArray;
   }
 
-  generateArray(length: number) {
+  public generateArray(length: number): number[] {
     return Array(length - 1)
       .fill(0)
       .map((_, i) => i + 1);
   }
 
-  async checkIfLearned(userId: string, words: Word[]): Promise<Word[]> {
+  private async checkIfLearned(userId: string, words: Word[]): Promise<Word[]> {
     const results = await Promise.all(
       words.map((word) => {
         const wordCheck = this.api.isWordLearned(userId, word.id);
         return wordCheck;
-        // eslint-disable-next-line @typescript-eslint/comma-dangle
-      })
+      }),
     );
     const filteredWords = words.filter((_word, index) => !results[index].userLearnedWordsExists);
     return filteredWords;
   }
 
-  // eslint-disable-next-line max-len
-  async checkWordsLength(userId: string, group: string, page: string, words: Word[]): Promise<Word[]> {
-    if (words.length < 20 && Number(page) > 1) {
-      let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
-      concatWords = await this.checkIfLearned(userId, concatWords);
-      words = words.concat(concatWords); // eslint-disable-line
-      this.checkWordsLength(userId, group, (Number(page) - 1).toString(), words);
-    }
-    words = words.slice(0, 20); // eslint-disable-line
-    return words;
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  checkAnswer(russian: string) {
+  private checkAnswer(russian: string): ICheckAnswer {
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
-    const english = audioBtn.getAttribute('data-word');
+    const english: string = audioBtn.getAttribute('data-word');
     // eslint-disable-next-line max-len
     if (this.questions.indexOf(english) === this.answers.indexOf(russian)) {
       return {
@@ -414,39 +369,10 @@ export default class AudioCallControllers {
     };
   }
 
-  checkCategory(): void {
+  private checkCategory(): void {
     if (this.categoryCounter === 4) {
       this.category += 10;
       this.categoryCounter = 0;
-    }
-  }
-
-  checkCubes(): void {
-    const cubes = document.querySelectorAll('.row__cube');
-    if (!cubes.length) {
-      const activeCubes = document.querySelectorAll('.row__cube_active');
-      activeCubes.forEach((cube) => {
-        cube.classList.remove('row__cube_active');
-        cube.classList.add('row__cube');
-      });
-    }
-    if (cubes.length > 0 && this.categoryCounter <= 3) {
-      cubes[0].classList.remove('row__cube');
-      cubes[0].classList.add('row__cube_active');
-    }
-  }
-
-  checkRow(): void {
-    this.maxRow = this.maxRow < this.rowCounter ? this.rowCounter : this.maxRow;
-  }
-
-  resetCubes(): void {
-    const activeCubes = document.querySelectorAll('.row__cube_active');
-    if (activeCubes.length) {
-      activeCubes.forEach((cube) => {
-        cube.classList.remove('row__cube_active');
-        cube.classList.add('row__cube');
-      });
     }
   }
 
@@ -454,7 +380,6 @@ export default class AudioCallControllers {
     this.rightSound.play();
     this.rightSound.currentTime = 0;
     this.categoryCounter += 1;
-    this.checkCubes();
     this.points += this.category;
     this.checkCategory();
     this.rowCounter += 1;
@@ -467,15 +392,13 @@ export default class AudioCallControllers {
     this.categoryCounter = 0;
     this.category = 10;
     this.checkCategory();
-    this.resetCubes();
-    this.checkRow();
     this.rowCounter = 0;
     this.getMistakes();
   }
 
-  getMistakes(): void {
+  private getMistakes(): void {
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
-    const english = audioBtn.getAttribute('data-word');
+    const english: string = audioBtn.getAttribute('data-word');
     this.words.forEach((word) => {
       if (english === word.word) {
         this.mistakes.push(word);
@@ -483,9 +406,9 @@ export default class AudioCallControllers {
     });
   }
 
-  getCorrect(): void {
+  private getCorrect(): void {
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
-    const english = audioBtn.getAttribute('data-word');
+    const english: string = audioBtn.getAttribute('data-word');
     this.words.forEach((word) => {
       if (english === word.word) {
         this.correct.push(word);
@@ -493,7 +416,7 @@ export default class AudioCallControllers {
     });
   }
 
-  finishSprintGame(): void {
+  private finishSprintGame(): void {
     this.finishSound.play();
     this.games.renderGameResults('Аудиовызов', this.mistakes, this.correct, this.points, this.maxRow);
     const resultRow: HTMLElement = document.querySelector('.result__row');
@@ -505,11 +428,28 @@ export default class AudioCallControllers {
     this.listenNewGameBtn();
   }
 
-  listenNewGameBtn(): void {
+  private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
-    newGameBtn.addEventListener('click', () => {
+    newGameBtn.addEventListener('click', (): void => {
       const newGame = new AudioCallControllers();
-      newGame.startSprintRandom();
+      newGame.startAudioCallRandom();
     });
+  }
+
+  // eslint-disable-next-line max-len
+  private async checkWordsPage(group: string, page: string, words: Word[], userId?: string): Promise<Word[]> {
+    let allWords: Word[];
+    if (Number(page) > 0) {
+      let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
+      if (userId) {
+        concatWords = await this.checkIfLearned(userId, concatWords);
+        allWords = words.concat(concatWords);
+      } else {
+        allWords = words.concat(concatWords);
+      }
+      return this.checkWordsPage(group, (Number(page) - 1).toString(), allWords);
+    }
+    allWords = words;
+    return allWords;
   }
 }

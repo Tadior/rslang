@@ -66,22 +66,27 @@ export interface UserLearnedWordsCheck {
 }
 
 export interface UserDayStatistic {
-  sprintRow?: number,
-  sprintAccuracy?: number,
-  sprintNewWords?: number,
-  audioRow?: number,
-  audioAccuracy?: number,
-  audioNewWords?: number,
-  learnedWords?: number
+  sprintRow?: number;
+  sprintAccuracy?: number;
+  sprintNewWords?: number;
+  audioRow?: number;
+  audioAccuracy?: number;
+  audioNewWords?: number;
+  learnedWords?: number;
 }
 
-<<<<<<< HEAD
 export type TQuestionsAnswers = {
   [key: string]: string;
-=======
+};
+
 export type StatisicProperty = 'sprintRow' | 'sprintAccuracy' | 'sprintNewWords' | 'audioRow' | 'audioAccuracy' | 'audioNewWords';
 
 export type Progress = {
   [key: string]: boolean[];
->>>>>>> ad775f494c68f4b6e6371c656f37690913b90e54
 };
+
+export interface ICheckAnswer {
+  isCorrectAnswer: boolean;
+  russian: string;
+  english: string;
+}
