@@ -197,7 +197,7 @@ export default class StatisticPage {
           },
           counter: {
             fontColor: '#2A3354',
-            fontSize: 36,
+            fontSize: document.body.clientWidth <= 1000 ? 18 : 36,
             fontFamily: 'Jost-Bold',
           },
         },
