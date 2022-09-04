@@ -6,37 +6,61 @@
   box-shadow: 0px 10px 50px rgba(86, 133, 255, 0.15);
   border-radius: 40px;
   border: 3px solid #fff;
+  @media (max-width: 1100px) {
+    flex: 1 1 auto;
+    flex-direction: column;
+  }
+  @media (max-width: 530px) {
+    padding: 20px;
+  }
   &__img {
     max-width: 359px;
     width: 359px;
     object-fit: cover;
     height: 260px;
     border-radius: 10px;
+    @media (max-width: 1100px) {
+      width: 100%;
+    }
   }
   &__info {
     margin-left: 68px;
     flex: 1 1 auto;
     position: relative;
+    @media (max-width: 1100px) {
+      margin-left: 0;
+    }
   }
   &__image-fluid {
     max-width: 359px;
     width: 100%;
     border-radius: 10px;
+    @media (max-width: 1100px) {
+      margin: 0 auto;
+    }
   }
   &__fluid {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    @media (max-width: 1100px) {
+      flex: 1 1 auto;
+    }
   }
   &__progress {
     margin-top: 10px;
+    @media (max-width: 1100px) {
+      margin: 10px auto 0;
+      width: 100%;
+      max-width: 359px;
+    }
     &-values {
       margin: 10px -5px 0;
       display: flex;
     }
     &-image {
-        margin: 0 5px;
-        max-width: 30px;
+      margin: 0 5px;
+      max-width: 30px;
     }
     &-title {
         color: $dark-blue;
@@ -59,12 +83,18 @@
   top: 0;
   right: 0;
   background: transparent;
+  @media (max-width: 530px) {
+    top: 20px;
+  }
 }
 .card-name {
   display: flex;
   font-family: 'Jost-Medium', serif;
   font-size: 32px;
   line-height: 120%;
+  @media (max-width: 530px) {
+    font-size: 27px;
+  }
   &__original {
     color: $dark-blue;
   }
@@ -76,6 +106,9 @@
 .card-transcription {
   font-size: 28px;
   margin-top: 18px;
+  @media (max-width: 530px) {
+    font-size: 24px;
+  }
 }
 .card-sentences {
   margin-top: 10px;
@@ -94,6 +127,7 @@
     font-family: 'Jost-Italic', serif;
   }
   &__buttons {
-    margin: 28px -5px 0;
+    margin: 0 -5px 0;
+    @media (max-width: |md2 + px) {}
   }
 }

@@ -27,8 +27,9 @@ export default class Header {
         </a>
     </div>
     `;
-    const navigation = `
-    <nav class="navigation">
+    const navigation = document.createElement('nav');
+    navigation.classList.add('navigation');
+    const navigationContainer = `
     <ul class="navigation__container">
         <li class="navigation__item nav_about">
             <a href="#about-app" class="navigation__link">
@@ -51,8 +52,8 @@ export default class Header {
             </a>
         </li>
     </ul>
-    </nav>
     `;
+    navigation.innerHTML = navigationContainer;
     const authorisationBtn = document.createElement('button');
     const logoutBtn = document.createElement('button');
     if (this.authorization.checkUserInLocalStorage()) {
@@ -64,13 +65,31 @@ export default class Header {
     }
     authorisationBtn.textContent = 'Войти';
     logoutBtn.textContent = 'Выйти';
-    headerWrapper.innerHTML = `${logo}${navigation}`;
-    headerWrapper.append(authorisationBtn);
-    headerWrapper.append(logoutBtn);
+    const burger = document.createElement('button');
+    burger.classList.add('burger');
+    burger.innerHTML = '<span class="burger__line"></span>';
+    burger.addEventListener('click', () => {
+      this.toggleBurger();
+    });
+    navigation.append(authorisationBtn, logoutBtn);
+    headerWrapper.innerHTML = `${logo}`;
+    headerWrapper.append(navigation, burger);
     container.append(headerWrapper);
     header.append(container);
     document.querySelector('.wrapper').prepend(header);
 
     this.headerControllers.listenHeader();
+  }
+
+  private toggleBurger(): void {
+    const burger = document.querySelector('.burger');
+    burger.classList.toggle('burger_active');
+    this.toggleNavigation();
+    document.querySelector('body').classList.toggle('scroll_blocked');
+  }
+
+  private toggleNavigation(): void {
+    const navigation = document.querySelector('.navigation');
+    navigation.classList.toggle('navigation_active');
   }
 }

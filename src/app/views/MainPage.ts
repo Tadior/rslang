@@ -39,7 +39,7 @@ export default class MainPage {
       const button = document.createElement('button');
       button.classList.add('category', class_identificator);
       button.innerHTML = `
-          <img class="cetegory__img" src="${path}" alt=${category_name}">
+          <img class="category__img" src="${path}" alt=${category_name}">
           <div class="pad ${class_hoverIdentificator}">${category_name}</div>
         `;
       return button;
@@ -68,14 +68,14 @@ export default class MainPage {
     buttons.forEach((button) => {
       projectButtons.append(button);
     });
-    const projectCategories = document.createElement('div');
-    projectCategories.classList.add('project-categories');
+    // const projectCategories = document.createElement('div');
+    // projectCategories.classList.add('project-category');
     const startLearnButton = document.createElement('button');
     startLearnButton.classList.add('btn', 'project__btn');
     startLearnButton.textContent = 'Начать обучение';
     projectInfo.append(startLearnButton);
-    projectCategories.append(projectButtons);
-    projectWrapper.append(projectInfo, projectCategories);
+    // projectCategories.append(projectButtons);
+    projectWrapper.append(projectInfo, projectButtons);
     container.append(projectWrapper);
     projectSection.append(container);
     return projectSection;

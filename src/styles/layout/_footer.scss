@@ -4,20 +4,24 @@
     &__wrapper {
         display: flex;
         align-items: center;
+        @media (max-width: 777px) {
+            flex-direction: column;
+        }
+    }
+    .logo {
+        font-family: 'Jost-Medium', serif;
     }
 }
 .rs-logo {
     flex: 1 1 auto;
     text-align: center;
-    position: relative;
-    &::before{
-        content: '2022';
-        display: block;
-        font-size: 24px;
-        font-family: 'Jost-Bold';
-        color: black;
-        position: absolute;
-        right: 270px;
+    @media (max-width: 777px) {
+        margin: 39px 0 52px;
+    }
+    img {
+        @media (max-width: 777px) {
+            max-width: 200px;
+        }
     }
 }
 
@@ -34,4 +38,9 @@
 .github__name {
     margin-left: 10px;
     font-size: 18px;
+}
+.footer__wrapper .logo__link img {
+    @media (max-width: 777px) {
+        max-width: 60px;
+    }
 }

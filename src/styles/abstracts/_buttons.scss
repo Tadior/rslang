@@ -5,6 +5,9 @@
     font-family: 'Jost-Medium',serif;
     background: $light-blue;
     padding: 18px 50px;
+    @media (max-width: 480px) {
+        padding: 10px 20px;
+    }
     &_bordered {
         color: $light-blue;
         background: transparent;
@@ -24,6 +27,11 @@
     &_login {
         font-size: 22px;
     }
+    &_login {
+        @media (max-width: 865px) {
+            margin-top: 33px;
+        }
+    }
     &_logout {
       padding: 9px 36px;
       color: $pink;
@@ -33,6 +41,9 @@
         background: $pink;
         color: #fff;
       }
+      @media (max-width: 865px) {
+        margin-top: 33px;
+      }
     }
     &_difficulty {
         padding: 17px 33px;
@@ -40,9 +51,12 @@
      }
         
     &_card {
-        margin: 0 5px;
+        margin: 20px 5px 0;
         font-size: 20px;
         padding: 9px 30px;
+        @media (max-width: 706px) {
+            width: 100%;
+        }
      }
     &_disable,
     &:disabled {

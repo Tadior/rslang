@@ -24,6 +24,21 @@
         border: 3px solid rgba($gray, 0);
         border-bottom: none;
         margin-left: 10px;
+        @media (max-width: 865px) {
+            font-size: 20px;
+            margin-left: 5px;
+            padding: 8px;
+        }
+        @media (max-width: 670px) {
+            margin: 0;
+        }
+        @media (max-width: 610px) {
+            font-size: 18px;
+            padding: 4px;
+        }
+        @media (max-width: 530px) {
+            font-size: 14px;
+        }
         &_active {
             border-color: rgba($gray, .5);
         }
@@ -65,14 +80,43 @@
     border-width: 3px 3px 0px 3px;
     background: transparent;
     margin: 0 5px;
+    @media (max-width: 865px) {
+        margin-left: 5px;
+    }
+    @media (max-width: 670px) {
+        margin: 0;
+    }
     &__image {
         &_audio {
             max-width: 67px;
             max-height: 46px;
+            @media (max-width: 865px) {
+                max-width: 35px;
+                // max-height: 46px;
+            }
+            // @media (max-width: 670px) {
+                // max-width: 25px;
+                // max-height: 46px;
+            // }
+            @media (max-width: 610px) {
+                max-width: 25px;
+                max-height: 46px;
+            }
+            // @media (max-width: 530px) {
+            //     max-width: 67px;
+            //     max-height: 46px;
+            // }
         }
         &_sprint {
             max-width: 70px;
             max-height: 46px;
+            // @media (max-width: 610px) {
+            //     font-size: 18px;
+            //     padding: 4px;
+            // }
+            // @media (max-width: 530px) {
+            //     font-size: 14px;
+            // }
         }
     }
     &_disabled {
@@ -84,11 +128,21 @@
     padding: 40px 50px 50px;
     display: none;
     border-radius: 20px;
+    @media (max-width: 1100px) {
+        padding-top: 0;
+    }
+    @media (max-width: 610px) {
+        padding: 0 25px 20px;
+    }
     &:target{
         display: block;
     }
     &_active {
         display: block;
+        @media (max-width: 1100px) {
+            display: flex;
+            flex-wrap: wrap;
+        }
     }
     &_message {
         color: $dark-blue;
