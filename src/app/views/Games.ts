@@ -141,8 +141,13 @@ export default class Games {
     timer!.insertAdjacentHTML('afterbegin', timerHTML);
   }
 
-  public renderGameResults(game: string, mistakes: Word[], correct: Word[], points: number, maxRow: number)
-    :void {
+  public renderGameResults(
+    game: string,
+    mistakes: Word[],
+    correct: Word[],
+    points: number,
+    maxRow: number,
+  ):void {
     const main = document.querySelector('main');
     const gameResult: HTMLElement = document.createElement('section');
     gameResult.classList.add('game-result');
