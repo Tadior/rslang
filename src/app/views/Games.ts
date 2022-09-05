@@ -226,6 +226,10 @@ export default class Games {
   }
 
   renderAudioGame():void {
+    const gameResult = document.querySelector('.game-result');
+    if (gameResult) {
+      gameResult.remove();
+    }
     const gameSection = document.createElement('section');
     gameSection.classList.add('game');
     const container = document.createElement('div');

@@ -17,8 +17,10 @@ export interface Word {
 export interface User {
   userId?: string;
   name?: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
+  message: string[];
+  token: string;
 }
 export interface UpdateUser {
   email: string;

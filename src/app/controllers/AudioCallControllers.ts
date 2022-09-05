@@ -1,4 +1,3 @@
-// prettier-ignore
 import {
   ICheckAnswer,
   TQuestionsAnswers,
@@ -16,9 +15,12 @@ import ResultsControllers from './ResultsControllers';
 import listenIcon from '../../assets/img/sprint/listen_icon.png';
 import url from '../models/variables';
 import AuthorizationControllers from './AuthorizationControllers';
+import StatisticModel from '../models/StatisticModel';
 
 export default class AudioCallControllers {
   api: Api;
+
+  keyEvents: (event: KeyboardEvent) => void;
 
   games: Games;
 
@@ -62,6 +64,8 @@ export default class AudioCallControllers {
 
   userInfo: User;
 
+  statistic: StatisticModel;
+
   constructor() {
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
@@ -84,6 +88,7 @@ export default class AudioCallControllers {
     this.resultControllers = new ResultsControllers();
     this.wordName = '';
     this.questionsAnswers = {};
+    this.statistic = new StatisticModel();
   }
 
   async startAudioCallPage(group: string, page: string): Promise<void> {
@@ -103,31 +108,73 @@ export default class AudioCallControllers {
     this.games.renderAudioGame();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newAudioCallQuestion(this.questions, this.answers);
     this.listenBtns();
+    this.addKeysListener();
+  }
+
+  private checkRow(): void {
+    if (this.maxRow < this.rowCounter) {
+      this.maxRow = this.rowCounter;
+    }
+  }
+
+  private addKeysListener(): void {
+    let answerBtn: HTMLButtonElement;
+    const spaceBtn: HTMLButtonElement = document.querySelector('.audio-call__btn-idk');
+    this.keyEvents = (event: KeyboardEvent): void => {
+      if (!document.querySelector('.result__console')) {
+        switch (event.code) {
+          case 'Digit1':
+            answerBtn = document.querySelector("[data-answer='1']");
+            answerBtn.click();
+            break;
+          case 'Digit2':
+            answerBtn = document.querySelector("[data-answer='2']");
+            answerBtn.click();
+            break;
+          case 'Digit3':
+            answerBtn = document.querySelector("[data-answer='3']");
+            answerBtn.click();
+            break;
+          case 'Digit4':
+            answerBtn = document.querySelector("[data-answer='4']");
+            answerBtn.click();
+            break;
+          case 'Digit5':
+            answerBtn = document.querySelector("[data-answer='5']");
+            answerBtn.click();
+            break;
+          case 'Space':
+            spaceBtn.click();
+            break;
+          default:
+            break;
+        }
+      }
+    };
+    document.addEventListener('keyup', this.keyEvents);
   }
 
   public async startAudioCallMenu(group: string): Promise<void> {
     const page: string = Math.floor(Math.random() * 29).toString();
     this.words = await this.api.getWords(group, page);
-    this.words = await this.checkWordsPage(group, page, this.words);
     for (let i = 0; i < this.words.length; i += 1) {
       this.questions.push(this.words[i].word);
       this.answers.push(this.words[i].wordTranslate);
       this.questionsAnswers[`${this.words[i].word}`] = this.words[i].wordTranslate;
     }
-    console.log(this.questions);
     this.games.renderAudioGame();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newAudioCallQuestion(this.questions, this.answers);
     this.listenBtns();
   }
 
   public async startAudioCallDictionary(userId: string): Promise<void> {
     const userWords: UserWord[] = await this.api.getUserWords(userId);
     const dictionary: Promise<void>[] = userWords.map(async (uWord) => {
-      const word = await this.api.getWordById(uWord.wordId);
+      const word: Word = await this.api.getWordById(uWord.wordId);
       this.words.push(word);
     });
     await Promise.all(dictionary);
@@ -139,8 +186,9 @@ export default class AudioCallControllers {
     this.games.renderAudioGame();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
-    this.newSprintQuestion(this.questions, this.answers);
+    this.newAudioCallQuestion(this.questions, this.answers);
     this.listenBtns();
+    this.addKeysListener();
   }
 
   public startAudioCallRandom(): void {
@@ -201,7 +249,7 @@ export default class AudioCallControllers {
           audioContainer.classList.toggle('word_hide');
           img.classList.toggle('img_hide');
           button.classList.toggle('btn_hide');
-          this.newSprintQuestion(this.questions, this.answers);
+          this.newAudioCallQuestion(this.questions, this.answers);
           audioBtnIdk.innerHTML = 'Я не знаю :(';
           break;
         default:
@@ -217,7 +265,7 @@ export default class AudioCallControllers {
     this.listenAnswersBtns();
     audioListenBtn.addEventListener('click', (): void => {
       audioListenBtn.disabled = true;
-      setTimeout(() => {
+      setTimeout((): void => {
         audioListenBtn.disabled = false;
       }, 500);
       this.getAndPlayWordSound(this.wordName);
@@ -225,7 +273,7 @@ export default class AudioCallControllers {
 
     audioListenAnswer.addEventListener('click', (): void => {
       audioListenAnswer.disabled = true;
-      setTimeout(() => {
+      setTimeout((): void => {
         audioListenAnswer.disabled = false;
       }, 500);
       this.getAndPlayWordSound(this.wordName);
@@ -236,8 +284,8 @@ export default class AudioCallControllers {
     const answersBtns: NodeListOf<HTMLButtonElement> = document.querySelectorAll('.audio-call__answer');
     const audioBtn: HTMLDivElement = document.querySelector('.audio-call-button');
     const correct = audioBtn.getAttribute('data-word');
-    answersBtns.forEach((btn: HTMLButtonElement) => {
-      // eslint-disable-next-line no-param-reassign
+    answersBtns.forEach((el: HTMLButtonElement): void => {
+      const btn = el;
       btn.disabled = true;
       if (btn.innerHTML === this.questionsAnswers[`${correct}`]) {
         btn.classList.toggle('audio-call__answer_right');
@@ -263,8 +311,8 @@ export default class AudioCallControllers {
   private listenSoundBtn(): void {
     const soundBtn: HTMLElement = document.querySelector('.btn__audio');
     soundBtn.addEventListener('click', (): void => {
-      // eslint-disable-next-line max-len
-      if (this.rightSound.muted === true && this.wrongSound.muted === true && this.finishSound.muted === true) {
+      if (this.rightSound.muted === true && this.wrongSound.muted === true
+        && this.finishSound.muted === true) {
         soundBtn.innerHTML = `<img src='${MelodyIcon}' alt='sound-icon'>`;
         this.rightSound.muted = false;
         this.wrongSound.muted = false;
@@ -290,38 +338,38 @@ export default class AudioCallControllers {
     });
   }
 
-  private newSprintQuestion(questions: string[], answers: string[]): void {
+  private newAudioCallQuestion(questions: string[], answers: string[]): void {
     const answersContainer = document.querySelector('.audio-call__answers');
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
     audioBtn.setAttribute('data-word', questions[this.wordCounter]);
     this.wordName = questions[this.wordCounter];
-    // eslint-disable-next-line max-len
-    const generatedArray: number[] = [this.wordCounter].concat(this.generateArray(questions.length));
+    const generatedArray = this.generateArray(this.questions.length);
     if (this.wordCounter < questions.length) {
       this.getAndPlayWordSound(questions[this.wordCounter]);
       const idxArr: number[] = [];
       idxArr.push(this.wordCounter);
-      for (let index = 0; index < 4; index += 1) {
+      const finishIdx = generatedArray.length >= 5 ? 4 : generatedArray.length - 1;
+      for (let index = 0; index < finishIdx; index += 1) {
         const idx = this.getRandomIndex(this.wordCounter, idxArr, generatedArray);
         idxArr.push(idx);
       }
-      this.shuffle(idxArr).forEach((el) => {
+      this.shuffle(idxArr).forEach((el, idx) => {
         const word = answers[el];
-        answersContainer.innerHTML += `<button class="audio-call__answer">${word}</button>`;
+        answersContainer.innerHTML += `<button class="audio-call__answer" data-answer="${idx + 1}">${word}</button>`;
       });
       this.wordCounter += 1;
     } else {
       this.wordCounter = 0;
-      this.finishSprintGame();
+      this.finishAudioCallGame();
     }
   }
 
   private getRandomIndex(rightIndex: number, idxArr: number[], generatedArray: number[]): number {
     const item: number = generatedArray[Math.floor(Math.random() * generatedArray.length)];
-    if (idxArr.includes(item)) {
-      return this.getRandomIndex(rightIndex, idxArr, generatedArray);
+    if (!idxArr.includes(item)) {
+      return item;
     }
-    return item;
+    return this.getRandomIndex(rightIndex, idxArr, generatedArray);
   }
 
   // Fisher-Yates Algorithm
@@ -335,9 +383,11 @@ export default class AudioCallControllers {
   }
 
   public generateArray(length: number): number[] {
-    return Array(length - 1)
-      .fill(0)
-      .map((_, i) => i + 1);
+    const result: number[] = [];
+    for (let i = 0; i < length; i += 1) {
+      result.push(i);
+    }
+    return result;
   }
 
   private async checkIfLearned(userId: string, words: Word[]): Promise<Word[]> {
@@ -354,7 +404,6 @@ export default class AudioCallControllers {
   private checkAnswer(russian: string): ICheckAnswer {
     const audioBtn: HTMLButtonElement = document.querySelector('.audio-call-button');
     const english: string = audioBtn.getAttribute('data-word');
-    // eslint-disable-next-line max-len
     if (this.questions.indexOf(english) === this.answers.indexOf(russian)) {
       return {
         isCorrectAnswer: true,
@@ -392,6 +441,7 @@ export default class AudioCallControllers {
     this.categoryCounter = 0;
     this.category = 10;
     this.checkCategory();
+    this.checkRow();
     this.rowCounter = 0;
     this.getMistakes();
   }
@@ -416,13 +466,13 @@ export default class AudioCallControllers {
     });
   }
 
-  private finishSprintGame(): void {
+  private finishAudioCallGame(): void {
     this.finishSound.play();
+    this.checkRow();
     this.games.renderGameResults('Аудиовызов', this.mistakes, this.correct, this.points, this.maxRow);
-    const resultRow: HTMLElement = document.querySelector('.result__row');
-    const resultPoints: HTMLElement = document.querySelector('.result__points');
-    resultRow.style.display = 'none';
-    resultPoints.style.marginBottom = '30px';
+    if (this.userInfo) {
+      this.statistic.getFullGameStatistic('a', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
+    }
     this.resultControllers.listenHomeBtn();
     this.resultControllers.listenAudioBtn();
     this.listenNewGameBtn();
@@ -433,11 +483,30 @@ export default class AudioCallControllers {
     newGameBtn.addEventListener('click', (): void => {
       const newGame = new AudioCallControllers();
       newGame.startAudioCallRandom();
+      this.resetGame();
     });
   }
 
-  // eslint-disable-next-line max-len
-  private async checkWordsPage(group: string, page: string, words: Word[], userId?: string): Promise<Word[]> {
+  private resetGame(): void {
+    this.wordCounter = 0;
+    this.questions = [];
+    this.answers = [];
+    this.categoryCounter = 0;
+    this.category = 10;
+    this.points = 0;
+    this.rowCounter = 0;
+    this.words = [];
+    this.mistakes = [];
+    this.correct = [];
+    document.removeEventListener('keyup', this.keyEvents);
+  }
+
+  private async checkWordsPage(
+    group: string,
+    page: string,
+    words: Word[],
+    userId?: string,
+  ): Promise<Word[]> {
     let allWords: Word[];
     if (Number(page) > 0) {
       let concatWords = await this.api.getWords(group, (Number(page) - 1).toString());
@@ -447,7 +516,10 @@ export default class AudioCallControllers {
       } else {
         allWords = words.concat(concatWords);
       }
-      return this.checkWordsPage(group, (Number(page) - 1).toString(), allWords);
+      if (allWords.length < 20) {
+        return this.checkWordsPage(group, (Number(page) - 1).toString(), allWords);
+      }
+      return allWords.slice(0, 20);
     }
     allWords = words;
     return allWords;
