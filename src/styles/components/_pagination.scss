@@ -1,0 +1,61 @@
+.pagination {
+    margin-top: 35px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    font-family: "Jost-Medium",serif;
+    font-size: 24px;
+    @media (max-width: 530px) {
+        font-size: 20px;
+    }
+    @media (max-width: 400px) {
+        font-size: 16px;
+    }
+}
+.pagination__btn {
+    padding: 8px;
+    height: 60px;
+    width: 60px;
+    background: transparent;
+    transition: all ease .5s;
+    border: 1px solid #fff;
+    border-radius: 50%;
+    margin: 0 5px;
+    @media (max-width: 530px) {
+        height: 40px;
+        width: 40px;
+        padding: 0;
+    }
+    @media (max-width: 400px) {
+        height: 25px;
+        width: 25px;
+    }
+    &:hover {
+        border: 1px solid $button-hover;
+    }
+}
+.pagination__btn-learned {
+    background-color: #c5ffc5;
+}
+.pagination__btn_active {
+    border: 1px solid $button-hover;
+}
+.pagination__btn.pagination__btn_disabled {
+  pointer-events: none;
+  background-color: rgba($gray, .5);
+}
+.pagination__points {
+    margin: 0 5px;
+}
+.pagination__btn_prev, .pagination__btn_next {
+    width: auto;
+    background: $light-blue;
+    border-radius: 10px;
+    color: #fff;
+    @media (max-width: 530px) {
+        padding: 0 5px;
+    }
+}
+.pagination_disable {
+    display: none;
+}

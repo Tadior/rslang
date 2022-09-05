@@ -22,6 +22,7 @@ h1,h2,h3,h4,h5,h6 {
 }
 html, body {
    height: 100%;
+   font-family: 'Jost-Regular',serif;
 }
 html {
    scroll-behavior: smooth;
@@ -35,10 +36,14 @@ html {
    flex: 1 1 auto;
    position: relative;
    overflow: hidden;
+   min-height: fit-content;
 }
 .container {
    margin: 0 auto;
-   max-width: 1280px;
-   padding: 0 40px;
+   max-width: 1260px;
+   padding: 0 20px;
    width: 100%;
+}
+.scroll_blocked {
+   overflow: hidden;
 }
