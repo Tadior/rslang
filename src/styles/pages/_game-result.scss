@@ -1,9 +1,9 @@
 .game-result {
   padding: 25px 0;
   background: rgba($yellow, .5);
-  height: calc(100vh - 114px);
+  min-height: calc(100vh - 114px);
   @media (max-width: 550px) {
-    height: calc(100vh - 56px);
+    min-height: calc(100vh - 56px);
   }
 }
 

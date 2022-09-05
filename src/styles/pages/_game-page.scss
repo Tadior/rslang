@@ -1,5 +1,5 @@
 .game {
-  height: calc(100vh - 114px);
+  min-height: calc(100vh - 114px);
     background: rgba($yellow, .5);
     padding: 25px 0 40px 0;
     &__wrapper {
@@ -12,7 +12,7 @@
   }
 
   @media (max-width: 768px) {
-    height: calc(100vh - 56px);
+    min-height: calc(100vh - 56px);
   }
 }
 
@@ -681,6 +681,84 @@
     }
     100% {
       transform: translate(0px, -3540px);
+    }
+  }
+}
+
+
+@media (max-width: 1000px)  {
+  .audio-call-container {
+    margin-bottom: 20px;
+  }
+
+  .audio-call-container__word {
+    font-size: 24px;
+  }
+  
+  .audio-call-container__ico {
+    img {
+      height: 30px;
+    }
+  }
+  
+  .audio-call {
+    &-button {
+      padding: 30px;
+    }
+    &-img {
+      padding: 30px;
+      width: 180px;
+      height: 169px;
+    }
+    &__answers {
+      margin-top: 40px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    &__answer {
+      padding: 10px;
+      justify-content: center;
+      font-size: 18px;
+    }
+    &__btn {
+      margin-top: 50px;
+    }
+  
+    &__btn-next {
+      font-size: 24px;
+      padding: 12px 50px;
+    }
+  }
+}
+
+@media (max-width: 560px)  {
+  .audio-call-container {
+    margin-bottom: 20px;
+  }
+
+  .audio-call-container__word {
+    font-size: 24px;
+  }
+  
+  .audio-call-container__ico {
+    img {
+      height: 30px;
+    }
+  }
+  
+  .audio-call {
+    &-button {
+      padding: 20px;
+      img {
+        width: 100px;
+      }
+    }
+    &-img {
+      padding: 30px;
+      width: 180px;
+      height: 180px;
     }
   }
 }

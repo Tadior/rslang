@@ -1,7 +1,7 @@
 .difficulty {
     padding-top: 25px;
     background: rgba($yellow, .5);
-    height: calc(100vh - 114px);
+    min-height: calc(100vh - 114px);
     &__wrapper {
         padding: 30px 20px 56px;
         margin-top: 100px;
