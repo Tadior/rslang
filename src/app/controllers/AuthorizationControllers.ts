@@ -185,6 +185,7 @@ export default class AuthorizationControllers {
           break;
       }
     });
+    window.location.reload();
   }
 
   private clearModalInputs(datasets: string[]): void {

@@ -17,8 +17,10 @@ export interface Word {
 export interface User {
   userId?: string;
   name?: string;
-  email: string;
-  password: string;
+  email?: string;
+  password?: string;
+  message: string[];
+  token: string;
 }
 export interface UpdateUser {
   email: string;
@@ -66,17 +68,27 @@ export interface UserLearnedWordsCheck {
 }
 
 export interface UserDayStatistic {
-  sprintRow?: number,
-  sprintAccuracy?: number,
-  sprintNewWords?: number,
-  audioRow?: number,
-  audioAccuracy?: number,
-  audioNewWords?: number,
-  learnedWords?: number
+  sprintRow?: number;
+  sprintAccuracy?: number;
+  sprintNewWords?: number;
+  audioRow?: number;
+  audioAccuracy?: number;
+  audioNewWords?: number;
+  learnedWords?: number;
 }
+
+export type TQuestionsAnswers = {
+  [key: string]: string;
+};
 
 export type StatisicProperty = 'sprintRow' | 'sprintAccuracy' | 'sprintNewWords' | 'audioRow' | 'audioAccuracy' | 'audioNewWords';
 
 export type Progress = {
   [key: string]: boolean[];
 };
+
+export interface ICheckAnswer {
+  isCorrectAnswer: boolean;
+  russian: string;
+  english: string;
+}
