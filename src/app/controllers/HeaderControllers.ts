@@ -115,7 +115,7 @@ export default class HeaderControllers {
     });
   }
 
-  listenHomeBtn() {
+  private listenHomeBtn(): void {
     document.body.addEventListener('click', (event: Event) => {
       const target: HTMLElement = event.target as HTMLElement;
       if (target.classList.contains('btn__home')) {

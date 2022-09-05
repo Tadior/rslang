@@ -65,7 +65,6 @@ export default class Card {
     buttonAudio.innerHTML = `
         <img src="${bell}" alt="Произнести слово">
     `;
-    // Проверка авторизован ли пользователь
     if (this.userInfo) {
       const buttonDictionary = document.createElement('button');
       buttonDictionary.classList.add('btn', 'btn_bordered', 'btn_card', 'btn_bold', 'btn_add');

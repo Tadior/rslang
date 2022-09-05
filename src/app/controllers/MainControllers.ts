@@ -37,7 +37,6 @@ export default class MainControllers {
     const startBtn = document.querySelector('.project__btn');
     startBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
-      console.log(this.book);
       this.book.renderTutorialPage();
     });
   }
@@ -50,7 +49,7 @@ export default class MainControllers {
     });
   }
 
-  listenSprint() {
+  private listenSprint(): void {
     const sprintBtn = document.querySelector('.category_sprint');
     sprintBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
@@ -63,7 +62,7 @@ export default class MainControllers {
     });
   }
 
-  listenAudioCall() {
+  private listenAudioCall(): void {
     const audioBtn = document.querySelector('.category_audio');
     audioBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';

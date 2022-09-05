@@ -1,7 +1,6 @@
 import audioImage from '../../assets/img/main-page/audio.png';
 import gamepadImage from '../../assets/img/main-page/gamepad.png';
 import arrowImage from '../../assets/img/icons/arrow.svg';
-// import Pagination from './Pagination';
 import TutorialControllers from '../controllers/TutorialControllers';
 import Api from '../models/Api';
 import AuthorizationControllers from '../controllers/AuthorizationControllers';

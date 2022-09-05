@@ -17,7 +17,7 @@ export default class Games {
     this.resultsControllers = new ResultsControllers();
   }
 
-  renderSprintGame():void {
+  public renderSprintGame():void {
     const sprintPage = document.createElement('section');
     sprintPage.classList.add('game');
     sprintPage.innerHTML = `
@@ -69,7 +69,7 @@ export default class Games {
     this.addSprintTimer();
   }
 
-  addSprintTimer():void {
+  private addSprintTimer():void {
     const timer = document.querySelector('.sprint__timer');
     const timerHTML = `
       <div class='timer__line'></div>
@@ -141,7 +141,7 @@ export default class Games {
     timer!.insertAdjacentHTML('afterbegin', timerHTML);
   }
 
-  renderGameResults(game: string, mistakes: Word[], correct: Word[], points: number, maxRow: number)
+  public renderGameResults(game: string, mistakes: Word[], correct: Word[], points: number, maxRow: number)
     :void {
     const main = document.querySelector('main');
     const gameResult: HTMLElement = document.createElement('section');
@@ -194,7 +194,7 @@ export default class Games {
     this.resultsControllers.listenAudioBtn();
   }
 
-  renderDifficultMenu(game: string):void {
+  public renderDifficultMenu(game: string):void {
     function createDifficultButton(text: string, class_modificator: string, groupNumber: string)
       : HTMLButtonElement {
       const button = document.createElement('button');
@@ -240,7 +240,7 @@ export default class Games {
     document.querySelector('.main')!.append(difficultSection);
   }
 
-  renderAudioGame():void {
+  public renderAudioGame():void {
     const gameResult = document.querySelector('.game-result');
     if (gameResult) {
       gameResult.remove();
@@ -297,7 +297,7 @@ export default class Games {
     document.querySelector('main')!.append(gameSection);
   }
 
-  createAudioAnswers(answers: string[]):HTMLButtonElement[] {
+  public createAudioAnswers(answers: string[]):HTMLButtonElement[] {
     return answers.map((value, index) => {
       const button = document.createElement('button');
       button.classList.add('audio-call__answer');

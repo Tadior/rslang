@@ -43,7 +43,7 @@ export default class GameMenuControllers {
     };
   }
 
-  listenCancelBtn() {
+  private listenCancelBtn(): void {
     const cancelBtn = document.querySelector('.btn_cancel');
     cancelBtn.addEventListener('click', () => {
       document.querySelector('main').innerHTML = '';
@@ -52,7 +52,7 @@ export default class GameMenuControllers {
     });
   }
 
-  listenStartBtn() {
+  private listenStartBtn(): void {
     const cancelBtn = document.querySelector('.btn_start');
     const gameTitle = document.querySelector('.title_corner');
     cancelBtn.addEventListener('click', () => {
@@ -65,7 +65,7 @@ export default class GameMenuControllers {
     });
   }
 
-  listenLevelsBtns() {
+  private listenLevelsBtns(): void {
     const levels = document.querySelector('.difficulty__levels');
     const startBtn: HTMLButtonElement = document.querySelector('.btn_start');
     levels.addEventListener('click', (event: Event) => {

@@ -68,13 +68,10 @@ export default class MainPage {
     buttons.forEach((button) => {
       projectButtons.append(button);
     });
-    // const projectCategories = document.createElement('div');
-    // projectCategories.classList.add('project-category');
     const startLearnButton = document.createElement('button');
     startLearnButton.classList.add('btn', 'project__btn');
     startLearnButton.textContent = 'Начать обучение';
     projectInfo.append(startLearnButton);
-    // projectCategories.append(projectButtons);
     projectWrapper.append(projectInfo, projectButtons);
     container.append(projectWrapper);
     projectSection.append(container);

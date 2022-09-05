@@ -12,7 +12,7 @@ export default class Header {
     this.headerControllers = new HeaderControllers();
   }
 
-  renderHeader() {
+  public renderHeader() {
     const header = document.createElement('header');
     header.classList.add('header');
     const container = document.createElement('div');
@@ -94,7 +94,7 @@ export default class Header {
     navigation.classList.toggle('navigation_active');
   }
 
-  listenNavigation() {
+  private listenNavigation() {
     const navigation = document.querySelector('.navigation__container');
     navigation.addEventListener('click', (event: Event) => {
       const target = event.target as HTMLElement;

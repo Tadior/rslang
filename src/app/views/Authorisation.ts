@@ -1,7 +1,7 @@
 import crossIcon from '../../assets/img/icons/cross.svg';
 
 export default class Authorization {
-  renderSignIn(): void {
+  public renderSignIn(): void {
     const modal = document.createElement('div');
     modal.classList.add('modal');
     modal.dataset.modal = 'sigin';
@@ -45,7 +45,7 @@ export default class Authorization {
     document.querySelector('.wrapper').append(modal);
   }
 
-  renderSignUp(): void {
+  public renderSignUp(): void {
     const modal = document.createElement('div');
     modal.classList.add('modal');
     modal.dataset.modal = 'signup';

@@ -19,17 +19,17 @@ export default class Api {
     this.baseUrl = url;
   }
 
-  async getWords(group: string, page: string): Promise<Word[]> {
+  public async getWords(group: string, page: string): Promise<Word[]> {
     const request = await fetch(`${this.baseUrl}words?group=${group}&page=${page}`);
     return request.json();
   }
 
-  async getWordById(wordId: string): Promise<Word> {
+  public async getWordById(wordId: string): Promise<Word> {
     const request = await fetch(`${this.baseUrl}words/${wordId}`);
     return request.json();
   }
 
-  async createUser(bodyObj: User): Promise<SignUpResponse> {
+  public async createUser(bodyObj: User): Promise<SignUpResponse> {
     const request = await fetch(`${this.baseUrl}users`, {
       method: 'POST',
       headers: {
@@ -40,12 +40,12 @@ export default class Api {
     return request.json();
   }
 
-  async getUserById(userId: string): Promise<User> {
+  public async getUserById(userId: string): Promise<User> {
     const request = await fetch(`${this.baseUrl}users/${userId}`);
     return request.json();
   }
 
-  async updateUserById(userId: string, bodyObj: UpdateUser): Promise<void> {
+  public async updateUserById(userId: string, bodyObj: UpdateUser): Promise<void> {
     const request = await fetch(`${this.baseUrl}users/${userId}`, {
       method: 'PUT',
       headers: {
@@ -56,12 +56,12 @@ export default class Api {
     return request.json();
   }
 
-  async getUserWords(userId: string): Promise<UserWord[]> {
+  public async getUserWords(userId: string): Promise<UserWord[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/words`);
     return request.json();
   }
 
-  async createUserWord(bodyObj: UserWord): Promise<UserWord> {
+  public async createUserWord(bodyObj: UserWord): Promise<UserWord> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.id}/words/${bodyObj.wordId}`, {
       method: 'POST',
       headers: {
@@ -72,12 +72,12 @@ export default class Api {
     return request.json();
   }
 
-  async getUserWordById(userId: string, wordId: string): Promise<UserWord> {
+  public async getUserWordById(userId: string, wordId: string): Promise<UserWord> {
     const request = await fetch(`${this.baseUrl}users/${userId}/words/${wordId}`);
     return request.json();
   }
 
-  async updateUserWordById(bodyObj: UserWord): Promise<UserWord> {
+  public async updateUserWordById(bodyObj: UserWord): Promise<UserWord> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.id}/words/${bodyObj.wordId}`, {
       method: 'PUT',
       headers: {
@@ -88,7 +88,7 @@ export default class Api {
     return request.json();
   }
 
-  async deleteUserWordById(userId: string, wordId: string) {
+  public async deleteUserWordById(userId: string, wordId: string) {
     try {
       await fetch(`${this.baseUrl}users/${userId}/words/${wordId}`, {
         method: 'DELETE',
@@ -101,12 +101,12 @@ export default class Api {
     }
   }
 
-  async getUserStatisticsById(userId: string): Promise<UserStatistics[]> {
+  public async getUserStatisticsById(userId: string): Promise<UserStatistics[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/statistics`);
     return request.json();
   }
 
-  async updateUserStatisticsById(
+  public async updateUserStatisticsById(
     userId: string,
     bodyObj: UserStatistics,
   ): Promise<UserStatistics[]> {
@@ -120,12 +120,12 @@ export default class Api {
     return request.json();
   }
 
-  async getSettingsById(userId: string): Promise<Settings[]> {
+  public async getSettingsById(userId: string): Promise<Settings[]> {
     const request = await fetch(`${this.baseUrl}users/${userId}/settings`);
     return request.json();
   }
 
-  async updateSettingsById(bodyObj: Settings): Promise<Settings> {
+  public async updateSettingsById(bodyObj: Settings): Promise<Settings> {
     const request = await fetch(`${this.baseUrl}users/${bodyObj.userId}/settings`, {
       method: 'PUT',
       headers: {
@@ -136,17 +136,17 @@ export default class Api {
     return request.json();
   }
 
-  async getAllLearnedWords(userId: string): Promise<UserLearnedWords> {
+  public async getAllLearnedWords(userId: string): Promise<UserLearnedWords> {
     const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords`);
     return request.json();
   }
 
-  async isWordLearned(userId: string, wordId: string): Promise<UserLearnedWordsCheck> {
+  public async isWordLearned(userId: string, wordId: string): Promise<UserLearnedWordsCheck> {
     const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`);
     return request.json();
   }
 
-  async updateUserLearnedWords(userId: string, wordId: string): Promise<UserLearnedWords> {
+  public async updateUserLearnedWords(userId: string, wordId: string): Promise<UserLearnedWords> {
     const request = await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
       method: 'PUT',
       headers: {
@@ -156,7 +156,7 @@ export default class Api {
     return request.json();
   }
 
-  async deleteUserLearnedWordById(userId: string, wordId: string): Promise<void> {
+  public async deleteUserLearnedWordById(userId: string, wordId: string): Promise<void> {
     try {
       await fetch(`${this.baseUrl}users/${userId}/learnedWords/${wordId}`, {
         method: 'DELETE',
@@ -169,7 +169,7 @@ export default class Api {
     }
   }
 
-  async signIn(bodyObj: User): Promise<SignInResponse> {
+  public async signIn(bodyObj: User): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',
       headers: {

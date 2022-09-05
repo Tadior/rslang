@@ -3,7 +3,7 @@ import RSLogoImage from '../../assets/img/footer/rs-school-logo.svg';
 import githubImage from '../../assets/img/footer/github.svg';
 
 export default class Footer {
-  renderFooter() {
+  public renderFooter() {
     const footer = document.createElement('footer');
     footer.classList.add('footer');
     const githubNames: string[] = ['tadior', 'ivanpratasevich', 'ilonmakh'];
