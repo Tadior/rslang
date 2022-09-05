@@ -174,7 +174,7 @@ export default class MainPage {
                 Scrum-мастер, разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка дизайна приложения. Реализация мини-игры "Спринт" и страницы статистики. 
                 </p>
                 <div class="developer__link-container">
                 <a target="_blank" href="https://github.com/ilonmakh" class="btn btn_bordered">
@@ -191,7 +191,7 @@ export default class MainPage {
                 Team-lead, разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка архитектуры приложения. Реализация карточек, учебника, раздела сложные слова. 
                 </p>
                 <div class="developer__link-container">
                 <a target="_blank" href="https://github.com/tadior" class="btn btn_bordered">
@@ -208,7 +208,7 @@ export default class MainPage {
                 Разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка backend'а приложения. Реализация мини-игры "Аудиовызов" и авторизации. 
                 </p>
                 <div class="developer__link-container">
                 <a target="_blank" href="https://github.com/ivanpratasevich" class="btn btn_bordered">

@@ -19,7 +19,7 @@ export default class Authorization {
     modalInputs.classList.add('modal__inputs');
     modalInputs.innerHTML = `
     <input type="email" class="modal__input" data-input="email-signin" placeholder="Введите email" required>
-    <input type="text" class="modal__input" data-input="password-signin" placeholder="Введите пароль" required>
+    <input type="password" class="modal__input" data-input="password-signin" placeholder="Введите пароль" required>
     `;
     const modalButtons = document.createElement('div');
     modalButtons.classList.add('modal__buttons');
@@ -70,7 +70,7 @@ export default class Authorization {
     modalInputs.innerHTML = `
     <input type="text" class="modal__input" data-input="name-signup" placeholder="Введите имя">
     <input type="text" class="modal__input" data-input="email-signup" placeholder="Введите email">
-    <input type="text" class="modal__input" data-input="password-signup" placeholder="Введите пароль">
+    <input type="password" class="modal__input" data-input="password-signup" placeholder="Введите пароль">
     `;
     const modalButtons = document.createElement('div');
     modalButtons.classList.add('modal__buttons');

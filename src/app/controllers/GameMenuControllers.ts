@@ -2,11 +2,14 @@ import Footer from '../views/Footer';
 import MainPage from '../views/MainPage';
 import Pagination from '../views/Pagination';
 import Tutorial from '../views/Tutorial';
+import AudioCallControllers from './AudioCallControllers';
 import MainControllers from './MainControllers';
 import SprintControllers from './SprintControllers';
 
 export default class GameMenuControllers {
   sprintControllers: SprintControllers;
+
+  audioControllers: AudioCallControllers;
 
   mainPage: MainPage;
 
@@ -26,6 +29,7 @@ export default class GameMenuControllers {
 
   constructor() {
     this.sprintControllers = new SprintControllers();
+    this.audioControllers = new AudioCallControllers();
     this.pagination = new Pagination();
     this.tutorial = new Tutorial(this.pagination);
     this.mainControllers = new MainControllers(this.tutorial, this);
@@ -56,7 +60,7 @@ export default class GameMenuControllers {
       if (gameTitle.innerHTML === 'Спринт') {
         this.sprintControllers.startSprintMenu(this.group);
       } else {
-        console.log('start audiocall');
+        this.audioControllers.startAudioCallMenu(this.group);
       }
     });
   }

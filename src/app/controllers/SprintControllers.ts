@@ -132,6 +132,7 @@ export default class SprintControllers {
     this.timer = setTimeout(() => {
       this.finishSprintGame();
     }, 62000);
+    this.resetGame();
     const userWords = await this.api.getUserWords(userId);
     const dictionary = userWords.map(async (uWord) => {
       const word = await this.api.getWordById(uWord.wordId);

@@ -9,6 +9,7 @@ import progressImage from '../../assets/img/icons/progress.svg';
 import url from '../models/variables';
 import SprintControllers from './SprintControllers';
 import StatisticModel from '../models/StatisticModel';
+import AudioCallControllers from './AudioCallControllers';
 
 export default class TutorialControllers {
   api: Api;
@@ -25,6 +26,8 @@ export default class TutorialControllers {
 
   sprintController: SprintControllers;
 
+  audioController: AudioCallControllers;
+
   vocabularyInfo: string[];
 
   statisticModel: StatisticModel;
@@ -35,6 +38,7 @@ export default class TutorialControllers {
     this.userProgress = JSON.parse(localStorage.getItem('progress'));
     this.card = new Card();
     this.sprintController = new SprintControllers();
+    this.audioController = new AudioCallControllers();
     this.statisticModel = new StatisticModel();
     this.vocabularyInfo = [];
     this.hardWordCallback = (event: Event) => {
@@ -48,6 +52,7 @@ export default class TutorialControllers {
     this.listenTutorialNavigation();
     this.listenPagination();
     this.listenSprint();
+    this.listenAudio();
   }
 
   private listenTutorialNavigation(): void {
@@ -148,6 +153,18 @@ export default class TutorialControllers {
         this.sprintController.startSprintDictionary(this.userInfo.userId);
       } else {
         this.sprintController.startSprintPage(groupValue, `${Number(page) - 1}`);
+      }
+    });
+  }
+
+  private listenAudio(): void {
+    document.querySelector('#audio-call').addEventListener('click', () => {
+      const groupValue = document.querySelector('.tutorial__link_active').getAttribute('data-group');
+      const page = document.querySelector('.pagination__btn_active').textContent;
+      if (groupValue === '6') {
+        this.audioController.startAudioCallDictionary(this.userInfo.userId);
+      } else {
+        this.audioController.startAudioCallPage(groupValue, `${Number(page) - 1}`);
       }
     });
   }

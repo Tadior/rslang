@@ -241,6 +241,10 @@ export default class Games {
   }
 
   renderAudioGame():void {
+    const gameResult = document.querySelector('.game-result');
+    if (gameResult) {
+      gameResult.remove();
+    }
     const gameSection = document.createElement('section');
     gameSection.classList.add('game');
     const container = document.createElement('div');
@@ -274,14 +278,22 @@ export default class Games {
     gameAudioButton.append(gameAudioImage);
     const answersExamples = document.createElement('div');
     answersExamples.classList.add('audio-call__answers');
-    const answers = ['завтрак', 'солнце', 'злодей', 'семья', 'усталость'];
-    answersExamples.append(...this.createAudioAnswers(answers));
     const gameButton = document.createElement('button');
-    gameButton.classList.add('btn', 'audio-call__btn');
+    const gameAnswerImg = document.createElement('div');
+    const gameCorrectAnswerWordContainer = document.createElement('div');
+    const gameCorrectAnswerWord = document.createElement('div');
+    gameCorrectAnswerWordContainer.classList.add('audio-call-container', 'word_hide');
+    gameCorrectAnswerWord.classList.add('audio-call-container__word');
+    gameAnswerImg.classList.add('audio-call-img', 'img_hide');
+    gameButton.classList.add('btn', 'audio-call__btn', 'audio-call__btn-idk');
     gameButton.textContent = 'Я не знаю :(';
-    gameWrapper.append(gameAudioButton, answersExamples, gameButton);
+    // eslint-disable-next-line max-len
+    gameWrapper.append(gameAnswerImg, gameCorrectAnswerWordContainer, gameAudioButton, answersExamples, gameButton);
+    gameCorrectAnswerWordContainer.innerHTML = '<button class=\'audio-call-container__ico\' alt=\'listen_icon\'></button>';
+    gameCorrectAnswerWordContainer.append(gameCorrectAnswerWord);
     container.append(gameHeader, gameWrapper);
     gameSection.append(container);
+    (<HTMLElement>document.querySelector('main')).innerHTML = '';
     document.querySelector('main')!.append(gameSection);
   }
 

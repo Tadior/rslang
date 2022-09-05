@@ -169,7 +169,7 @@ export default class Api {
     }
   }
 
-  async signIn(bodyObj: UpdateUser): Promise<SignInResponse> {
+  async signIn(bodyObj: User): Promise<SignInResponse> {
     const request = await fetch(`${this.baseUrl}signin`, {
       method: 'POST',
       headers: {
