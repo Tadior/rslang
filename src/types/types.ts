@@ -19,8 +19,8 @@ export interface User {
   name?: string;
   email?: string;
   password?: string;
-  message: string[];
-  token: string;
+  message?: string[];
+  token?: string;
 }
 export interface UpdateUser {
   email: string;

@@ -1,7 +1,6 @@
 import audioImage from '../../assets/img/main-page/audio.png';
 import gamepadImage from '../../assets/img/main-page/gamepad.png';
 import arrowImage from '../../assets/img/icons/arrow.svg';
-import Pagination from './Pagination';
 import TutorialControllers from '../controllers/TutorialControllers';
 import Api from '../models/Api';
 import AuthorizationControllers from '../controllers/AuthorizationControllers';
@@ -11,34 +10,37 @@ export default class Tutorial {
 
   isAuthorizated: boolean;
 
+  renderTutorialPage: () => void;
+
   tutorialController: TutorialControllers;
 
-  constructor() {
+  pagination: any;
+
+  constructor(pagination: any) {
     this.api = new Api();
+    this.pagination = pagination;
     this.isAuthorizated = new AuthorizationControllers().checkUserInLocalStorage();
     this.tutorialController = new TutorialControllers();
-  }
-
-  public renderTutorialPage(): void {
-    const tutorialSection = document.createElement('section');
-    tutorialSection.classList.add('tutorial');
-    tutorialSection.id = 'tutorial';
-    const container = document.createElement('div');
-    container.classList.add('container');
-    const tutorialWrapper = document.createElement('div');
-    tutorialWrapper.classList.add('tutorial__wrapper');
-    tutorialWrapper.append(
-      this.createTutorialNavigation(),
-      this.createTutorialBody(),
-      this.createArrow(),
-    );
-    container.append(tutorialWrapper);
-    tutorialSection.append(container);
-    document.querySelector('.main').append(tutorialSection);
-    const pagination = new Pagination();
-    pagination.renderPagination();
-    this.checkAndLoadPage();
-    this.tutorialController.enableTutorial();
+    this.renderTutorialPage = () => {
+      const tutorialSection = document.createElement('section');
+      tutorialSection.classList.add('tutorial');
+      tutorialSection.id = 'tutorial';
+      const container = document.createElement('div');
+      container.classList.add('container');
+      const tutorialWrapper = document.createElement('div');
+      tutorialWrapper.classList.add('tutorial__wrapper');
+      tutorialWrapper.append(
+        this.createTutorialNavigation(),
+        this.createTutorialBody(),
+        this.createArrow(),
+      );
+      container.append(tutorialWrapper);
+      tutorialSection.append(container);
+      document.querySelector('.main').append(tutorialSection);
+      this.pagination.renderPagination();
+      this.checkAndLoadPage();
+      this.tutorialController.enableTutorial();
+    };
   }
 
   private checkAndLoadPage(): void {

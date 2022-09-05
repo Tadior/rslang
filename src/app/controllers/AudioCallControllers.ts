@@ -11,11 +11,11 @@ import BlockMelodyIcon from '../../assets/img/icons/melody_block.png';
 import WrongSound from '../../assets/sounds/wrong_answer.mp3';
 import RightSound from '../../assets/sounds/right_answer.wav';
 import FinishSound from '../../assets/sounds/finish.mp3';
-import ResultsControllers from './ResultsControllers';
 import listenIcon from '../../assets/img/sprint/listen_icon.png';
 import url from '../models/variables';
 import AuthorizationControllers from './AuthorizationControllers';
 import StatisticModel from '../models/StatisticModel';
+import MainControllers from './MainControllers';
 
 export default class AudioCallControllers {
   api: Api;
@@ -54,8 +54,6 @@ export default class AudioCallControllers {
 
   timer: ReturnType<typeof setTimeout>;
 
-  resultControllers: ResultsControllers;
-
   wordName: string;
 
   questionsAnswers: TQuestionsAnswers;
@@ -66,11 +64,13 @@ export default class AudioCallControllers {
 
   statistic: StatisticModel;
 
+  mainControllers: MainControllers;
+
   constructor() {
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
     this.api = new Api();
-    this.games = new Games();
+    this.games = new Games(this.mainControllers);
     this.wordCounter = 0;
     this.questions = [];
     this.answers = [];
@@ -85,7 +85,6 @@ export default class AudioCallControllers {
     this.mistakes = [];
     this.correct = [];
     this.words = [];
-    this.resultControllers = new ResultsControllers();
     this.wordName = '';
     this.questionsAnswers = {};
     this.statistic = new StatisticModel();
@@ -111,6 +110,10 @@ export default class AudioCallControllers {
     this.newAudioCallQuestion(this.questions, this.answers);
     this.listenBtns();
     this.addKeysListener();
+    if (document.querySelector('footer')) {
+      const footer = document.querySelector('footer');
+      footer.parentNode.removeChild(footer);
+    }
   }
 
   private checkRow(): void {
@@ -165,6 +168,7 @@ export default class AudioCallControllers {
       this.questionsAnswers[`${this.words[i].word}`] = this.words[i].wordTranslate;
     }
     this.games.renderAudioGame();
+    this.addKeysListener();
     this.listenSoundBtn();
     this.listenFullScreenBtn();
     this.newAudioCallQuestion(this.questions, this.answers);
@@ -172,6 +176,7 @@ export default class AudioCallControllers {
   }
 
   public async startAudioCallDictionary(userId: string): Promise<void> {
+    this.resetGame();
     const userWords: UserWord[] = await this.api.getUserWords(userId);
     const dictionary: Promise<void>[] = userWords.map(async (uWord) => {
       const word: Word = await this.api.getWordById(uWord.wordId);
@@ -189,6 +194,10 @@ export default class AudioCallControllers {
     this.newAudioCallQuestion(this.questions, this.answers);
     this.listenBtns();
     this.addKeysListener();
+    if (document.querySelector('footer')) {
+      const footer = document.querySelector('footer');
+      footer.parentNode.removeChild(footer);
+    }
   }
 
   public startAudioCallRandom(): void {
@@ -473,17 +482,14 @@ export default class AudioCallControllers {
     if (this.userInfo) {
       this.statistic.getFullGameStatistic('a', this.userInfo.userId, this.maxRow, this.mistakes, this.correct);
     }
-    this.resultControllers.listenHomeBtn();
-    this.resultControllers.listenAudioBtn();
     this.listenNewGameBtn();
   }
 
   private listenNewGameBtn(): void {
     const newGameBtn = document.querySelector('.btn__new-game');
     newGameBtn.addEventListener('click', (): void => {
-      const newGame = new AudioCallControllers();
-      newGame.startAudioCallRandom();
       this.resetGame();
+      this.startAudioCallRandom();
     });
   }
 

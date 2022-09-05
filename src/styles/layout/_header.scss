@@ -4,6 +4,7 @@
   &__wrapper {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     .btn_logout:hover {
       background: $dark-red;
       color: #fff;
@@ -14,30 +15,76 @@
 .logo {
   &__img {
     margin-right: 10px;
+    @media (max-width: 480px) {
+      max-width: 60px;
+    }
+    @media (max-width: 380px) {
+      max-width: 32px;
+    }
   }
   &__link {
     color: $dark-blue;
     display: flex;
     align-items: center;
     font-size: 48px;
+    @media (max-width: 480px) {
+      font-size: 30px;
+    }
+    @media (max-width: 380px) {
+      font-size: 25px;
+    }
   }
 }
 .navigation {
-  flex: 1 1 100%;
+  flex: 0 1 800px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
+  align-items: center;
+  word-wrap: normal;
+  transition: all ease .5s;
+  @media (max-width: 1000px) {
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    position: fixed;
+    content: '';
+    top: 0;
+    left: 0;
+    left: 100%;
+    bottom: 0;
+    background: #fff;
+    z-index: 1;
+  }
+  &_active {
+    @media (max-width: 1000px) {
+      display: flex;
+      left: 0;
+    }
+  }
   &__container {
     display: flex;
+    margin-right: 30px;
+    @media (max-width: 1000px) {
+      margin-right: 0;
+      flex-direction: column;
+      align-items: center;
+    }
   }
   &__item {
     margin-right: 35px;
     &:last-child {
       margin-right: 0;
     }
+    @media (max-width: 1000px) {
+      margin: 40px 0 0 0;
+    }
   }
   &__link {
+    font-size: 22px;
     color: $gray;
     transition: all ease 0.5s;
+    font-size: 22px;
     &:hover {
       color: $light-blue;
     }

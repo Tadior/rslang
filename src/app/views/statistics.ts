@@ -13,8 +13,6 @@ export default class StatisticPage {
 
   userInfo: User;
 
-  userId: string;
-
   todayLearnedWords: Promise<number>;
 
   todayNewWords: Promise<number>;
@@ -43,19 +41,6 @@ export default class StatisticPage {
     this.authorization = new AuthorizationControllers();
     this.userInfo = this.authorization.getUserFromLocalStorage();
     this.statisticModel = new StatisticModel();
-    this.userId = this.userInfo.userId;
-    this.todayLearnedWords = this.statisticModel.getLearnedWords(this.userId);
-    this.todayNewWords = this.statisticModel.getNewWords(this.userId);
-    this.todayAccuracy = this.statisticModel.getCommonDayAccuracy(this.userId);
-    this.sprintNewWords = this.statisticModel.getTodayProperty(this.userId, 'sprintNewWords');
-    this.sprintAccuracy = this.statisticModel.getTodayProperty(this.userId, 'sprintAccuracy');
-    this.sprintRow = this.statisticModel.getTodayProperty(this.userId, 'sprintRow');
-    this.audioNewWords = this.statisticModel.getTodayProperty(this.userId, 'audioNewWords');
-    this.audioAccuracy = this.statisticModel.getTodayProperty(this.userId, 'audioAccuracy');
-    this.audioRow = this.statisticModel.getTodayProperty(this.userId, 'audioRow');
-    this.fullTimeEndpoints = this.statisticModel.getFullTimeDates(this.userId);
-    this.fullTimeNewWords = this.statisticModel.getFullTimeNewWords(this.userId);
-    this.fullTimeLearned = this.statisticModel.getFullTimeDynimicLearned(this.userId);
   }
 
   public renderNoStatistic(): void {
@@ -73,6 +58,14 @@ export default class StatisticPage {
   }
 
   public async renderStatistic(): Promise<void> {
+    this.todayLearnedWords = this.statisticModel.getLearnedWords(this.userInfo.userId);
+    this.todayNewWords = this.statisticModel.getNewWords(this.userInfo.userId);
+    this.sprintNewWords = this.statisticModel.getTodayProperty(this.userInfo.userId, 'sprintNewWords');
+    this.sprintAccuracy = this.statisticModel.getTodayProperty(this.userInfo.userId, 'sprintAccuracy');
+    this.sprintRow = this.statisticModel.getTodayProperty(this.userInfo.userId, 'sprintRow');
+    this.audioNewWords = this.statisticModel.getTodayProperty(this.userInfo.userId, 'audioNewWords');
+    this.audioAccuracy = this.statisticModel.getTodayProperty(this.userInfo.userId, 'audioAccuracy');
+    this.audioRow = this.statisticModel.getTodayProperty(this.userInfo.userId, 'audioRow');
     const statistic: HTMLElement = document.createElement('section');
     statistic.classList.add('statistic');
     statistic.innerHTML = `
@@ -159,6 +152,7 @@ export default class StatisticPage {
   }
 
   private async createDoughnutChart(): Promise<void> {
+    this.todayAccuracy = this.statisticModel.getCommonDayAccuracy(this.userInfo.userId);
     const number = await this.todayAccuracy;
     const datapointsDoughnut = [number, (100 - number)];
     const counter = {
@@ -203,7 +197,7 @@ export default class StatisticPage {
           },
           counter: {
             fontColor: '#2A3354',
-            fontSize: 36,
+            fontSize: document.body.clientWidth <= 1000 ? 18 : 36,
             fontFamily: 'Jost-Bold',
           },
         },
@@ -221,6 +215,8 @@ export default class StatisticPage {
   }
 
   private async createBarChart(): Promise<void> {
+    this.fullTimeEndpoints = this.statisticModel.getFullTimeDates(this.userInfo.userId);
+    this.fullTimeNewWords = this.statisticModel.getFullTimeNewWords(this.userInfo.userId);
     const labels = await this.fullTimeEndpoints;
     const dataBar = {
       labels,
@@ -261,6 +257,8 @@ export default class StatisticPage {
   }
 
   private async createLineChart(): Promise<void> {
+    this.fullTimeEndpoints = this.statisticModel.getFullTimeDates(this.userInfo.userId);
+    this.fullTimeLearned = this.statisticModel.getFullTimeDynimicLearned(this.userInfo.userId);
     const labels = await this.fullTimeEndpoints;
     const dataLine = {
       labels,

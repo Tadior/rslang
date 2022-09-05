@@ -4,9 +4,20 @@ import MelodyImage from '../../assets/img/icons/melody.svg';
 import WindowImage from '../../assets/img/icons/window.svg';
 import AudioImage from '../../assets/img/icons/audio.svg';
 import { Word } from '../../types/types';
+import ResultsControllers from '../controllers/ResultsControllers';
+import MainPage from './MainPage';
 
 export default class Games {
-  renderSprintGame():void {
+  resultsControllers: ResultsControllers;
+
+  mainPage: MainPage;
+
+  constructor(mainControllers: any) {
+    this.mainPage = new MainPage(mainControllers);
+    this.resultsControllers = new ResultsControllers();
+  }
+
+  public renderSprintGame():void {
     const sprintPage = document.createElement('section');
     sprintPage.classList.add('game');
     sprintPage.innerHTML = `
@@ -58,7 +69,7 @@ export default class Games {
     this.addSprintTimer();
   }
 
-  addSprintTimer():void {
+  private addSprintTimer():void {
     const timer = document.querySelector('.sprint__timer');
     const timerHTML = `
       <div class='timer__line'></div>
@@ -130,8 +141,13 @@ export default class Games {
     timer!.insertAdjacentHTML('afterbegin', timerHTML);
   }
 
-  renderGameResults(game: string, mistakes: Word[], correct: Word[], points: number, maxRow: number)
-    :void {
+  public renderGameResults(
+    game: string,
+    mistakes: Word[],
+    correct: Word[],
+    points: number,
+    maxRow: number,
+  ):void {
     const main = document.querySelector('main');
     const gameResult: HTMLElement = document.createElement('section');
     gameResult.classList.add('game-result');
@@ -180,13 +196,16 @@ export default class Games {
     `;
     main.innerHTML = '';
     main!.append(gameResult);
+    this.resultsControllers.listenAudioBtn();
   }
 
-  renderDifficultMenu():void {
-    function createDifficultButton(text: string, class_modificator: string): HTMLButtonElement {
+  public renderDifficultMenu(game: string):void {
+    function createDifficultButton(text: string, class_modificator: string, groupNumber: string)
+      : HTMLButtonElement {
       const button = document.createElement('button');
       button.classList.add('difficulty__level', `${class_modificator}`);
       button.textContent = text;
+      button.setAttribute('data-group', `${groupNumber}`);
       return button;
     }
     const difficultSection = document.createElement('section');
@@ -195,7 +214,7 @@ export default class Games {
     container.classList.add('container');
     const title = document.createElement('h2');
     title.classList.add('title', 'title_corner');
-    title.textContent = 'Спринт';
+    title.textContent = `${game}`;
     const difficultyWrapper = document.createElement('div');
     difficultyWrapper.classList.add('difficulty__wrapper');
     const difficultyTopic = document.createElement('div');
@@ -203,21 +222,22 @@ export default class Games {
     const difficultyLevels = document.createElement('div');
     difficultyLevels.classList.add('difficulty__levels');
     difficultyLevels.append(
-      createDifficultButton('A1', 'difficulty__level_blue'),
-      createDifficultButton('A2', 'difficulty__level_pink'),
-      createDifficultButton('B1', 'difficulty__level_yellow'),
-      createDifficultButton('B2', 'difficulty__level_light-purpule'),
-      createDifficultButton('C1', 'difficulty__level_aquamarine'),
-      createDifficultButton('C2', 'difficulty__level_purple'),
+      createDifficultButton('A1', 'difficulty__level_blue', '0'),
+      createDifficultButton('A2', 'difficulty__level_pink', '1'),
+      createDifficultButton('B1', 'difficulty__level_yellow', '2'),
+      createDifficultButton('B2', 'difficulty__level_light-purpule', '3'),
+      createDifficultButton('C1', 'difficulty__level_aquamarine', '4'),
+      createDifficultButton('C2', 'difficulty__level_purple', '5'),
     );
     const difficultyButtons = document.createElement('div');
     difficultyButtons.classList.add('difficulty__buttons');
     const buttonReject = document.createElement('button');
-    buttonReject.classList.add('btn', 'btn_bordered', 'btn_difficulty');
+    buttonReject.classList.add('btn', 'btn_bordered', 'btn_difficulty', 'btn_cancel');
     buttonReject.textContent = 'Отмена';
     const buttonStart = document.createElement('button');
-    buttonStart.classList.add('btn', 'btn_difficulty');
+    buttonStart.classList.add('btn', 'btn_difficulty', 'btn_start');
     buttonStart.textContent = 'Начать игру';
+    buttonStart.disabled = true;
     difficultyButtons.append(buttonReject, buttonStart);
     difficultyWrapper.append(difficultyTopic, difficultyLevels, difficultyButtons);
     container.append(title, difficultyWrapper);
@@ -225,7 +245,7 @@ export default class Games {
     document.querySelector('.main')!.append(difficultSection);
   }
 
-  renderAudioGame():void {
+  public renderAudioGame():void {
     const gameResult = document.querySelector('.game-result');
     if (gameResult) {
       gameResult.remove();
@@ -278,10 +298,11 @@ export default class Games {
     gameCorrectAnswerWordContainer.append(gameCorrectAnswerWord);
     container.append(gameHeader, gameWrapper);
     gameSection.append(container);
+    (<HTMLElement>document.querySelector('main')).innerHTML = '';
     document.querySelector('main')!.append(gameSection);
   }
 
-  createAudioAnswers(answers: string[]):HTMLButtonElement[] {
+  public createAudioAnswers(answers: string[]):HTMLButtonElement[] {
     return answers.map((value, index) => {
       const button = document.createElement('button');
       button.classList.add('audio-call__answer');

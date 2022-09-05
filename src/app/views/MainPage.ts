@@ -12,19 +12,24 @@ import DmitryImage from '../../assets/img/main-page/dmitriy.png';
 import IvanImage from '../../assets/img/main-page/ivan.png';
 
 export default class MainPage {
-  renderMainPage() {
-    document.querySelector('main').append(
-      this.createProjectSection(),
-      this.createAdvantagesSection(),
-      this.createAboutAppSection(),
-      this.createDevelopersSection(),
-    );
+  mainControllers: any;
+
+  renderMainPage: () => void;
+
+  constructor(controllers: any) {
+    this.mainControllers = controllers;
+    this.renderMainPage = () => {
+      document.querySelector('main').append(
+        this.createProjectSection(),
+        this.createAdvantagesSection(),
+        this.createAboutAppSection(),
+        this.createDevelopersSection(),
+      );
+      this.mainControllers.listenMain();
+    };
   }
 
   private createProjectSection() {
-    // Создание секции Project
-
-    // Функция создания кнопок навигации
     function createButton(
       class_identificator: string,
       path: string,
@@ -34,15 +39,11 @@ export default class MainPage {
       const button = document.createElement('button');
       button.classList.add('category', class_identificator);
       button.innerHTML = `
-          <img class="cetegory__img" src="${path}" alt=${category_name}">
+          <img class="category__img" src="${path}" alt=${category_name}">
           <div class="pad ${class_hoverIdentificator}">${category_name}</div>
         `;
-      button.addEventListener('click', () => {
-        console.log('Тут должно быть переключение страницы');
-      });
       return button;
     }
-    //------------------------------------------
 
     const projectSection = document.createElement('section');
     const container = document.createElement('div');
@@ -56,7 +57,7 @@ export default class MainPage {
     projectInfo.classList.add('project-info');
     projectInfo.innerHTML = `
       <h1>RSLang</h1>
-      <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка.Приложения можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>
+      <p class='paragraph project__paragraph'>RSLang - это бесплатное приложение для изучения английского языка. Его можно использовать как самостоятельный инструмент пополнения лексики и повторения грамматики, так и в качестве дополнительного элемента, который поможет сделать ваше обучение на курсах английского или у репетитора ещё более эффективным.</p>
       `;
     const buttons = [
       createButton('category_exercise', exerciseImage, 'Учебник', 'pad_exercise'),
@@ -67,24 +68,17 @@ export default class MainPage {
     buttons.forEach((button) => {
       projectButtons.append(button);
     });
-    const projectCategories = document.createElement('div');
-    projectCategories.classList.add('project-categories');
     const startLearnButton = document.createElement('button');
     startLearnButton.classList.add('btn', 'project__btn');
     startLearnButton.textContent = 'Начать обучение';
-    startLearnButton.addEventListener('click', () => {
-      console.log('Что то должно происходить');
-    });
     projectInfo.append(startLearnButton);
-    projectCategories.append(projectButtons);
-    projectWrapper.append(projectInfo, projectCategories);
+    projectWrapper.append(projectInfo, projectButtons);
     container.append(projectWrapper);
     projectSection.append(container);
     return projectSection;
   }
 
   private createAdvantagesSection() {
-    // Создание секции advantages
     const advantagesSection = document.createElement('section');
     advantagesSection.classList.add('advantages');
     advantagesSection.innerHTML = `
@@ -124,7 +118,6 @@ export default class MainPage {
   }
 
   private createAboutAppSection() {
-    // Создание секции about-app
     const aboutAppSection = document.createElement('section');
     aboutAppSection.classList.add('about-app');
     aboutAppSection.id = 'about-app';
@@ -178,10 +171,10 @@ export default class MainPage {
                 Scrum-мастер, разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка дизайна приложения. Реализация мини-игры "Спринт" и страницы статистики. 
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/ilonmakh" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/ilonmakh" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>
@@ -195,10 +188,10 @@ export default class MainPage {
                 Team-lead, разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка архитектуры приложения. Реализация карточек, учебника, раздела сложные слова. 
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/tadior" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/tadior" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>
@@ -212,10 +205,10 @@ export default class MainPage {
                 Разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
-                Текст о том, какой я молодец и с чем так хорошо справился Текст о том, какой я молодец и с чем так хорошо справился
+                Разработка backend'а приложения. Реализация мини-игры "Аудиовызов" и авторизации. 
                 </p>
                 <div class="developer__link-container">
-                <a href="https://github.com/ivanpratasevich" class="btn btn_bordered">
+                <a target="_blank" href="https://github.com/ivanpratasevich" class="btn btn_bordered">
                     GitHub
                 </a>
                 </div>

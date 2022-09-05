@@ -1,7 +1,7 @@
 import page404Image from '../../assets/img/page404/page404.png';
 
 export default class Page404 {
-  renderPage404(): void {
+  public renderPage404(): void {
     const page404: HTMLElement = document.createElement('div');
     page404.classList.add('page-404');
     page404.innerHTML = `
