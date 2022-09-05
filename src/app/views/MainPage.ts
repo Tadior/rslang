@@ -138,7 +138,7 @@ export default class MainPage {
                 В видео ты cможешь узнать о том, как использовать RSLang, а также об основных возможностях и функционале приложения.
                 </p>
                 <div class="about-app__link-container">
-                <a target='_blank' href="https://www.youtube.com/" class="btn btn_about">
+                <a target='_blank' href="https://www.youtube.com/watch?v=wYIUHQOWCCA" class="btn btn_about">
                     Смотреть
                 </a>
                 </div>
@@ -202,7 +202,7 @@ export default class MainPage {
                 </div>
                 <img class="developer__img" src="${IvanImage}" alt="Иван">
                 <div class="developer__status">
-                Разработчик
+                Fullstack-разработчик
                 </div>
                 <p class="paragraph developer__paragraph">
                 Разработка backend'а приложения. Реализация мини-игры "Аудиовызов" и авторизации. 

@@ -6,6 +6,7 @@ import AudioImage from '../../assets/img/icons/audio.svg';
 import { Word } from '../../types/types';
 import ResultsControllers from '../controllers/ResultsControllers';
 import MainPage from './MainPage';
+import url from '../models/variables';
 
 export default class Games {
   resultsControllers: ResultsControllers;
@@ -164,7 +165,7 @@ export default class Games {
                 ${mistakes.map((mistake) => `
                   <div class='mistakes__item'>
                     <div class='item__listen'>
-                      <audio src='http://localhost:4000/${mistake.audio}'></audio>
+                      <audio src='${url}${mistake.audio}'></audio>
                       <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
                     <div class='item__english'>${mistake.word}</div>
@@ -177,7 +178,7 @@ export default class Games {
                 ${correct.map((word) => `
                   <div class='correct__item'>
                     <div class='item__listen'>
-                      <audio src='http://localhost:4000/${word.audio}'></audio>
+                      <audio src='${url}${word.audio}'></audio>
                       <img class='item__listen-ico' src='${listenIcon}' alt='listen_icon'>
                     </div>
                     <div class='item__english'>${word.word}</div>
