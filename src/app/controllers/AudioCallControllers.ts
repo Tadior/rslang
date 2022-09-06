@@ -91,6 +91,7 @@ export default class AudioCallControllers {
   }
 
   async startAudioCallPage(group: string, page: string): Promise<void> {
+    this.resetGame();
     if (this.userInfo) {
       this.words = await this.api.getWords(group, page);
       this.words = await this.checkIfLearned(this.userInfo.userId, this.words);
@@ -160,6 +161,7 @@ export default class AudioCallControllers {
   }
 
   public async startAudioCallMenu(group: string): Promise<void> {
+    this.resetGame();
     const page: string = Math.floor(Math.random() * 29).toString();
     this.words = await this.api.getWords(group, page);
     for (let i = 0; i < this.words.length; i += 1) {
@@ -354,7 +356,7 @@ export default class AudioCallControllers {
     this.wordName = questions[this.wordCounter];
     const generatedArray = this.generateArray(this.questions.length);
     if (this.wordCounter < questions.length) {
-      this.getAndPlayWordSound(questions[this.wordCounter]);
+      this.getAndPlayWordSound(this.wordName);
       const idxArr: number[] = [];
       idxArr.push(this.wordCounter);
       const finishIdx = generatedArray.length >= 5 ? 4 : generatedArray.length - 1;

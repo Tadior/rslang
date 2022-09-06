@@ -110,6 +110,7 @@ export default class AuthorizationControllers {
         if (responseSignIn.message.includes('Authenticated')) {
           this.changeStateAfterAuthentication();
           this.setUserAndProgressToLocalStorage(responseSignIn);
+          window.location.reload();
         } else {
           this.messagesObserver(responseSignIn);
         }
@@ -120,6 +121,7 @@ export default class AuthorizationControllers {
         if (!Object.prototype.hasOwnProperty.call(responseSignUp, 'message') && responseSignIn.message.includes('Authenticated')) {
           this.changeStateAfterAuthentication();
           this.setUserAndProgressToLocalStorage(responseSignIn);
+          window.location.reload();
         } else {
           this.messagesObserver(responseSignUp);
         }
@@ -127,7 +129,6 @@ export default class AuthorizationControllers {
       default:
         break;
     }
-    window.location.reload();
   }
 
   private changeStateAfterAuthentication(): void {
