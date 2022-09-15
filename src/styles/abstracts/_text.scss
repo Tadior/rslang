@@ -1,0 +1,71 @@
+h1 {
+    font-size: 96px;
+    font-family: 'Jost-Medium',serif;
+    color: $dark-blue;
+    @media (max-width: 900px) {
+        font-size: 66px;
+    }
+    @media (max-width: 480px) {
+        font-size: 45px;
+    }
+    @media (max-width: 380px) {
+        font-size: 36px;
+    }
+}
+
+.paragraph {
+    line-height: 25px;
+    font-size: 18px;
+    color: $dark-blue;
+    @media (max-width: 380px) {
+        font-size: 16px;
+    }
+}
+
+.title {
+    font-family: 'Jost-Medium', serif;
+    font-size: 48px;
+    line-height: 57px;
+    color: $dark-blue;
+    &_developers {
+        text-align: center;
+    }
+    @media (max-width: 800px) {
+        font-size: 42px;
+    }
+    @media (max-width: 650px) {
+        font-size: 38px;
+    }
+    @media (max-width: 420px) {
+        font-size: 28px;
+        line-height: 33.6px;
+    }
+    &_corner {
+        @media (max-width: 500px) {
+            font-size: 20px;
+        }
+    }
+}
+
+.headline {
+    font-family: 'Jost-Medium', sans-serif;
+    font-size: 40px;
+    color: $dark-blue;
+    line-height: 48px;
+    @media (max-width: 800px) {
+        font-size: 32px;
+        line-height: 35px;
+    }
+    @media (max-width: 650px) {
+        font-size: 25px;
+        line-height: 30px;
+    }
+    @media (max-width: 420px) {
+        font-size: 20px;
+        line-height: 20px;
+    }
+}
+
+.text-filled {
+    color: $light-blue;
+}

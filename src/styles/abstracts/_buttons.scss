@@ -1,0 +1,83 @@
+.btn {
+    border-radius: 10px;
+    transition: all ease .5s;
+    color: #fff;
+    font-family: 'Jost-Medium',serif;
+    background: $light-blue;
+    padding: 18px 50px;
+    @media (max-width: 480px) {
+        padding: 10px 20px;
+    }
+    &_bordered {
+        color: $light-blue;
+        background: transparent;
+        border: 1px solid rgba(0, 16, 73, 0.2);
+        padding: 18px 66px;
+        &:hover {
+            color: #fff;
+        }
+    }
+    &_bold {
+        color: $dark-blue;
+    }
+    &_navigation {
+        padding: 9px 36px;
+        color: $dark-blue;
+    }
+    &_login {
+        font-size: 22px;
+        @media (max-width: 1000px) {
+            margin-top: 33px;
+        }
+    }
+    &_logout {
+      font-size: 22px;
+      padding: 9px 36px;
+      color: $pink;
+      border: 1px solid $pink;
+      font-size: 22px;
+      &:hover {
+        background: $pink;
+        color: #fff;
+      }
+      @media (max-width: 1000px) {
+        margin-top: 33px;
+      }
+    }
+    &_difficulty {
+        padding: 17px 33px;
+        margin: 0 25px;
+     }
+        
+    &_card {
+        margin: 20px 5px 0;
+        font-size: 20px;
+        padding: 9px 30px;
+        @media (max-width: 706px) {
+            width: 100%;
+            margin: 20px 0 0;
+        }
+        @media (max-width: 530px) {
+            font-size: 16px;
+        }
+     }
+    &_disable,
+    &:disabled {
+        pointer-events: none;
+        background-color: rgb(117, 113, 113);
+        color: #fff;
+    }
+
+    &_none {
+        display: none;
+    }
+        
+    &:hover {
+        background: $button-hover;
+        box-shadow: 0px 8px 24px rgba(86, 133, 255, 0.25);
+    }
+    
+    &_hide {
+      display: none;
+    }
+}
