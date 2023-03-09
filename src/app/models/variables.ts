@@ -1,3 +1,3 @@
-const url = 'https://docker-production-a602.up.railway.app/';
+const url = 'https://docker-production-aa31.up.railway.app/';
 
 export default url;
