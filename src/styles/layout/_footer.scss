@@ -1,0 +1,53 @@
+.footer {
+    padding: 30px 0 0;
+    background: $background-light;
+    &__wrapper {
+        display: flex;
+        align-items: center;
+        @media (max-width: 777px) {
+            flex-direction: column;
+        }
+    }
+    .logo {
+        font-family: 'Jost-Medium', serif;
+    }
+}
+.rs-logo {
+    flex: 1 1 auto;
+    text-align: center;
+    @media (max-width: 777px) {
+        margin: 39px 0 52px;
+    }
+    img {
+        @media (max-width: 777px) {
+            max-width: 200px;
+        }
+    }
+}
+
+.github__link {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    color: #000;
+    transition: all ease .5s;
+    &:hover {
+        color: $button-hover;
+    }
+}
+.github__name {
+    margin-left: 10px;
+    font-size: 18px;
+}
+.footer__wrapper .logo__link img {
+    @media (max-width: 777px) {
+        max-width: 60px;
+    }
+}
+.rs-year {
+    margin-top: 25px;
+    color: #fff;
+    padding: 10px 0;
+    text-align: center;
+    background: $gray;
+}
